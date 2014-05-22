@@ -6,29 +6,39 @@ var counterSchema = mongoose.Schema({
   counter:      {type: Number, default: 0}
 });
 
-// counterSchema.pre('save', function(next){
-//   this.counter++;
-//   next();
-// });
-
 var Counter = mongoose.model('Counter', counterSchema);
-
-//Promisify model functions
 
 Counter.promFindOneAndUpdate = blue.promisify(Counter.findOneAndUpdate);
 
-//returns
-Counter.getRequestsCounter = function(){
+Counter.getCounter = function (modelName) {
   return Counter.promFindOneAndUpdate(
-    {modelName: 'requests'},
-    { $inc: {counter:1} },
-    {new: true,
-      select: 'counter'}
+    // conditions
+    {modelName: modelName},
+    // update: increases counter field by 1)
+    {$inc: {counter: 1}},
+    // options: returns modified document, creates if DNE, return counter
+    {new: true, upsert: true, select: 'counter'}
   );
-};
+}
+
+Counter.getCounter('vendors');
+
+exports.Counter = Counter;
 
 //used to create a new counter if the counter collection is deleted
 // // new Counter({modelName: 'requests'}).save();
 
+//returns
+// Counter.getRequestsCounter = function(){
+//   return Counter.promFindOneAndUpdate(
+//     {modelName: 'requests'},
+//     { $inc: {counter:1} },
+//     {new: true,
+//       select: 'counter'}
+//   );
+// };
 
-exports.Counter = Counter;
+// counterSchema.pre('save', function(next){
+//   this.counter++;
+//   next();
+// });

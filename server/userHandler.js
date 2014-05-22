@@ -111,7 +111,8 @@ exports.request = function(req,res){
   })
 
   //get the next request counter number
-  .then(Counter.getRequestsCounter)
+  // .then(Counter.getRequestsCounter)
+  .then(Counter.getCounter('requests'))
 
   //update the parsed object info with the request counter
   .then(function(data){
