@@ -14,7 +14,7 @@ exports.sendIndex = function (req, res){
 };
 
 exports.sendAbout = function(req, res){
-  res.sendfile('./public/html/about.html');  
+  res.sendfile('./public/html/about.html');
 }
 exports.sendAuthFail = function (res){
   res.send(404, 'failed authentication!');
@@ -52,7 +52,7 @@ exports.login = function(req, res){
 
   //if the account does not already exist redirect
   .catch(function(e){
-    console.log('user didnt find username');   
+    console.log('user didnt find username');
     exports.sendAuthFail(res);
   })
 };
@@ -74,7 +74,7 @@ exports.signup = function(req, res){
       new User(req.body).save(function(err){
         if(err){
           console.log('issue saving new user account');
-          exports.sendAuthFail(res);    
+          exports.sendAuthFail(res);
         } else {
           authen.userCreateSession(req);
           res.redirect(302,'/dashboard');
@@ -115,7 +115,7 @@ exports.request = function(req,res){
 
   //update the parsed object info with the request counter
   .then(function(data){
-    parsed.requestId = data.count;
+    parsed.requestId = data.counter;
     requestObj = new UserRequest(parsed);
 
     //promisifying the save function
@@ -174,7 +174,7 @@ exports.request = function(req,res){
   //send text messages
   .then(twilio.massTwilSend);
 
-  res.send(200); 
+  res.send(200);
 };
 
 exports.sendRequestInfo = function(req,res){
@@ -184,7 +184,7 @@ exports.sendRequestInfo = function(req,res){
 
   //get userID
   User.promFindOne({username: username})
-  
+
   //find records for that userId
   .then(function(data){
     return UserRequest.promFind({requesterId: data._id})
