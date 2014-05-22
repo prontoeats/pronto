@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var blue = require('bluebird');
 
 var counterSchema = mongoose.Schema({
-  modelName:    {type: String},
-  counter:      {type: Number, default: 0}
+  modelName:    {type: String, required: true},
+  counter:      {type: Number, required: true, default: 0}
 });
 
 var Counter = mongoose.model('Counter', counterSchema);
@@ -20,8 +20,6 @@ Counter.getCounter = function (modelName) {
     {new: true, upsert: true, select: 'counter'}
   );
 }
-
-Counter.getCounter('vendors');
 
 exports.Counter = Counter;
 
