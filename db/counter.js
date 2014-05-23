@@ -21,8 +21,6 @@ Counter.getCounter = function (tableName) {
   );
 }
 
-Counter.getCounter('vendors');
-
 exports.Counter = Counter;
 
 //used to create a new counter if the counter collection is deleted
