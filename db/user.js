@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
 var blue = require('bluebird');
 var prom = require('../server/promisified.js');
+var Counter = require('./counter.js').Counter;
 
 var userSchema = mongoose.Schema({
-  id:           {type: Number, required: true, index: {unique: true}},
+  id:           {type: Number, index: {unique: true}},
   email:        {type: String, required: true, index: {unique: true}},
   password:     {type: String, required: true},
   firstName:    {type: String, required: true},
@@ -13,11 +14,19 @@ var userSchema = mongoose.Schema({
 });
 
 userSchema.pre('save', function (next) {
-  prom.bcryptHash(this.password, null, null).bind(this)
-  .then(function (hash) {
-    this.password = hash;
-    next();
-  });
+
+  Counter.getCounter('users').bind(this)
+
+    .then(function (data) {
+      console.dir(data);
+      this.id = data.counter;
+      return prom.bcryptHash(this.password, null, null).bind(this)
+    })
+
+    .then(function (hash) {
+      this.password = hash;
+      next();
+    });
 
 });
 
