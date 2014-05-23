@@ -54,6 +54,8 @@ businessSchema.pre('save', function (next) {
       });
   }
 
+  next();
+
 });
 
 var Business = mongoose.model('Business', businessSchema);

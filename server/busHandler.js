@@ -17,9 +17,12 @@ exports.dashboard = function(req, res){
 
 exports.login = function(req, res){
 
-  //Find the account that matches the username
+  //Find the account that matches the email
   Business.promFindOne({email: req.body.email})
-    .then(function(data){
+    .then(function (data) {
+
+      // while we have the data, store businessId so we can store in session
+      req.body.businessId = data.businessId;
 
       //return a promise to continue the chain - promise will be resolved
       //once bcrypt completes the comparison
@@ -78,3 +81,21 @@ exports.signup = function (req, res) {
       exports.businessSendAuthFail(res);
     })
 };
+
+exports.showRequests = function (req, res) {
+  // TODO: know which business is sending the request
+  // var businessId = req.
+
+  // search through requests collection
+  // look for results property on each document
+    // check if document results object has a key containing the business id
+  // TODO: filter
+}
+
+exports.showOffers = function (req, res) {
+
+}
+
+exports.sendOffer = function (req, res) {
+
+}

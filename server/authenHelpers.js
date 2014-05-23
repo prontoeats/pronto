@@ -1,6 +1,6 @@
-
 exports.userCreateSession = function (req){
   req.session.userEmail = req.body.email;
+  req.session.userId = req.body.userId;
 };
 
 exports.userAuthenticate = function(req, res, next){
@@ -15,6 +15,7 @@ exports.userAuthenticate = function(req, res, next){
 
 exports.busCreateSession = function (req){
   req.session.busEmail = req.body.email;
+  req.session.businessId = req.body.businessId;
 };
 
 exports.busAuthenticate = function(req, res, next){

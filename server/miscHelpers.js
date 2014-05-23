@@ -1,7 +1,7 @@
 
 var blue = require('bluebird');
 
-exports.parseNearbyData = function(array){
+exports.parseNearbyData = function (array) {
   var allBus = [];
   var bus;
   var phoneNums = [];
@@ -9,7 +9,7 @@ exports.parseNearbyData = function(array){
   for (var i = 0; i < array.length; i++) {
 
     bus = {};
-    bus.id = array[i].id;
+    bus.businessId = array[i].businessId;
     bus.phoneNumber = array[i].phoneNumber;
     bus.distance = array[i].dist.calculated * 3963;
     bus.status = 'Pending';
@@ -32,7 +32,7 @@ exports.parseNearbyData = function(array){
 
 };
 
-exports.parseRequestFormData = function(obj){
+exports.parseRequestFormData = function (obj) {
 
   // var dateTime = obj.targetDate+' '+obj.targetTime;
 

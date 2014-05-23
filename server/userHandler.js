@@ -29,6 +29,9 @@ exports.login = function(req, res){
   User.promFindOne({email: req.body.email})
     .then(function (data) {
 
+      // while we have the data, store userId so we can store in session
+      req.body.userId = data.userId;
+
       //return a promise to continue the chain - promise will be resolved
       //once bcrypt completes the comparison
       return prom.bcryptCompare(req.body.password, data.password)
@@ -158,6 +161,7 @@ exports.request = function(req, res) {
 
     //store the data as a parameter on the request Obj and save
     .then(function(data){
+      console.log('storing results property');
       requestObj.results = data[0];
       numbers = data[1];
       return requestObj.promSave();
