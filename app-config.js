@@ -27,11 +27,17 @@ app.post('/business/signup', busHandler.signup);
 
 app.post('/twilio', twiml.processPost);
 
-//routes requiring authentication
-app.get('/requests', authen.userAuthenticate, userHandler.sendRequestInfo);
+// user routes requiring authentication
 app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
-app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
-app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
 app.post('/request', authen.userAuthenticate, userHandler.request);
+app.get('/requests', authen.userAuthenticate, userHandler.sendRequestInfo);
+app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
+
+// business routes requiring authentication
+app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
+// TODO: enable authentication after MVP
+app.get('/business/requests', busHandler.showRequests);
+app.get('/business/offers', busHandler.showOffers);
+app.post('/business/offers', busHandler.sendOffer);
 
 module.exports = app;
