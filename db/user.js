@@ -26,6 +26,10 @@ userSchema.pre('save', function (next) {
     .then(function (hash) {
       this.password = hash;
       next();
+    })
+
+    .catch(function (err) {
+      throw err;
     });
 
 });
@@ -38,8 +42,8 @@ User.promFindOne = blue.promisify(User.findOne);
 
 // TODO: 5/22 - given name of function, should just return id number?
 // TODO: 5/22 - do we actually need to promisify?
-User.promGetUserId = function(username){
-  return User.promFindOne({username: username});
+User.promGetUserId = function(email){
+  return User.promFindOne({email: email});
 };
 
 exports.User = User;

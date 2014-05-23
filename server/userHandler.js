@@ -98,7 +98,7 @@ exports.request = function(req,res){
   var numbers;
 
   //get userId of requestor
-  User.promGetUserId(req.session.userUsername)
+  User.promGetUserId(req.session.userEmail)
 
   //update the parsed object info with the requestorId
   .then(function(data){

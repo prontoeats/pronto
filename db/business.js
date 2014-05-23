@@ -48,6 +48,10 @@ businessSchema.pre('save', function (next) {
       next();
     })
 
+    .catch(function (err) {
+      throw err;
+    });
+
 });
 
 var Business = mongoose.model('Business', businessSchema);
