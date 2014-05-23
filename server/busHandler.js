@@ -1,4 +1,5 @@
 var Business = require('../db/business.js').Business;
+var Requests = require('../db/userRequest.js').UserRequest;
 var mapApi = require('./mapsApiHelpers.js');
 var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
@@ -83,13 +84,36 @@ exports.signup = function (req, res) {
 };
 
 exports.showRequests = function (req, res) {
-  // TODO: know which business is sending the request
-  // var businessId = req.
+  // TODO: remove default; require authentication (on app-config.js)
+  var businessId = req.session.businessId || 1;
 
   // search through requests collection
-  // look for results property on each document
-    // check if document results object has a key containing the business id
-  // TODO: filter
+  // TODO: filter so not all requests are retrieved...
+  Requests.find(function (err, data) {
+
+    console.log('requests:');
+    console.dir(data);
+    var results = [];
+    for (var i = 0; i < data.length; i += 1) {
+      // look for results property on each document
+      for (var j = 0; j < data[i].results.length; j += 1) {
+        // check if document results array has an object with the business id
+        if (data[i].results[j].businessId === businessId) {
+          var requestObj = {};
+          requestObj.address = data[i].address;
+          requestObj.city = data[i].city;
+          requestObj.groupSize = data[i].groupSize;
+          requestObj.requestNotes = data[i].requestNotes;
+          requestObj.requestId = data[i].requestId;
+          requestObj.userId = data[i].userId;
+          requestObj.targetDateTime = data[i].targetDateTime;
+          results.push(requestObj);
+        }
+      }
+    }
+    res.send(results);
+
+  });
 }
 
 exports.showOffers = function (req, res) {

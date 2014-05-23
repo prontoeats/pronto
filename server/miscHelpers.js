@@ -34,12 +34,9 @@ exports.parseNearbyData = function (array) {
 
 exports.parseRequestFormData = function (obj) {
 
-  // var dateTime = obj.targetDate+' '+obj.targetTime;
-
   var dateTime = new Date();
-  dateTime.setMinutes(dateTime.getMinutes() + obj.targetTime * 6000);
+  dateTime.setMinutes(dateTime.getMinutes() + Number(obj.targetTime));
 
-  // console.log('date time:', dateTime);
   var parsedObj = {
     targetDateTime: dateTime,
     groupSize: obj.groupSize,
