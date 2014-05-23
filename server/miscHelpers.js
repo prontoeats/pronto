@@ -73,7 +73,7 @@ exports.sendRequestInfoParser = function(array){
     obj.targetDateTime = array[i].targetDateTime;
     obj.groupSize = array[i].groupSize;
     obj.requestNotes = array[i].requestNotes;
-    obj.businesses = exports.parseBusinessesData(array[i].businesses);
+    obj.results = exports.parseBusinessesData(array[i].results);
     resultsArray.push(obj);
   }
 
@@ -94,7 +94,7 @@ exports.parseBusinessesData = function(string){
       business.address = parsed[i].address;
       business.city = parsed[i].address;
       business.state = parsed[i].state;
-      business.distance = parsed[i].distance; 
+      business.distance = parsed[i].distance;
       business.offer = parsed[i].replies;
 
       results.push(business);

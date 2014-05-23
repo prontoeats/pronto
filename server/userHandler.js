@@ -102,7 +102,7 @@ exports.request = function(req,res){
 
   //update the parsed object info with the requestorId
   .then(function(data){
-    parsed.requesterId = data._id; //NOTE: may have issues later since we saved the id as a string
+    parsed.userId = data.userId; //NOTE: may have issues later since we saved the id as a string
 
     //start another promise to keep the chain going
     return new blue(function(resolve, reject){
@@ -160,7 +160,7 @@ exports.request = function(req,res){
 
   //store the data as a parameter on the request Obj and save
   .then(function(data){
-    requestObj.businesses = JSON.stringify(data[0]);
+    requestObj.results = JSON.stringify(data[0]);
     numbers = data[1];
     return requestObj.promSave();
   })
@@ -188,7 +188,7 @@ exports.sendRequestInfo = function(req,res){
 
   //find records for that userId
   .then(function(data){
-    return UserRequest.promFind({requesterId: data._id})
+    return UserRequest.promFind({userId: data.userId})
   })
 
   .then(function(data){
@@ -207,7 +207,7 @@ exports.acceptOffer = function(req,res){
 
   UserRequest.promFindOne({requestId: req.body.requestId})
   .then(function(data){
-    var number = misc.acceptOfferProcessing(data.businesses, req.body.businessName);
+    var number = misc.acceptOfferProcessing(data.results, req.body.businessName);
 
     twilio.sendConfirmation(number,data.requestId, data.groupSize, data.targetDateTime);
   })

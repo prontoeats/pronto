@@ -36,7 +36,7 @@
               <option value='60'>1 hr</option>
               <option value='90'>1.5 hrs</option>
               <option value='120'>2 hrs</option>
-            </select> 
+            </select>
           </div>
           <div><input type='submit' value='Submit Request'></div>
         </form>
@@ -60,7 +60,7 @@
             <td>{{ detail.groupSize }}</td>
             <td>{{ detail.requestNotes }}</td>
             <td >
-              <div ng-repeat = 'items in detail.businesses'>
+              <div ng-repeat = 'items in detail.results'>
                 <div>
                   <div>Business: {{items.businessName}}</div>
                   <div>Offering: {{items.offer}}</div>
@@ -71,7 +71,7 @@
               </div>
             </td>
           </tr>
-        </table>    
+        </table>
       </div>
     <p>
     <div class='footer'>by Jimmy Tsao</div>

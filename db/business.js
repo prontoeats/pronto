@@ -5,7 +5,7 @@ var mapApi = require('../server/mapsApiHelpers.js')
 var Counter = require('./counter.js').Counter;
 
 var businessSchema = mongoose.Schema({
-  id:           {type: Number, index: {unique: true}},
+  businessId:   {type: Number, index: {unique: true}},
   email:        {type: String, required: true, index: {unique: true}},
   businessName: {type: String, required: true},
   address:      {type: String, required: true},
@@ -31,7 +31,7 @@ businessSchema.pre('save', function (next) {
 
     .then(function (data) {
       console.dir(data);
-      this.id = data.counter;
+      this.businessId = data.counter;
       return prom.bcryptHash(this.password, null, null)
     })
 
