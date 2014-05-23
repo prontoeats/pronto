@@ -20,7 +20,7 @@ userSchema.pre('save', function (next) {
     .then(function (data) {
       console.dir(data);
       this.id = data.counter;
-      return prom.bcryptHash(this.password, null, null).bind(this)
+      return prom.bcryptHash(this.password, null, null)
     })
 
     .then(function (hash) {
@@ -37,6 +37,7 @@ var User = mongoose.model('User', userSchema);
 User.promFindOne = blue.promisify(User.findOne);
 
 // TODO: 5/22 - given name of function, should just return id number?
+// TODO: 5/22 - do we actually need to promisify?
 User.promGetUserId = function(username){
   return User.promFindOne({username: username});
 };
