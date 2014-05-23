@@ -22,21 +22,3 @@ Counter.getCounter = function (tableName) {
 }
 
 exports.Counter = Counter;
-
-//used to create a new counter if the counter collection is deleted
-// // new Counter({tableName: 'requests'}).save();
-
-//returns
-// Counter.getRequestsCounter = function(){
-//   return Counter.promFindOneAndUpdate(
-//     {tableName: 'requests'},
-//     { $inc: {counter:1} },
-//     {new: true,
-//       select: 'counter'}
-//   );
-// };
-
-// counterSchema.pre('save', function(next){
-//   this.counter++;
-//   next();
-// });

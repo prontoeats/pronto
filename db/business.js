@@ -21,10 +21,6 @@ var businessSchema = mongoose.Schema({
   createdAt:    {type: Date, default: Date.now}
 });
 
-// TODO: 5/22 this is redundant with schema delcaration: delete?
-// Set up mongoose index for geospatial
-// businessSchema.index({location: '2dsphere'});
-
 businessSchema.pre('save', function (next) {
 
   Counter.getCounter('businesses').bind(this)
@@ -38,12 +34,6 @@ businessSchema.pre('save', function (next) {
     .then(function (hash) {
       this.password = hash;
       return this;
-
-      // TODO: 5/22 - confirm this is unnecessary
-      // create new promise to continue chain
-      // return new blue(function(resolve, request){
-      //   resolve(that);
-      // })
     })
 
     //get Geo location from google maps
