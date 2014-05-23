@@ -1,5 +1,6 @@
 var Business = require('../db/business.js').Business;
 var Requests = require('../db/userRequest.js').UserRequest;
+var Offer = require('../db/offers.js').Offer;
 var mapApi = require('./mapsApiHelpers.js');
 var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
@@ -118,10 +119,56 @@ exports.showRequests = function (req, res) {
 }
 
 exports.showOffers = function (req, res) {
+  console.log('inside showOffers');
 
+  // query offers collection, filtering by businessId
+  Offer.promFind({businessId: req.session.businessId})
+    .then(function (data) {
+      if (!data) {
+        console.log('no offers found');
+      } else {
+        console.log('offers found, returning...');
+        console.dir(data);
+        // return all offers as an array of objects
+        res.send(200, data);
+      }
+    })
+
+    //if there was an issue searching for offers
+    .catch(function (e) {
+      console.log('offer lookup failed ', e);
+      throw e
+      res.redirect('/business/dashboard');
+    })
 }
 
 exports.sendOffer = function (req, res) {
-  console.log('inside sendOffer');
-  console.dir(req.body);
+
+  Offer.promFindOne({requestId: req.body.requestId, businessId: req.session.businessId})
+
+    .then(function (data) {
+      //if the offer exists, redirect (cannot reply twice)
+      if (data) {
+        console.log('offer already exists')
+
+      //otherwise, save the offer
+      } else {
+        req.body.businessId = req.session.businessId;
+        console.dir(req.body);
+        new Offer(req.body).save(function (err) {
+          if (err) {
+            console.log('error when saving new offer');
+          } else {
+            console.log('offer saved');
+          }
+        })
+      }
+      res.redirect('/business/dashboard');
+    })
+
+    //if there was an issue searching for offers
+    .catch(function (e) {
+      console.log('offer lookup failed ', e);
+      res.redirect('/business/dashboard');
+    })
 }
