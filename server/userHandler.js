@@ -95,16 +95,18 @@ exports.request = function(req, res) {
   var requestObj;
   var numbers;
 
-  //get userId of requestor
-  User.promGetUserId(req.session.email)
+  // get userId of requestor through email
+  // TODO: store user ID in session (with email) to avoid this lookup
+  User.promGetUserId(req.session.userEmail)
 
     //update the parsed object info with the requestorId
-    .then(function(data){
-      parsed.userId = data.userId; //NOTE: may have issues later since we saved the id as a string
+    .then(function (data){
+      parsed.userId = data.userId;
 
+      // TODO: do not need userEmail in next 'then', so no need for this?
       //start another promise to keep the chain going
-      return new blue(function(resolve, reject){
-        resolve(req.session.email);
+      return new blue(function (resolve, reject) {
+        resolve(req.session.userEmail);
       });
     })
 
@@ -113,19 +115,18 @@ exports.request = function(req, res) {
     // .then(Counter.getCounter('requests'))
 
     //update the parsed object info with the request counter
-    .then(function(data){
+    .then(function (data) {
       // parsed.requestId = data.counter;
       requestObj = new UserRequest(parsed);
 
       //promisifying the save function
       requestObj.promSave = blue.promisify(requestObj.save);
-
       return requestObj.promSave();
     })
 
     //create new promise to continue chain
-    .then(function(){
-      return new blue(function(resolve,reject){
+    .then(function () {
+      return new blue(function (resolve,reject){
         resolve(parsed);
       })
     })
@@ -139,7 +140,6 @@ exports.request = function(req, res) {
     //add long/lat results to location parameter on obj and save
     .then(function(result){
       requestObj.location = result;
-
       return requestObj.promSave();
     })
 
@@ -158,7 +158,7 @@ exports.request = function(req, res) {
 
     //store the data as a parameter on the request Obj and save
     .then(function(data){
-      requestObj.results = JSON.stringify(data[0]);
+      requestObj.results = data[0];
       numbers = data[1];
       return requestObj.promSave();
     })
@@ -179,10 +179,10 @@ exports.request = function(req, res) {
 exports.sendRequestInfo = function(req,res){
 
   //get username from session info
-  var username = req.session.email;
+  var email = req.session.userEmail;
 
   //get userID
-  User.promFindOne({username: username})
+  User.promFindOne({email: email})
 
     //find records for that userId
     .then(function(data){
@@ -195,6 +195,7 @@ exports.sendRequestInfo = function(req,res){
         resolve(misc.sendRequestInfoParser(data));
       })
     })
+
     .then(function(data){
       res.send(200, data);
     })

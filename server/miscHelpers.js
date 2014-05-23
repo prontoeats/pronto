@@ -67,8 +67,8 @@ exports.sendRequestInfoParser = function(array){
   var resultsArray = [];
   var obj;
 
-  for (var i =0; i<array.length; i++){
-    obj ={};
+  for (var i = 0; i < array.length; i++){
+    obj = {};
     obj.requestId = array[i].requestId;
     obj.targetDateTime = array[i].targetDateTime;
     obj.groupSize = array[i].groupSize;
@@ -81,18 +81,19 @@ exports.sendRequestInfoParser = function(array){
 
 };
 
-exports.parseBusinessesData = function(string){
-  var parsed = JSON.parse(string);
+exports.parseBusinessesData = function (parsed) {
+  // TODO: investigate!!!
+  parsed = parsed || [];
   var results = [];
   var business;
 
-  for (var i=0; i<parsed.length; i++){
-    business={};
+  for (var i = 0; i < parsed.length; i++){
+    business = {};
 
-    if (parsed[i].status ==='Accepted'){
+    if (parsed[i].status === 'Accepted'){
       business.businessName = parsed[i].businessName;
       business.address = parsed[i].address;
-      business.city = parsed[i].address;
+      business.city = parsed[i].city;
       business.state = parsed[i].state;
       business.distance = parsed[i].distance;
       business.offer = parsed[i].replies;
@@ -104,8 +105,7 @@ exports.parseBusinessesData = function(string){
   return results;
 };
 
-exports.acceptOfferProcessing = function(string, restaurant){
-  var parsed = JSON.parse(string);
+exports.acceptOfferProcessing = function(parsed, restaurant){
 
   for (var i=0; i<parsed.length; i++){
 

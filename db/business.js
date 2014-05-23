@@ -26,7 +26,6 @@ businessSchema.pre('save', function (next) {
   Counter.getCounter('businesses').bind(this)
 
     .then(function (data) {
-      console.dir(data);
       this.businessId = data.counter;
       return prom.bcryptHash(this.password, null, null)
     })

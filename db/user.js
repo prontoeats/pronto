@@ -18,7 +18,6 @@ userSchema.pre('save', function (next) {
   Counter.getCounter('users').bind(this)
 
     .then(function (data) {
-      console.dir(data);
       this.userId = data.counter;
       return prom.bcryptHash(this.password, null, null)
     })
