@@ -126,7 +126,7 @@ exports.request = function(req, res) {
 
     //create new promise to continue chain
     .then(function () {
-      return new blue(function (resolve,reject){
+      return new blue(function (resolve, reject) {
         resolve(parsed);
       })
     })
@@ -145,7 +145,7 @@ exports.request = function(req, res) {
 
     //create new promise to continue chain
     .then(function(){
-      return new blue (function(resolve, reject){
+      return new blue (function (resolve, reject) {
         resolve([requestObj.location, requestObj.radius]);
       })
     })
@@ -176,27 +176,26 @@ exports.request = function(req, res) {
   res.send(200);
 };
 
-exports.sendRequestInfo = function(req,res){
+exports.sendRequestInfo = function(req, res) {
 
-  //get username from session info
+  //get email from session info
   var email = req.session.userEmail;
 
   //get userID
   User.promFindOne({email: email})
 
     //find records for that userId
-    .then(function(data){
+    .then(function (data) {
       return UserRequest.promFind({userId: data.userId})
     })
 
     .then(function(data){
-
-      return new blue(function(resolve, reject){
+      return new blue(function (resolve, reject) {
         resolve(misc.sendRequestInfoParser(data));
       })
     })
 
-    .then(function(data){
+    .then(function (data){
       res.send(200, data);
     })
 };

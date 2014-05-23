@@ -20,22 +20,20 @@ var requestSchema = mongoose.Schema({
 });
 
 requestSchema.pre('save', function (next) {
-  console.log('requestSchema pre save');
 
-  Counter.getCounter('requests').bind(this)
+  if (!this.requestId) {
 
-    .then(function (data) {
-      if (!this.requestId) {
+    Counter.getCounter('requests').bind(this)
+
+      .then(function (data) {
         this.requestId = data.counter;
-      }
-      console.log('this:');
-      console.dir(this);
-      next();
-    })
+        next();
+      })
 
-    .catch(function (err) {
-      throw err;
-    });
+      .catch(function (err) {
+        throw err;
+      });
+  }
 
 });
 

@@ -15,21 +15,25 @@ var userSchema = mongoose.Schema({
 
 userSchema.pre('save', function (next) {
 
-  Counter.getCounter('users').bind(this)
+  if (!this.userId) {
 
-    .then(function (data) {
-      this.userId = data.counter;
-      return prom.bcryptHash(this.password, null, null)
-    })
+    Counter.getCounter('users').bind(this)
 
-    .then(function (hash) {
-      this.password = hash;
-      next();
-    })
+      .then(function (data) {
+        this.userId = data.counter;
+        return prom.bcryptHash(this.password, null, null)
+      })
 
-    .catch(function (err) {
-      throw err;
-    });
+      .then(function (hash) {
+        this.password = hash;
+        next();
+      })
+
+      .catch(function (err) {
+        throw err;
+      });
+
+  }
 
 });
 

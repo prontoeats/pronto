@@ -6,11 +6,12 @@ exports.parseNearbyData = function(array){
   var bus;
   var phoneNums = [];
 
-  for (var i = 0; i<array.length; i++){
+  for (var i = 0; i < array.length; i++) {
+
     bus = {};
-    bus._id = array[i]._id;
+    bus.id = array[i].id;
     bus.phoneNumber = array[i].phoneNumber;
-    bus.distance = array[i].dist.calculated*3963;
+    bus.distance = array[i].dist.calculated * 3963;
     bus.status = 'Pending';
     bus.replies = null;
     bus.businessName = array[i].businessName;
@@ -25,7 +26,7 @@ exports.parseNearbyData = function(array){
   console.log('allBus: ',allBus);
   console.log('phoneNums: ',phoneNums);
 
-  return new blue (function(resolve, reject){
+  return new blue(function (resolve, reject) {
     resolve([allBus, phoneNums]);
   });
 
@@ -36,9 +37,9 @@ exports.parseRequestFormData = function(obj){
   // var dateTime = obj.targetDate+' '+obj.targetTime;
 
   var dateTime = new Date();
-  dateTime.setMinutes(dateTime.getMinutes()+obj.targetTime*6000);
+  dateTime.setMinutes(dateTime.getMinutes() + obj.targetTime * 6000);
 
-  console.log('date time: ',dateTime);
+  // console.log('date time:', dateTime);
   var parsedObj = {
     targetDateTime: dateTime,
     groupSize: obj.groupSize,
@@ -53,17 +54,18 @@ exports.parseRequestFormData = function(obj){
   return parsedObj;
  };
 
-exports.formatDate = function(date){
-  var month = date.getMonth()+1;
-  var day = date.getDate()+1;
+exports.formatDate = function (date) {
+  var month = date.getMonth() + 1;
+  var day = date.getDate() + 1;
   var hours = date.getHours();
   var min = date.getMinutes();
 
-  return month+'/'+day+' @ '+hours+':'+min;
+  return month + '/' + day + ' @ ' + hours + ':' + min;
 };
 
-exports.sendRequestInfoParser = function(array){
-
+exports.sendRequestInfoParser = function (array) {
+  // TODO: investigate!!!
+  array = array || [];
   var resultsArray = [];
   var obj;
 
@@ -107,25 +109,9 @@ exports.parseBusinessesData = function (parsed) {
 
 exports.acceptOfferProcessing = function(parsed, restaurant){
 
-  for (var i=0; i<parsed.length; i++){
-
+  for (var i = 0; i < parsed.length; i++) {
     if (parsed[i].businessName === restaurant){
       return parsed[i].phoneNumber;
     }
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
