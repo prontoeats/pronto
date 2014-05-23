@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var blue = require('bluebird');
 
 var counterSchema = mongoose.Schema({
-  tableName:    {type: String},
-  counter:      {type: Number, default: 0}
+  tableName:    {type: String, required: true},
+  counter:      {type: Number, required: true, default: 0}
 });
 
 var Counter = mongoose.model('Counter', counterSchema);
