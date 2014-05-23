@@ -99,6 +99,7 @@ exports.showRequests = function (req, res) {
       for (var j = 0; j < data[i].results.length; j += 1) {
         // check if document results array has an object with the business id
         if (data[i].results[j].businessId === businessId) {
+          // TODO: or copy entire data[i] object and remove results?
           var requestObj = {};
           requestObj.address = data[i].address;
           requestObj.city = data[i].city;
@@ -121,5 +122,6 @@ exports.showOffers = function (req, res) {
 }
 
 exports.sendOffer = function (req, res) {
-
+  console.log('inside sendOffer');
+  console.dir(req.body);
 }
