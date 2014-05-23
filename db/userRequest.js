@@ -18,6 +18,22 @@ var requestSchema = mongoose.Schema({
   createdAt:      {type: Date, default: Date.now}
 });
 
+requestSchema.pre('save', function (next) {
+
+  Counter.getCounter('requests').bind(this)
+
+    .then(function (data) {
+      console.dir(data);
+      this.userId = data.counter;
+    })
+
+    .catch(function (err) {
+      throw err;
+    });
+
+});
+
+
 var UserRequest = mongoose.model('Request', requestSchema);
 
 UserRequest.promFindOneAndUpdate = blue.promisify(UserRequest.findOneAndUpdate);
