@@ -9,6 +9,14 @@ var authen = require('./server/authenHelpers.js');
 var twiml = require('./server/twiml.js')
 
 
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
 // view engine setup
 app.configure(function() {
   // app.set('views', __dirname + '/views');
@@ -17,6 +25,7 @@ app.configure(function() {
   app.use(express.bodyParser());
   app.use('/bower_components', express.static(__dirname + '/bower_components'));
   app.use(express.static(__dirname + '/public'));
+  app.use(allowCrossDomain);
   app.use(express.cookieParser('shhhh, very secret'));
   app.use(express.session());
 });
@@ -39,7 +48,7 @@ app.post('/twilio', twiml.processPost);
 app.get('/requests', authen.userAuthenticate, userHandler.sendRequestInfo);
 app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
 app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
-app.post('/request', authen.userAuthenticate, userHandler.request);
+app.post('/request', userHandler.request);
 app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
 
 module.exports = app;

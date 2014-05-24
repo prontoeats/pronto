@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('NewCtrl', function($q, $scope, GetLocation) {
+.controller('NewCtrl', function($q, $scope, $state, GetLocation, $http) {
 
   //Initialize defaults
 
@@ -58,8 +58,20 @@ angular.module('starter.controllers', [])
     $scope.setLocation()
     .then(function(){
       console.log('Request Object ',$scope.requestObj);
-    })
 
+      $http({
+        method: 'POST',
+        url: 'http://localhost:3000/request',
+        data: $scope.requestObj
+      })
+      .success(function(data){
+        console.log('success! ', data);
+        $state.go('tab.active');
+      })
+      .error(function(data){
+        console.log('error! ', data);
+      })
+    })
   }
 })
 
