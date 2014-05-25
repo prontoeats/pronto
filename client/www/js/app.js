@@ -8,8 +8,8 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-// .run(function($ionicPlatform, $state, localStorageService) {
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $state, localStorageService) {
+// .run(function($ionicPlatform) {
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -22,13 +22,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       StatusBar.styleDefault();
     }
 //---
-    // console.log('in ,run.moduel')
+    console.log('in ,run.moduel')
 
-    // var token = localStorageService.get('token');
-    // if(!token) {
-    //   console.log('state transition to login')
-    //   $state.transitionTo('tab.login');
-    // }
+    var token = localStorageService.get('token');
+    if(!token) {
+      console.log('state transition to login')
+      $state.transitionTo('tab.login');
+    }
   });
   // })
 })
@@ -36,10 +36,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .constant('Google', {
   authorize: 'https://accounts.google.com/o/oauth2/auth',
-  client_id: '375716811110-dfmo45bsu000aj2k3bcah42ico3d5b24.apps.googleusercontent.com',
-  client_secret: '6sU8ZNNAGENQSMkmlbWk_KG2',
+  client_id: '375716811110-79psrqpffqjqb3d1cb9l2fvq6jhl9jh7.apps.googleusercontent.com',
+  client_secret: 'e3Jr_Sm7ZoJvkAGvP_trqZWt',
   redirect_uri: 'http://localhost',
-  scope: 'profile'
+  scope: 'email'
 })
 
 
@@ -191,7 +191,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/requests');
+  $urlRouterProvider.otherwise('/tab/login');
 
 });
 

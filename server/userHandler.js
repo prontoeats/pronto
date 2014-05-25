@@ -1,3 +1,4 @@
+var url = require('url');
 
 var User = require('../db/user.js').User;
 var prom = require('./promisified.js');
@@ -93,6 +94,10 @@ exports.signup = function(req, res){
 exports.request = function(req,res){
 
   console.log('received data: ',req.body);
+  console.log('received data type: ', type)
+  
+  // console.log('url parse: ', req.url);
+)
   //parse the request form data
   var parsed = misc.parseRequestFormData(req.body);
   var requestObj;
@@ -179,6 +184,10 @@ exports.request = function(req,res){
 };
 
 exports.sendRequestInfo = function(req,res){
+
+    console.log('url parse: ', req.url);
+        res.send(200);
+
 
   //get username from session info
   var username = req.session.userUsername;

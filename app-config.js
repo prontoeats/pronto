@@ -45,7 +45,7 @@ app.post('/business/signup', busHandler.signup);
 app.post('/twilio', twiml.processPost);
 
 //routes requiring authentication
-app.get('/requests', authen.userAuthenticate, userHandler.sendRequestInfo);
+app.get('/requests', userHandler.sendRequestInfo);
 app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
 app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
 app.post('/request', userHandler.request);

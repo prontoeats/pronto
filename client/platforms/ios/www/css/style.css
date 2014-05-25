@@ -1,1 +1,6 @@
 /* Empty. Add your own CSS if you like */
+
+.map {
+  width: 500px;
+  height: 400px;
+}
