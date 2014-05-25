@@ -1,3 +1,4 @@
+
 // Ionic Starter App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
@@ -7,7 +8,9 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
+// .run(function($ionicPlatform, $state, localStorageService) {
 .run(function($ionicPlatform) {
+
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -18,8 +21,27 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+//---
+    // console.log('in ,run.moduel')
+
+    // var token = localStorageService.get('token');
+    // if(!token) {
+    //   console.log('state transition to login')
+    //   $state.transitionTo('tab.login');
+    // }
   });
+  // })
 })
+
+
+.constant('Google', {
+  authorize: 'https://accounts.google.com/o/oauth2/auth',
+  client_id: '375716811110-dfmo45bsu000aj2k3bcah42ico3d5b24.apps.googleusercontent.com',
+  client_secret: '6sU8ZNNAGENQSMkmlbWk_KG2',
+  redirect_uri: 'http://localhost',
+  scope: 'profile'
+})
+
 
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -30,6 +52,66 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   $stateProvider
 
     // setup an abstract state for the tabs directive
+    .state('user', {
+      url: "/user",
+      abstract: true,
+      templateUrl: "templates/user.html"
+    })
+
+    // Each tab has its own nav history stack:
+
+    .state('user.new', {
+      url: '/new',
+      views: {
+        'user-new': {
+          templateUrl: 'templates/user-new.html',
+          controller: 'NewCtrl'
+        }
+      }
+    })
+
+    .state('user.active', {
+      url: '/active',
+      views: {
+        'user-active': {
+          templateUrl: 'templates/user-active.html',
+          controller: 'ActiveCtrl'
+        }
+      }
+    })
+
+    .state('user.history', {
+      url: '/history',
+      views: {
+        'user-history': {
+          templateUrl: 'templates/user-history.html',
+          controller: 'HistoryCtrl'
+        }
+      }
+    })
+
+    .state('user.settings', {
+      url: '/settings',
+      views: {
+        'user-settings': {
+          templateUrl: 'templates/user-settings.html',
+          controller: 'SettingsCtrl'
+        }
+      }
+    })
+    .state('user.friend-detail', {
+      url: '/friend/:friendId',
+      views: {
+        'user-friends': {
+          templateUrl: 'templates/friend-detail.html',
+          controller: 'FriendDetailCtrl'
+        }
+      }
+    })
+
+// ------------
+
+    // setup an abstract state for the tabs directive
     .state('tab', {
       url: "/tab",
       abstract: true,
@@ -37,60 +119,79 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     })
 
     // Each tab has its own nav history stack:
-
-    .state('tab.new', {
-      url: '/new',
+    .state('tab.login', {
+      url: '/login',
       views: {
-        'tab-new': {
-          templateUrl: 'templates/tab-new.html',
-          controller: 'NewCtrl'
+        'tab-requests': {
+          templateUrl: 'templates/login.html',
+          controller: 'LoginCtrl'
         }
       }
     })
 
-    .state('tab.active', {
-      url: '/active',
+    .state('tab.requests', {
+      url: '/requests',
       views: {
-        'tab-active': {
-          templateUrl: 'templates/tab-active.html',
-          controller: 'ActiveCtrl'
+        'tab-requests': {
+          templateUrl: 'templates/tab-rest-requests.html',
+          controller: 'RequestsCtrl'
         }
       }
     })
 
-    .state('tab.history', {
-      url: '/history',
+    .state('tab.request-detail', {
+      url: '/request/:requestId',
       views: {
-        'tab-history': {
-          templateUrl: 'templates/tab-history.html',
-          controller: 'HistoryCtrl'
+        'tab-requests': {
+          templateUrl: 'templates/request-detail.html',
+          controller: 'RequestDetailCtrl'
         }
       }
     })
 
-    .state('tab.settings', {
-      url: '/settings',
+    .state('tab.existingOffers', {
+      url: '/existingOffers',
       views: {
-        'tab-settings': {
-          templateUrl: 'templates/tab-settings.html',
-          controller: 'SettingsCtrl'
-        }
-      }
-    })
-    .state('tab.friend-detail', {
-      url: '/friend/:friendId',
-      views: {
-        'tab-friends': {
-          templateUrl: 'templates/friend-detail.html',
-          controller: 'FriendDetailCtrl'
+        'tab-existingOffers': {
+          templateUrl: 'templates/tab-existingOffers.html',
+          controller: 'ExistingOffersCtrl'
         }
       }
     })
 
+    .state('tab.existingOffer-detail', {
+      url: '/existingOffer/:existingOfferId',
+      views: {
+        'tab-existingOffers': {
+          templateUrl: 'templates/existingOffer-detail.html',
+          controller: 'ExistingOfferDetailCtrl'
+        }
+      }
+    })
+
+    .state('tab.acceptedOffers', {
+      url: '/acceptedOffers',
+      views: {
+        'tab-acceptedOffers': {
+          templateUrl: 'templates/tab-acceptedOffers.html',
+          controller: 'AcceptedOffersCtrl'
+        }
+      }
+    })
+
+    .state('tab.acceptedOffer-detail', {
+      url: '/acceptedOffer/:acceptedOfferId',
+      views: {
+        'tab-acceptedOffers': {
+          templateUrl: 'templates/acceptedOffer-detail.html',
+          controller: 'AcceptedOfferDetailCtrl'
+        }
+      }
+    });
 
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/new');
+  $urlRouterProvider.otherwise('/tab/requests');
 
 });
 
