@@ -4,6 +4,7 @@ var Offer = require('../db/offers.js').Offer;
 var mapApi = require('./mapsApiHelpers.js');
 var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
+var login = require('./loginHelpers.js');
 
 exports.sendBusIndex = function(req, res){
   res.sendfile('./views/busIndex.html');
@@ -19,69 +20,107 @@ exports.dashboard = function(req, res){
 
 exports.login = function(req, res){
 
-  //Find the account that matches the email
-  Business.promFindOne({email: req.body.email})
-    .then(function (data) {
+  // receive POST request with 'code'
+  var code = req.body.code || '4/LLfI8uvWrbPXG2Y-YMDgkwqI51hS.wl7iENCqCTMfEnp6UAPFm0Fq-bN1jAI';
+  var access_token;
+  var email;
+  var firstName;
+  var lastName;
 
-      // while we have the data, store businessId so we can store in session
-      req.body.businessId = data.businessId;
-
-      //return a promise to continue the chain - promise will be resolved
-      //once bcrypt completes the comparison
-      return prom.bcryptCompare(req.body.password, data.password)
-    })
-
-    //check the results of the comparison
-    .then(function (result) {
-
-      //if the passwords match - direct to the business dashboard
-      if (result) {
-        authen.busCreateSession(req);
-        res.redirect(302, '/business/dashboard');
-
-      //if the passwords don't match redirect
-      } else {
-        console.log('business password do not match');
-        exports.businessSendAuthFail(res);
-      }
-    })
-
-    //if the account does not already exist redirect
-    .catch(function (e) {
-      console.log('business didnt find username');
-      exports.businessSendAuthFail(res);
-    })
+  login.getGoogleToken(code)
+  .then( function (data) {
+    access_token = data;
+    return login.getUserInfo(access_token);
+  })
+  .then( function (data) {
+    console.log('getUserInfo then');
+    data = JSON.parse(data[1]);
+    console.dir(data);
+    email = data.emails[0]['value'];
+    firstName = data.name.givenName;
+    lastName = data.name.familyName;
+    return Business.promFindOne({email: email});
+  })
+  .then( function (data) {
+    console.log('****');
+    console.dir(data);
+    if (data === null) {
+      res.send(201, {accessToken: access_token, signup: true});
+    } else {
+      console.log('data in else statement');
+      console.dir(data);
+      console.log(access_token);
+      // update token information (access & refresh) in database
+      Business.promFindOneAndUpdate(
+        {email: email},
+        {$set: {accessToken: access_token}},
+        {new: true}
+      ).then( function (data) {
+        res.send(201, {accessToken: data.accessToken, id: data._id, signup: false});
+      });
+    }
+  })
+  .catch( function (data) {
+    console.log(data);
+  });
 };
 
 exports.signup = function (req, res) {
 
-  //check to see if business username exists in database
-  Business.promFindOne({email: req.body.email})
-    .then(function (data){
+  // receive token and use to call Google to retrieve email/first/last
+  var businessInfo = req.body.businessInfo
+  var accessToken = businessInfo.accessToken;
 
-      //if the business username exists, redirect
-      if (data) {
-        console.log('business username already exists')
-        exports.businessSendAuthFail(res);
-
-      //otherwise, save the business account into the database and redirect to business dashboard
-      } else {
-        new Business(req.body).save(function (err) {
-          if (err) {
-            console.log('issue saving new business account');
-            exports.businessSendAuthFail(res);
-          } else {
-            res.sendfile('./views/busDashboard.html');
-          }
-        })
+  login.getUserInfo(accessToken)
+  .then( function (data) {
+    data = JSON.parse(data[1]);
+    businessInfo.email = data.emails[0]['value'];
+    businessInfo.firstName = data.name.givenName;
+    businessInfo.lastName = data.name.familyName;
+    new Business(businessInfo).save(function (err) {
+      if (err) {
+        console.log('problem saving new business');
+        res.send(400, "OMG could not save");
+        throw err;
       }
+      // with other information received, save to database
+      console.log('new business saved to database');
+      res.send(201, {accessToken: data.accessToken, id: data._id});
     })
+  })
+  .catch( function (e) {
+    console.log('error looking up user information with google');
+    res.send(400, "OMG could not find that token in google");
+    throw e;
+  });
 
-    //if there was an issue searching for the user, redirect
-    .catch(function (e) {
-      console.log('business signup failed ', e);
-      exports.businessSendAuthFail(res);
-    })
+  //check to see if business username exists in database
+  // Business.promFindOne({email: req.body.email})
+  //   .then(function (data){
+
+  //     //if the business username exists, redirect
+  //     if (data) {
+  //       console.log('business username already exists')
+  //       exports.businessSendAuthFail(res);
+
+  //     //otherwise, save the business account into the database and redirect to business dashboard
+  //     } else {
+  //       new Business(req.body).save(function (err) {
+  //         if (err) {
+  //           console.log('issue saving new business account');
+  //           exports.businessSendAuthFail(res);
+  //         } else {
+  //           res.sendfile('./views/busDashboard.html');
+  //         }
+  //       })
+  //     }
+  //   })
+
+  //   //if there was an issue searching for the user, redirect
+  //   .catch(function (e) {
+  //     console.log('business signup failed ', e);
+  //     exports.businessSendAuthFail(res);
+  //   })
 };
 
 exports.showRequests = function (req, res) {

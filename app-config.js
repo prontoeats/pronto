@@ -38,6 +38,7 @@ app.post('/login/user', userHandler.login);
 //Public business routes
 app.get('/business', busHandler.sendBusIndex);
 app.post('/login/business', busHandler.login);
+app.post('/signup/business', busHandler.signup);
 // app.post('/business/signup', busHandler.signup);
 
 app.post('/twilio', twiml.processPost);

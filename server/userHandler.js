@@ -33,7 +33,6 @@ exports.login = function(req, res){
   // receive POST request with 'code'
   var code = req.body.code || '4/40BgwsT5hUDRO72YCdGgZoKQpWWG.4gfjZP0ZRagWEnp6UAPFm0HUuaF1jAI';
   var access_token;
-  var refresh_token;
   var email;
   var firstName;
   var lastName;
@@ -89,40 +88,39 @@ exports.login = function(req, res){
   .catch( function (data) {
     console.log(data);
   });
-
 };
 
-exports.signup = function(req, res){
+// exports.signup = function(req, res){
 
-  console.log('got to user signup');
-  User.promFindOne({email: req.body.email})
-    .then(function (data) {
+//   console.log('got to user signup');
+//   User.promFindOne({email: req.body.email})
+//     .then(function (data) {
 
-      //if the user email exists, redirect
-      if(data){
-        console.log('user email already exists')
-        exports.sendAuthFail(res);
+//       //if the user email exists, redirect
+//       if(data){
+//         console.log('user email already exists')
+//         exports.sendAuthFail(res);
 
-      //otherwise, save the user account into the database and redirect to user dashboard
-      } else {
-        new User(req.body).save(function (err) {
-          if(err){
-            console.log('issue saving new user account');
-            exports.sendAuthFail(res);
-          } else {
-            authen.userCreateSession(req);
-            res.redirect(302,'/dashboard');
-          }
-        });
-      }
-    })
+//       //otherwise, save the user account into the database and redirect to user dashboard
+//       } else {
+//         new User(req.body).save(function (err) {
+//           if(err){
+//             console.log('issue saving new user account');
+//             exports.sendAuthFail(res);
+//           } else {
+//             authen.userCreateSession(req);
+//             res.redirect(302,'/dashboard');
+//           }
+//         });
+//       }
+//     })
 
-    //if there was an issue searching for the user, redirect
-    .catch(function (e) {
-      console.log('signup fail: ', e);
-      exports.sendAuthFail(res);
-    });
-};
+//     //if there was an issue searching for the user, redirect
+//     .catch(function (e) {
+//       console.log('signup fail: ', e);
+//       exports.sendAuthFail(res);
+//     });
+// };
 
 exports.request = function(req, res) {
 

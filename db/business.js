@@ -13,10 +13,10 @@ var businessSchema = mongoose.Schema({
   state:        {type: String, required: true},
   country:      {type: String, required: true, default: 'US'},
   zipCode:      {type: Number, required: true},
-  password:     {type: String, required: true},
   firstName:    {type: String, required: true},
   lastName:     {type: String, required: true},
   phoneNumber:  {type: Number, required: true},
+  accessToken:  {type: String, required: true},
   location:     {type: Array, index: '2dsphere'},
   createdAt:    {type: Date, default: Date.now}
 });
