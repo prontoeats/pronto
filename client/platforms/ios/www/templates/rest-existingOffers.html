@@ -1,0 +1,11 @@
+<ion-view title="Existing Offers">
+  <ion-content class="has-header">
+    <ion-list>
+      <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap" href="#/rest/existingOffer/{{existingOffer.id}}">
+        <span>ID: {{existingOffer.id}}</span>
+        <span>Party: {{existingOffer.party}}</span>
+        <span>Time of Arrival: {{existingOffer.time}}</span>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
