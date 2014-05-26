@@ -31,14 +31,14 @@ app.configure(function() {
 //Public user routes
 app.get('/', userHandler.sendIndex);
 app.get('/logout', authen.logout);
-app.get('/about', userHandler.sendAbout);
-app.post('/login', userHandler.login);
-app.post('/signup', userHandler.signup);
+// app.get('/about', userHandler.sendAbout);
+app.post('/login/user', userHandler.login);
+// app.post('/signup', userHandler.signup);
 
 //Public business routes
 app.get('/business', busHandler.sendBusIndex);
-app.post('/business/login', busHandler.login);
-app.post('/business/signup', busHandler.signup);
+app.post('/login/business', busHandler.login);
+// app.post('/business/signup', busHandler.signup);
 
 app.post('/twilio', twiml.processPost);
 

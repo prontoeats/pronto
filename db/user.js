@@ -7,7 +7,6 @@ var userSchema = mongoose.Schema({
   userId:       {type: Number, index: {unique: true}},
   email:        {type: String, required: true, index: {unique: true}},
   accessToken:  {type: String, required: true},
-  refreshToken: {type: String, required: true},
   firstName:    {type: String, required: true},
   lastName:     {type: String, required: true},
   phoneNumber:  {type: Number},
