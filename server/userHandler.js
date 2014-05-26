@@ -10,6 +10,7 @@ var twilio = require('./twilioApiHelpers.js');
 var UserRequest = require('../db/userRequest.js').UserRequest;
 var Counter = require('../db/counter.js').Counter;
 var constants = require('./constants.js');
+var login = require('./loginHelpers.js');
 
 exports.sendIndex = function (req, res){
   res.sendfile('./views/index.html');
@@ -30,62 +31,32 @@ exports.dashboard = function(req, res){
 exports.login = function(req, res){
 
   // receive POST request with 'code'
-  var code = req.body.code || '4/HjhSz9bAvBy0sGi7xyJdZRC0hPvG.ohlTwYVfbZQSEnp6UAPFm0Ecawh0jAI';
+  var code = req.body.code || '4/40BgwsT5hUDRO72YCdGgZoKQpWWG.4gfjZP0ZRagWEnp6UAPFm0HUuaF1jAI';
   var access_token;
-  var refresh_token;
   var email;
   var firstName;
   var lastName;
 
-  // send 'code' and app secret and app id to Google
-  var reqObj = {
-    method: 'POST',
-    url: constants.Google.authorize,
-    form: {
-      code: code,
-      client_id: constants.Google.client_id,
-      client_secret: constants.Google.client_secret,
-      redirect_uri: constants.Google.redirect_uri,
-      grant_type: 'authorization_code'
-    }
-  };
-
-  prom.request(reqObj)
-  // google sends a token back (success callback)
+  login.getGoogleToken(code)
   .then( function (data) {
-    data = JSON.parse(data[1]);
-    access_token = data.access_token;
-    refresh_token = data.refresh_token;
-    console.log('access_token:', access_token);
-    console.log('refresh_token:', refresh_token);
-    return new blue( function (resolve, reject) {
-      resolve();
-    });
-  })
-  // send token to a different google url to get user information
-  .then( function () {
-    var getObj = {
-      method: 'GET',
-      url: constants.Google.people_uri,
-      headers: {'Authorization': 'Bearer ' + access_token}
-    };
-
-    return prom.request(getObj);
+    access_token = data;
+    return login.getUserInfo(access_token);
   })
   .then( function (data) {
+    console.log('getUserInfo then');
     data = JSON.parse(data[1]);
+    console.dir(data);
     email = data.emails[0]['value'];
     firstName = data.name.givenName;
     lastName = data.name.familyName;
-    console.log('email:', email);
-    console.log('firstName:', firstName);
-    console.log('lastName:', lastName);
-
     return User.promFindOne({email: email});
   })
   .then( function (data) {
+    console.log('****');
+    console.dir(data);
     if (data === null) {
       // create new user account in database
+      console.log('access_token:', access_token);
       new User({
         email: email,
         firstName: firstName,
@@ -98,58 +69,58 @@ exports.login = function(req, res){
           console.log(err);
           exports.sendAuthFail(res);
         }
-        console.log('creating and saving new user:', data);
-        res.send(201, {acessToken: data.accessToken, id: data._id});
+        res.send(201, {accessToken: data.accessToken, id: data._id});
       })
     } else {
+      console.log('data in else statement');
+      console.dir(data);
+      console.log(access_token);
       // update token information (access & refresh) in database
       User.promFindOneAndUpdate(
         {email: email},
-        {$set: {accessToken: access_token, refreshToken: refresh_token}},
+        {$set: {accessToken: access_token}},
         {new: true}
       ).then( function (data) {
-        console.log('then promFindOneAndUpdate:', data);
-        res.send(201, {acessToken: data.accessToken, id: data._id});
+        res.send(201, {accessToken: data.accessToken, id: data._id});
       });
     }
   })
   .catch( function (data) {
     console.log(data);
   });
-
 };
 
-exports.signup = function(req, res){
+// exports.signup = function(req, res){
 
-  console.log('got to user signup');
-  User.promFindOne({email: req.body.email})
-    .then(function (data) {
+//   console.log('got to user signup');
+//   User.promFindOne({email: req.body.email})
+//     .then(function (data) {
 
-      //if the user email exists, redirect
-      if(data){
-        console.log('user email already exists')
-        exports.sendAuthFail(res);
+//       //if the user email exists, redirect
+//       if(data){
+//         console.log('user email already exists')
+//         exports.sendAuthFail(res);
 
-      //otherwise, save the user account into the database and redirect to user dashboard
-      } else {
-        new User(req.body).save(function (err) {
-          if(err){
-            console.log('issue saving new user account');
-            exports.sendAuthFail(res);
-          } else {
-            authen.userCreateSession(req);
-            res.redirect(302,'/dashboard');
-          }
-        });
-      }
-    })
+//       //otherwise, save the user account into the database and redirect to user dashboard
+//       } else {
+//         new User(req.body).save(function (err) {
+//           if(err){
+//             console.log('issue saving new user account');
+//             exports.sendAuthFail(res);
+//           } else {
+//             authen.userCreateSession(req);
+//             res.redirect(302,'/dashboard');
+//           }
+//         });
+//       }
+//     })
 
-    //if there was an issue searching for the user, redirect
-    .catch(function (e) {
-      console.log('signup fail: ', e);
-      exports.sendAuthFail(res);
-    });
-};
+//     //if there was an issue searching for the user, redirect
+//     .catch(function (e) {
+//       console.log('signup fail: ', e);
+//       exports.sendAuthFail(res);
+//     });
+// };
 
 exports.request = function(req, res) {
 
