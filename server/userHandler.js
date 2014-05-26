@@ -94,10 +94,8 @@ exports.signup = function(req, res){
 exports.request = function(req,res){
 
   console.log('received data: ',req.body);
-  console.log('received data type: ', type)
   
   // console.log('url parse: ', req.url);
-)
   //parse the request form data
   var parsed = misc.parseRequestFormData(req.body);
   var requestObj;

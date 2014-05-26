@@ -21,16 +21,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-//---
     console.log('in ,run.moduel')
 
     var token = localStorageService.get('token');
     if(!token) {
       console.log('state transition to login')
-      $state.transitionTo('tab.login');
+      $state.transitionTo('login.user');
     }
   });
-  // })
 })
 
 
@@ -51,14 +49,39 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   // Each state's controller can be found in controllers.js
   $stateProvider
 
-    // setup an abstract state for the tabs directive
+// ------------Login States-----------------
+    .state('login', {
+      url: '/login',
+      abstract: true,
+      templateUrl: 'templates/login.html',
+    })
+
+    .state('login.restaurant', {
+      url: '/restaurant',
+      views: {
+        'login-restaurant': {
+          templateUrl: 'templates/login-restaurant.html',
+          controller: 'LoginRestCtrl'
+        }
+      }
+    })
+
+    .state('login.user', {
+      url: '/user',
+      views: {
+        'login-user': {
+          templateUrl: 'templates/login-user.html',
+          controller: 'LoginUserCtrl'
+        }
+      }
+    })
+
+// ------------User States-----------------
     .state('user', {
       url: "/user",
       abstract: true,
       templateUrl: "templates/user.html"
     })
-
-    // Each tab has its own nav history stack:
 
     .state('user.new', {
       url: '/new',
@@ -99,6 +122,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         }
       }
     })
+
     .state('user.friend-detail', {
       url: '/friend/:friendId',
       views: {
@@ -109,89 +133,75 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     })
 
-// ------------
-
-    // setup an abstract state for the tabs directive
-    .state('tab', {
-      url: "/tab",
+// ------------Restaurant States-----------------
+    .state('rest', {
+      url: "/rest",
       abstract: true,
-      templateUrl: "templates/tabs.html"
+      templateUrl: "templates/rest.html"
     })
 
-    // Each tab has its own nav history stack:
-    .state('tab.login', {
-      url: '/login',
-      views: {
-        'tab-requests': {
-          templateUrl: 'templates/login.html',
-          controller: 'LoginCtrl'
-        }
-      }
-    })
-
-    .state('tab.requests', {
+    .state('rest.requests', {
       url: '/requests',
       views: {
-        'tab-requests': {
-          templateUrl: 'templates/tab-rest-requests.html',
+        'rest-requests': {
+          templateUrl: 'templates/rest-requests.html',
           controller: 'RequestsCtrl'
         }
       }
     })
 
-    .state('tab.request-detail', {
+    .state('rest.request-detail', {
       url: '/request/:requestId',
       views: {
-        'tab-requests': {
-          templateUrl: 'templates/request-detail.html',
+        'rest-requests': {
+          templateUrl: 'templates/rest-request-detail.html',
           controller: 'RequestDetailCtrl'
         }
       }
     })
 
-    .state('tab.existingOffers', {
+    .state('rest.existingOffers', {
       url: '/existingOffers',
       views: {
-        'tab-existingOffers': {
-          templateUrl: 'templates/tab-existingOffers.html',
+        'rest-existingOffers': {
+          templateUrl: 'templates/rest-existingOffers.html',
           controller: 'ExistingOffersCtrl'
         }
       }
     })
 
-    .state('tab.existingOffer-detail', {
+    .state('rest.existingOffer-detail', {
       url: '/existingOffer/:existingOfferId',
       views: {
-        'tab-existingOffers': {
-          templateUrl: 'templates/existingOffer-detail.html',
+        'rest-existingOffers': {
+          templateUrl: 'templates/rest-existingOffer-detail.html',
           controller: 'ExistingOfferDetailCtrl'
         }
       }
     })
 
-    .state('tab.acceptedOffers', {
+    .state('rest.acceptedOffers', {
       url: '/acceptedOffers',
       views: {
-        'tab-acceptedOffers': {
-          templateUrl: 'templates/tab-acceptedOffers.html',
+        'rest-acceptedOffers': {
+          templateUrl: 'templates/rest-acceptedOffers.html',
           controller: 'AcceptedOffersCtrl'
         }
       }
     })
 
-    .state('tab.acceptedOffer-detail', {
+    .state('rest.acceptedOffer-detail', {
       url: '/acceptedOffer/:acceptedOfferId',
       views: {
-        'tab-acceptedOffers': {
-          templateUrl: 'templates/acceptedOffer-detail.html',
+        'rest-acceptedOffers': {
+          templateUrl: 'templates/rest-acceptedOffer-detail.html',
           controller: 'AcceptedOfferDetailCtrl'
         }
       }
     });
 
-
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/login');
+  $urlRouterProvider.otherwise('/login/user');
 
 });
 
