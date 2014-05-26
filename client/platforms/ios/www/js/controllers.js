@@ -17,13 +17,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if (code) {
         $http ({
           method: 'POST', 
-          url: 'http://localhost:3000/login',
+          url: 'http://localhost:3000/login/user',
           data: {
             code: code[1]
           }
         }).success(function(data, status){
-          var abc = JSON.stringify(data);
           window.alert('http '+ data.accessToken);
+          localStorageService.set('token', data.accessToken);
+          localStorageService.set('userId', data.id);
           loginWindow.close();
           $state.transitionTo('user.new');
         }).error(function(data, status){
@@ -33,10 +34,6 @@ angular.module('starter.controllers', ['LocalStorageModule'])
         });
       }
     });
-
-    $scope.showToken = function () {
-    $scope.token = localStorageService.get('token');
-    };
   };
 })
 
@@ -56,27 +53,35 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if (code) {
         $http ({
           method: 'POST', 
-          url: 'http://localhost:3000/login/User',
+          url: 'http://localhost:3000/login/business',
           data: {
             code: code[1]
           }
         }).success(function(data, status){
           window.alert('http '+ data.access_token);
-          loginWindow.close();
-          $state.transitionTo('user.new');
+          if (data.signup){
+            localStorageService.set('token', data.accessToken);
+            $state.transitionTo('signup');
+          }else{
+            localStorageService.set('token', data.accessToken);
+            localStorageService.set('restaurantId', data.id);
+            loginWindow.close();
+            $state.transitionTo('rest.requests');
+          }
         }).error(function(data, status){
           window.alert('failed '+status);
           loginWindow.close();
-          $state.transitionTo('login.user');
+          $state.transitionTo('login.restaurant');
         });
       }
     });
-
-    $scope.showToken = function () {
-    $scope.token = localStorageService.get('token');
-    };
   };
 })
+
+.controller('SignupCtrl', function($scope, localStorageService, $state, $http) {
+  
+})
+
 
 
 //---------------User Controllers---------------
