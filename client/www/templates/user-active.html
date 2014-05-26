@@ -1,0 +1,42 @@
+<ion-view title="Pronto">
+  <ion-content class="has-header padding">
+
+  <div class="card">
+    <div class="item item-text-wrap">
+      <h2>Request Summary</h2>
+      <div>
+        {{response.distance}} miles from {{response.location}}
+      </div>
+      <div>
+        Group of {{response.groupSize}} in {{response.mins}} mins
+      </div>
+    </div>
+  </div>
+
+  <h4>New Offers</h4>
+  <ion-list can-swipe="true">
+    <ion-item ng-repeat="offer in offers">
+
+    <div class='row'>
+      <div class='col'>
+        <div>{{offer.businessName}}</div>
+        <div>{{offer.address}}</div>
+        <div>{{offer.distance}} miles away</div>
+      </div>
+      <div class='col'>
+        <div>Offer</div>
+        <div>{{offer.offer}}</div>
+      </div>
+        <ion-option-button class="button-positive" ng-click="decline($index)">
+          Decline
+        </ion-option-button>
+        <ion-option-button class="button-info" ng-click="">
+          Accept
+        </ion-option-button>
+      </div>
+    </div>
+    </ion-item>
+  </ion-list>
+
+  </ion-content>
+</ion-view>

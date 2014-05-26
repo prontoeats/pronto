@@ -7,11 +7,26 @@ var busHandler = require('./server/busHandler.js');
 var authen = require('./server/authenHelpers.js');
 var app = express();
 
-app.use(express.bodyParser());
-app.use('/bower_components', express.static(__dirname + '/bower_components'));
-app.use(express.static(__dirname + '/public'));
-app.use(express.cookieParser('shhhh, very secret'));
-app.use(express.session());
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
+// view engine setup
+app.configure(function() {
+  // app.set('views', __dirname + '/views');
+  // app.set('view engine', 'ejs');
+  // app.use(partials());
+  app.use(express.bodyParser());
+  app.use('/bower_components', express.static(__dirname + '/bower_components'));
+  app.use(express.static(__dirname + '/public'));
+  app.use(allowCrossDomain);
+  app.use(express.cookieParser('shhhh, very secret'));
+  app.use(express.session());
+});
 
 //Public user routes
 app.get('/', userHandler.sendIndex);
@@ -27,13 +42,12 @@ app.post('/business/signup', busHandler.signup);
 
 app.post('/twilio', twiml.processPost);
 
-// user routes requiring authentication
-app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
-app.post('/request', authen.userAuthenticate, userHandler.request);
-app.get('/requests', authen.userAuthenticate, userHandler.sendRequestInfo);
+//routes requiring authentication
+app.get('/requests', userHandler.sendRequestInfo);
 app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
+app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
+app.post('/request', userHandler.request);
 
-// business routes requiring authentication
 app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
 // TODO: enable authentication after MVP
 app.get('/business/requests', busHandler.showRequests);
