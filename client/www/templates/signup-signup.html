@@ -1,0 +1,36 @@
+<ion-view title="Restaurant Signup">
+  <ion-content class="has-header">
+    <label class="item item-input">
+      <span class="input-label">Business Name</span>
+      <input type="text" ng-model='restInfo.name'>
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Address</span>
+      <input type="text" ng-model='restInfo.address'>
+    </label>
+    <label class="item item-input">
+      <span class="input-label">City</span>
+      <input type="text" ng-model='restInfo.city'>
+    </label>
+    <label class="item item-input">
+      <span class="input-label">State</span>
+      <input type="text" ng-model='restInfo.state'>
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Zip Code</span>
+      <input type="number" ng-model='restInfo.zip'>
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Telephone</span>
+      <input type="tel" ng-model='restInfo.telephone'>
+    </label>
+
+    <div class="row">
+      <div class="col col-33 col-offset-33">
+        <button class="button button-positive" ng-click='submit()'>Submit</button>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
+

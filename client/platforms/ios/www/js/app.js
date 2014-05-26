@@ -26,20 +26,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     var token = localStorageService.get('token');
     if(!token) {
       console.log('state transition to login')
-      $state.transitionTo('login.user');
+      $state.transitionTo('signup.signup');
     }
   });
 })
 
-
 .constant('Google', {
   authorize: 'https://accounts.google.com/o/oauth2/auth',
   client_id: '375716811110-79psrqpffqjqb3d1cb9l2fvq6jhl9jh7.apps.googleusercontent.com',
-  client_secret: 'e3Jr_Sm7ZoJvkAGvP_trqZWt',
   redirect_uri: 'http://localhost',
   scope: 'email'
 })
-
 
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -72,6 +69,23 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         'login-user': {
           templateUrl: 'templates/login-user.html',
           controller: 'LoginUserCtrl'
+        }
+      }
+    })
+
+// ------------Signup States-----------------
+    .state('signup', {
+      url: '/signup',
+      abstract: true,
+      templateUrl: 'templates/signup.html',
+    })
+
+    .state('signup.signup', {
+      url: '/signup',
+      views: {
+        'signup-signup': {
+          templateUrl: 'templates/signup-signup.html',
+          controller: 'SignupCtrl'
         }
       }
     })
