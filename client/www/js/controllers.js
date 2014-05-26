@@ -17,12 +17,13 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if (code) {
         $http ({
           method: 'POST', 
-          url: 'http://localhost:3000/login/User',
+          url: 'http://localhost:3000/login',
           data: {
             code: code[1]
           }
         }).success(function(data, status){
-          window.alert('http '+ data.access_token);
+          var abc = JSON.stringify(data);
+          window.alert('http '+ data.accessToken);
           loginWindow.close();
           $state.transitionTo('user.new');
         }).error(function(data, status){
