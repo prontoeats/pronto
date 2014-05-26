@@ -5,19 +5,19 @@ var blue = require('bluebird');
 exports.processPost = function(req, res, next){
 
   var body = parseBody(req.body.Body);
-  
+
   var query = {
     requestId: body[0],
-    'businesses.phoneNumber': body[1]
+    'results.phoneNumber': body[1]
   }
   var num = parseNumber(req.body.From);
   var requestId = {requestId: body[0]};
   var offer = body[1];
   var updatedBusinesses;
 
-  UserRequest.promFindOne({requestId: body[0]}) 
+  UserRequest.promFindOne({requestId: body[0]})
   .then(function(data){
-    updatedBusinesses = updateBusiness(data.businesses, num, offer);
+    updatedBusinesses = updateBusiness(data.results, num, offer);
 
     return new blue(function(resolve, reject){
       resolve(updatedBusinesses);
@@ -27,7 +27,7 @@ exports.processPost = function(req, res, next){
   .then(function(){
     return UserRequest.promFindOneAndUpdate(
       {requestId: body[0]},
-      {$set: {businesses: updatedBusinesses}},
+      {$set: {results: updatedBusinesses}},
       {new: true}
     );
   })

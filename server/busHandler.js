@@ -1,9 +1,9 @@
-
 var Business = require('../db/business.js').Business;
+var Requests = require('../db/userRequest.js').UserRequest;
+var Offer = require('../db/offers.js').Offer;
 var mapApi = require('./mapsApiHelpers.js');
 var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
-
 
 exports.sendBusIndex = function(req, res){
   res.sendfile('./views/busIndex.html');
@@ -13,78 +13,162 @@ exports.businessSendAuthFail = function (res){
   res.send(404, 'failed authentication!');
 }
 
-exports.dashboard = function(req, res, next){
+exports.dashboard = function(req, res){
   res.sendfile('./views/busDashboard.html');
 };
 
 exports.login = function(req, res){
 
-  //Find the account that matches the username
-  Business.promFindOne({username: req.body.username})
-  .then(function(data){
+  //Find the account that matches the email
+  Business.promFindOne({email: req.body.email})
+    .then(function (data) {
 
-    //return a promise to continue the chain - promise will be resolved
-    //once bcrypt completes the comparison
-    return prom.bcryptCompare(req.body.password, data.password)
-  })
+      // while we have the data, store businessId so we can store in session
+      req.body.businessId = data.businessId;
 
-  //check the results of the comparison
-  .then(function(result){
+      //return a promise to continue the chain - promise will be resolved
+      //once bcrypt completes the comparison
+      return prom.bcryptCompare(req.body.password, data.password)
+    })
 
-    //if the passwords match - direct to the business dashboard
-    if(result){
-      authen.busCreateSession(req);
-      res.redirect(302, '/business/dashboard');
+    //check the results of the comparison
+    .then(function (result) {
 
-    //if the passwords don't match redirect
-    } else {
-      console.log('business password do not match');
+      //if the passwords match - direct to the business dashboard
+      if (result) {
+        authen.busCreateSession(req);
+        res.redirect(302, '/business/dashboard');
+
+      //if the passwords don't match redirect
+      } else {
+        console.log('business password do not match');
+        exports.businessSendAuthFail(res);
+      }
+    })
+
+    //if the account does not already exist redirect
+    .catch(function (e) {
+      console.log('business didnt find username');
       exports.businessSendAuthFail(res);
-    }
-  })
-
-  //if the account does not already exist redirect
-  .catch(function(e){
-    console.log('business didnt find username');
-    exports.businessSendAuthFail(res);
-  })
+    })
 };
 
-exports.signup = function(req, res){
+exports.signup = function (req, res) {
 
   //check to see if business username exists in database
-  Business.promFindOne({username: req.body.username})
-  .then(function(data){
+  Business.promFindOne({email: req.body.email})
+    .then(function (data){
 
-    //if the business username exists, redirect
-    if(data){
-      console.log('business username already exists')
+      //if the business username exists, redirect
+      if (data) {
+        console.log('business username already exists')
+        exports.businessSendAuthFail(res);
+
+      //otherwise, save the business account into the database and redirect to business dashboard
+      } else {
+        new Business(req.body).save(function (err) {
+          if (err) {
+            console.log('issue saving new business account');
+            exports.businessSendAuthFail(res);
+          } else {
+            res.sendfile('./views/busDashboard.html');
+          }
+        })
+      }
+    })
+
+    //if there was an issue searching for the user, redirect
+    .catch(function (e) {
+      console.log('business signup failed ', e);
       exports.businessSendAuthFail(res);
-
-    //otherwise, save the business account into the database and redirect to business dashboard
-    } else {
-      new Business(req.body).save(function(err){
-        if(err){
-          console.log('issue saving new business account');
-          exports.businessSendAuthFail(res);
-        } else {
-          res.sendfile('./views/busDashboard.html');
-        }
-      })
-    }
-  })
-
-  //if there was an issue searching for the user, redirect
-  .catch(function(e){
-    console.log('business signup failed ', e);
-    exports.businessSendAuthFail(res);
-  })
+    })
 };
 
+exports.showRequests = function (req, res) {
+  // TODO: remove default; require authentication (on app-config.js)
+  var businessId = req.session.businessId || 1;
 
+  // search through requests collection
+  // TODO: filter so not all requests are retrieved...
+  Requests.find(function (err, data) {
 
-// mapApi.getGeo(mapApi.parseAddress(test1))
-// .then(mapApi.parseGeoResult)
-// .then(function(result){
-//   console.log(result);
-// })
+    console.log('requests:');
+    console.dir(data);
+    var results = [];
+    for (var i = 0; i < data.length; i += 1) {
+      // look for results property on each document
+      for (var j = 0; j < data[i].results.length; j += 1) {
+        // check if document results array has an object with the business id
+        if (data[i].results[j].businessId === businessId) {
+          // TODO: or copy entire data[i] object and remove results?
+          var requestObj = {};
+          requestObj.address = data[i].address;
+          requestObj.city = data[i].city;
+          requestObj.groupSize = data[i].groupSize;
+          requestObj.requestNotes = data[i].requestNotes;
+          requestObj.requestId = data[i].requestId;
+          requestObj.userId = data[i].userId;
+          requestObj.targetDateTime = data[i].targetDateTime;
+          results.push(requestObj);
+        }
+      }
+    }
+    res.send(results);
+
+  });
+}
+
+exports.showOffers = function (req, res) {
+  console.log('inside showOffers');
+
+  // query offers collection, filtering by businessId
+  Offer.promFind({businessId: req.session.businessId})
+    .then(function (data) {
+      if (!data) {
+        console.log('no offers found');
+      } else {
+        console.log('offers found, returning...');
+        console.dir(data);
+        // return all offers as an array of objects
+        res.send(200, data);
+      }
+    })
+
+    //if there was an issue searching for offers
+    .catch(function (e) {
+      console.log('offer lookup failed ', e);
+      throw e
+      res.redirect('/business/dashboard');
+    })
+}
+
+exports.sendOffer = function (req, res) {
+
+  Offer.promFindOne({requestId: req.body.requestId, businessId: req.session.businessId})
+
+    .then(function (data) {
+      //if the offer exists, redirect (cannot reply twice)
+      if (data) {
+        console.log('offer already exists')
+
+      //otherwise, save the offer
+      } else {
+        req.body.businessId = req.session.businessId;
+        console.dir(req.body);
+        new Offer(req.body).save(function (err) {
+          if (err) {
+            console.log('error when saving new offer');
+          } else {
+            console.log('offer saved');
+          }
+        })
+      }
+      res.redirect('/business/dashboard');
+    })
+
+    //if there was an issue searching for offers
+    .catch(function (e) {
+      console.log('offer lookup failed ', e);
+      res.redirect('/business/dashboard');
+    })
+}

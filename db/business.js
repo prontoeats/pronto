@@ -1,92 +1,82 @@
-
 var mongoose = require('mongoose');
-var prom = require('../server/promisified.js');
 var blue = require('bluebird');
+var prom = require('../server/promisified.js');
 var mapApi = require('../server/mapsApiHelpers.js')
+var Counter = require('./counter.js').Counter;
 
 var businessSchema = mongoose.Schema({
-  businessName: 
-    {type: String,required: true},
-  address: 
-    {type: String,required: true},
-  city: 
-    {type: String,required: true},
-  state: 
-    {type: String,required: true},
-  zipCode: 
-    {type: Number,required: true},
-  location:
-    {type: Array, index: '2dsphere'}, //Store long, lat in Mongo -- Google gives it in lat, long
-  username: 
-    {type: String,required: true},
-  password: 
-    {type: String,required: true},
-  firstName: 
-    {type: String,required: true},
-  lastName: 
-    {type: String,required: true},
-  phoneNumber: 
-    {type: Number,required: true},
-  email: 
-    {type: String,required: true},
-  createdAt: 
-    {type: Date,default: Date.now}
+  businessId:   {type: Number, index: {unique: true}},
+  email:        {type: String, required: true, index: {unique: true}},
+  businessName: {type: String, required: true},
+  address:      {type: String, required: true},
+  city:         {type: String, required: true},
+  state:        {type: String, required: true},
+  country:      {type: String, required: true, default: 'US'},
+  zipCode:      {type: Number, required: true},
+  password:     {type: String, required: true},
+  firstName:    {type: String, required: true},
+  lastName:     {type: String, required: true},
+  phoneNumber:  {type: Number, required: true},
+  location:     {type: Array, index: '2dsphere'},
+  createdAt:    {type: Date, default: Date.now}
 });
 
-//Set up mongoose index for geospatial
-businessSchema.index({location: '2dsphere'});
+businessSchema.pre('save', function (next) {
 
+  if (!this.businessId) {
 
-//bcrypt password and get geolocation before saving into db
-businessSchema.pre('save', function(next){
+    Counter.getCounter('businesses').bind(this)
 
-  var that = this;
+      .then(function (data) {
+        this.businessId = data.counter;
+        return prom.bcryptHash(this.password, null, null)
+      })
 
-  //bcrypt the password and store to password property
-  prom.bcryptHash(this.password, null, null)
-  .then(function(hash){
-    that.password=hash;
+      .then(function (hash) {
+        this.password = hash;
+        return this;
+      })
 
-    //create new promise to continue chain
-    return new blue(function(resolve, request){
-      resolve(that);
-    });
-  })
+      //get Geo location from google maps
+      .then(mapApi.getGeo)
 
-  //get Geo location from google maps
-  .then(mapApi.getGeo)
+      //convert response to Long/Lat
+      .then(mapApi.parseGeoResult)
 
-  //convert response to Long/Lat
-  .then(mapApi.parseGeoResult)
+      //update Long/Lat coordinates to location
+      .then(function (result) {
+        this.location = result;
+        next();
+      })
 
-  //update Long/Lat coordinates to location
-  .then(function(result){
-    that.location = result;
+      .catch(function (err) {
+        throw err;
+      });
+  }
 
-    //move forward with saving
-    next();
-  })
+  next();
+
 });
 
-var Business = mongoose.model('groupEatBusiness', businessSchema);
+var Business = mongoose.model('Business', businessSchema);
 
-//converting model functions to promisified functions
-Business.promFind = blue.promisify(Business.find);
+// converting model functions to promisified functions
+// Business.promFind = blue.promisify(Business.find);
 Business.promFindOne = blue.promisify(Business.findOne);
-Business.blueAggregate = blue.promisify(Business.aggregate);
+Business.promAggregate = blue.promisify(Business.aggregate);
 
-//argsArray contains 2 items: an Array of lon/lat coordinates and the radius
+// argsArray contains 2 items: an Array of long/lat coordinates and the radius
 Business.promFindNearby = function(argsArray){
 
-  //get long/lat coordinates and max distance in miles
+  // get long/lat coordinates and max distance in miles
   location = argsArray[0];
   maxDist = argsArray[1];
 
-  //Converting miles to radians. 3963 is the radius of the earth
-  convertedDistance = maxDist/3963; 
+  // Converting miles to radians. 3963 is the radius of the earth
+  convertedDistance = maxDist/3963;
 
-  //return a promise that provides an array of restaurants that meet search criteria
-  return Business.blueAggregate([{
+  // return a promise that provides an array of restaurants that meet search criteria
+  return Business.promAggregate([{
     $geoNear: {
       near: location,
       distanceField: 'dist.calculated',
@@ -96,7 +86,4 @@ Business.promFindNearby = function(argsArray){
   }]);
 };
 
-// 
-
 exports.Business = Business;
-

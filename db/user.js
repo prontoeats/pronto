@@ -1,45 +1,56 @@
-
 var mongoose = require('mongoose');
-var prom = require('../server/promisified.js');
 var blue = require('bluebird');
+var prom = require('../server/promisified.js');
+var Counter = require('./counter.js').Counter;
 
 var userSchema = mongoose.Schema({
-  username: 
-    {type: String,required: true},
-  password: 
-    {type: String,required: true},
-  firstName: 
-    {type: String,required: true},
-  lastName: 
-    {type: String,required: true},
-  phoneNumber: 
-    {type: Number,required: true},
-  email: 
-    {type: String,required: true},
-  createdAt: 
-    {type: Date,default: Date.now}
+  userId:       {type: Number, index: {unique: true}},
+  email:        {type: String, required: true, index: {unique: true}},
+  accessToken:  {type: String, required: true},
+  refreshToken: {type: String, required: true},
+  firstName:    {type: String, required: true},
+  lastName:     {type: String, required: true},
+  phoneNumber:  {type: Number},
+  createdAt:    {type: Date, default: Date.now}
 });
 
-//Pre to hash the password before saving
-userSchema.pre('save', function(next){
-  var that = this;
+userSchema.pre('save', function (next) {
 
-  prom.bcryptHash(this.password, null, null)
-  .then(function(hash){
-    that.password=hash;
-    next();
-  });
+  if (!this.userId) {
+
+    Counter.getCounter('users').bind(this)
+
+      .then(function (data) {
+        this.userId = data.counter;
+        return prom.bcryptHash(this.password, null, null)
+      })
+
+      .then(function (hash) {
+        this.password = hash;
+        next();
+      })
+
+      .catch(function (err) {
+        throw err;
+      });
+
+  }
+
+  next();
+
 });
 
-var User = mongoose.model('groupEatUsers', userSchema);
+var User = mongoose.model('User', userSchema);
 
-//Converting model functions to promisified functions
-User.promFind = blue.promisify(User.find);
+// Converting model functions to promisified functions
+// User.promFind = blue.promisify(User.find);
 User.promFindOne = blue.promisify(User.findOne);
+User.promFindOneAndUpdate = blue.promisify(User.findOneAndUpdate);
 
-User.promGetUserId = function(username){
-
-  return User.promFindOne({username: username});
+// TODO: 5/22 - given name of function, should just return id number?
+// TODO: 5/22 - do we actually need to promisify?
+User.promGetUserId = function(email){
+  return User.promFindOne({email: email});
 };
 
 exports.User = User;

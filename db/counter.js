@@ -1,38 +1,24 @@
-
 var mongoose = require('mongoose');
 var blue = require('bluebird');
 
 var counterSchema = mongoose.Schema({
-  counterType: String,
-  count: {
-    type: Number,
-    default: 0
-  }
+  tableName:    {type: String, required: true},
+  counter:      {type: Number, required: true, default: 0}
 });
-
-// counterSchema.pre('save', function(next){
-//   this.count++;
-//   next();
-// });
 
 var Counter = mongoose.model('Counter', counterSchema);
 
-//Promisify model functions
-
 Counter.promFindOneAndUpdate = blue.promisify(Counter.findOneAndUpdate);
 
-//returns
-Counter.getRequestsCounter = function(){
+Counter.getCounter = function (tableName) {
   return Counter.promFindOneAndUpdate(
-    {counterType: 'requests'},
-    { $inc: {count:1} },
-    {new: true,
-      select: 'count'}
+    // conditions
+    {tableName: tableName},
+    // update: increases counter field by 1)
+    {$inc: {counter: 1}},
+    // options: returns modified document, creates if DNE, return counter
+    {new: true, upsert: true, select: 'counter'}
   );
-};
-
-//used to create a new counter if the counter collection is deleted
-// // new Counter({counterType: 'requests'}).save();
-
+}
 
 exports.Counter = Counter;

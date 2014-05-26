@@ -1,9 +1,6 @@
-
 var request = require('request');
 var prom = require('./promisified.js');
 var blue = require('bluebird');
-
-
 
 exports.parseAddress = function(obj){
 
@@ -18,7 +15,7 @@ exports.parseAddress = function(obj){
 };
 
 exports.getGeo = function(obj){
-  
+
   var parsedAddress = exports.parseAddress(obj);
 
   //format the request url
@@ -37,14 +34,14 @@ exports.getGeo = function(obj){
   return prom.request(reqObj);
 };
 
-//array is passed in from the google with response and body JSON objects
-exports.parseGeoResult = function (array){
+//array is passed in from google with response and body JSON objects
+exports.parseGeoResult = function (array) {
 
   var result = JSON.parse(array[1]);
   result = result.results[0].geometry.location;
   result = [result.lng, result.lat];
-  
-  return new blue (function(resolve, reject){
+
+  return new blue (function (resolve, reject) {
     resolve(result);
-  })
+  });
 };
