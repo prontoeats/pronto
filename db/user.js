@@ -6,10 +6,11 @@ var Counter = require('./counter.js').Counter;
 var userSchema = mongoose.Schema({
   userId:       {type: Number, index: {unique: true}},
   email:        {type: String, required: true, index: {unique: true}},
-  password:     {type: String, required: true},
+  accessToken:  {type: String, required: true},
+  refreshToken: {type: String, required: true},
   firstName:    {type: String, required: true},
   lastName:     {type: String, required: true},
-  phoneNumber:  {type: Number, required: true},
+  phoneNumber:  {type: Number},
   createdAt:    {type: Date, default: Date.now}
 });
 
@@ -44,6 +45,7 @@ var User = mongoose.model('User', userSchema);
 // Converting model functions to promisified functions
 // User.promFind = blue.promisify(User.find);
 User.promFindOne = blue.promisify(User.findOne);
+User.promFindOneAndUpdate = blue.promisify(User.findOneAndUpdate);
 
 // TODO: 5/22 - given name of function, should just return id number?
 // TODO: 5/22 - do we actually need to promisify?

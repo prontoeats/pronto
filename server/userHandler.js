@@ -8,6 +8,7 @@ var misc = require('./miscHelpers.js');
 var twilio = require('./twilioApiHelpers.js');
 var UserRequest = require('../db/userRequest.js').UserRequest;
 var Counter = require('../db/counter.js').Counter;
+var constants = require('./constants.js');
 
 exports.sendIndex = function (req, res){
   res.sendfile('./views/index.html');
@@ -26,37 +27,95 @@ exports.dashboard = function(req, res){
 };
 
 exports.login = function(req, res){
-  User.promFindOne({email: req.body.email})
-    .then(function (data) {
 
-      // while we have the data, store userId so we can store in session
-      req.body.userId = data.userId;
+  // receive POST request with 'code'
+  var code = req.body.code || '4/HjhSz9bAvBy0sGi7xyJdZRC0hPvG.ohlTwYVfbZQSEnp6UAPFm0Ecawh0jAI';
+  var access_token;
+  var refresh_token;
+  var email;
+  var firstName;
+  var lastName;
 
-      //return a promise to continue the chain - promise will be resolved
-      //once bcrypt completes the comparison
-      return prom.bcryptCompare(req.body.password, data.password)
-    })
+  // send 'code' and app secret and app id to Google
+  var reqObj = {
+    method: 'POST',
+    url: constants.Google.authorize,
+    form: {
+      code: code,
+      client_id: constants.Google.client_id,
+      client_secret: constants.Google.client_secret,
+      redirect_uri: constants.Google.redirect_uri,
+      grant_type: 'authorization_code'
+    }
+  };
 
-    //check the results of the comparison
-    .then(function (result) {
+  prom.request(reqObj)
+  // google sends a token back (success callback)
+  .then( function (data) {
+    data = JSON.parse(data[1]);
+    access_token = data.access_token;
+    refresh_token = data.refresh_token;
+    console.log('access_token:', access_token);
+    console.log('refresh_token:', refresh_token);
+    return new blue( function (resolve, reject) {
+      resolve();
+    });
+  })
+  // send token to a different google url to get user information
+  .then( function () {
+    var getObj = {
+      method: 'GET',
+      url: constants.Google.people_uri,
+      headers: {'Authorization': 'Bearer ' + access_token}
+    };
 
-      //if the passwords match - direct to the user dashboard
-      if (result){
-        authen.userCreateSession(req);
-        res.redirect(302,'/dashboard');
+    return prom.request(getObj);
+  })
+  .then( function (data) {
+    data = JSON.parse(data[1]);
+    email = data.emails[0]['value'];
+    firstName = data.name.givenName;
+    lastName = data.name.familyName;
+    console.log('email:', email);
+    console.log('firstName:', firstName);
+    console.log('lastName:', lastName);
 
-      //if the passwords don't match redirect
-      } else {
-        console.log('user password do not match')
-        exports.sendAuthFail(res);
-      }
-    })
+    return User.promFindOne({email: email});
+  })
+  .then( function (data) {
+    if (data === null) {
+      // create new user account in database
+      new User({
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        accessToken: access_token,
+        refreshToken: refresh_token
+      })
+      .save(function (err, data) {
+        if (err) {
+          console.log(err);
+          exports.sendAuthFail(res);
+        }
+        console.log('creating and saving new user:', data);
+        res.send(201, {acessToken: data.accessToken, id: data._id});
+      })
+    } else {
+      // update token information (access & refresh) in database
+      User.promFindOneAndUpdate(
+        {email: email},
+        {$set: {accessToken: access_token, refreshToken: refresh_token}},
+        {new: true}
+      ).then( function (data) {
+        console.log('then promFindOneAndUpdate:', data);
+        res.send(201, {acessToken: data.accessToken, id: data._id});
+      });
+    }
+  })
+  .catch( function (data) {
+    console.log(data);
+  });
 
-    //if the account does not already exist redirect
-    .catch(function (e) {
-      console.log('did not find email');
-      exports.sendAuthFail(res);
-    })
 };
 
 exports.signup = function(req, res){
