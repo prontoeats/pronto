@@ -54,6 +54,8 @@ app.post('/request', authen.authenticateUserToken, userHandler.request);
 app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
 // TODO: enable authentication after MVP
 app.get('/business/requests', busHandler.showRequests);
+app.post('/business/requests/decline', busHandler.declineRequests);
+app.post('/business/requests/accept', busHandler.acceptRequests);
 app.get('/business/offers', busHandler.showOffers);
 app.post('/business/offers', busHandler.sendOffer);
 

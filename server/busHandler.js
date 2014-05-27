@@ -180,6 +180,46 @@ exports.showRequests = function (req, res) {
   // });
 }
 
+exports.declineRequests = function(req,res){
+
+  var data = req.body;
+
+  var businessId = mongoose.Types.ObjectId(data.businessId);
+
+
+  UserRequest.promFindOneAndUpdate(
+    {requestId: data.requestId, 'results.businessId': businessId},
+    {$set: {'results.$.status': 'Declined'}},
+    {new: true}
+  )
+  .then(function(data){
+    console.log('Successful Reject Update: ', data);
+    res.send(201);
+  })
+};
+
+exports.acceptRequests = function(req,res){
+
+  var data = req.body;
+
+  var businessId = mongoose.Types.ObjectId(data.businessId);
+
+
+  UserRequest.promFindOneAndUpdate(
+    {requestId: data.requestId, 'results.businessId': businessId},
+    {$set: {
+      'results.$.status': 'Accepted',
+      'results.$.replies': data.offer
+    }},
+    {new: true}
+  )
+  .then(function(data){
+    console.log('Successful Accepted Update: ', data);
+    res.send(201);
+  })
+};
+
+
 exports.showOffers = function (req, res) {
   console.log('inside showOffers');
 
