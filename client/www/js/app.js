@@ -25,12 +25,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
     var token = localStorageService.get('token');
     if(!token) {
-      localStorageService.set('token', 'ya29.IwBuB8SBFoPVpx8AAAAl8i78esY0NfNJ5N2EmX-HXG8GFtp9H20DFXYt6NDuxw');
-      localStorageService.set('userId', '538414db6e250e000008f614');
+      //localStorageService.set('token', 'ya29.IwBuB8SBFoPVpx8AAAAl8i78esY0NfNJ5N2EmX-HXG8GFtp9H20DFXYt6NDuxw');
+      //localStorageService.set('userId', '538414db6e250e000008f614');
       console.log('state transition to login')
-      $state.transitionTo('user.new');
+      $state.transitionTo('rest.requests');
     }else{
-      $state.transitionTo('user.new');
+      $state.transitionTo('rest.requests');
     }
   });
 })

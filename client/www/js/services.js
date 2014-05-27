@@ -121,7 +121,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
-.factory('Requests', function() {
+.factory('Requests', function($http, localStorageService, $location) {
   // Might use a resource here that returns a JSON array
   // GET Request with route
 
@@ -133,14 +133,44 @@ angular.module('starter.services', ['LocalStorageModule'])
     { id: 3, name: 'Ash Ketchum', party: '6', time: '45' }
   ];
 
+  var all = function(){
+    var businessId = localStorageService.get('restaurantId');
+    var accessToken = localStorageService.get('token');
+    var url = 'http://localhost:3000/business/requests?' +'userId='+businessId+'&accessToken='+accessToken;
+
+    return $http({
+      method:'GET',
+      url: url
+    })
+  };
+
+  var get = function(requestId) {
+    // Simple index lookup
+    return requests[requestId];
+  }
+
+  var go = function(request){
+    path = 'rest/request/' + request.id;
+    $location.path(path);
+  };
+
+  var reject = function(request){
+    return $http({
+      method: 'POST',
+      url: 'http://localhost:3000/business/requests',
+      data: {
+        requestId: request.requestId,
+        businessId: localStorageService.get('restaurantId'),
+        accessToken: localStorageService.get('token')
+      }
+    })
+  };
+
   return {
-    all: function() {
-      return requests;
-    },
-    get: function(requestId) {
-      // Simple index lookup
-      return requests[requestId];
-    }
+    all: all,
+    get: get,
+    go: go,
+    reject:reject
   };
 })
 
