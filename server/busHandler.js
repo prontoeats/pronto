@@ -127,6 +127,15 @@ exports.signup = function (req, res) {
 
 exports.showRequests = function (req, res) {
   // TODO: remove default; require authentication (on app-config.js)
+
+  console.log('got to showRequests');
+  var queryString = qs.parse(url.parse(req.url).query);
+
+  console.log('showRequests querystring: ',queryString);
+
+  UserRequest.find({'results.businessId': queryString.businessId});
+  console.log('')
+
   var businessId = req.session.businessId || 1;
 
   // search through requests collection

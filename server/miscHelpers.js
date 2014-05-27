@@ -9,7 +9,7 @@ exports.parseNearbyData = function (array) {
   for (var i = 0; i < array.length; i++) {
 
     bus = {};
-    bus.businessId = array[i].businessId;
+    bus.businessId = array[i]._id;
     bus.phoneNumber = array[i].phoneNumber;
     bus.distance = array[i].dist.calculated * 3963;
     bus.status = 'Pending';
