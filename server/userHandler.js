@@ -1,4 +1,6 @@
+
 var url = require('url');
+var qs = require('querystring');
 var User = require('../db/user.js').User;
 var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
@@ -210,10 +212,18 @@ exports.request = function(req, res) {
 exports.sendRequestInfo = function(req, res) {
 
   console.log('got to send requestInfo');
-  Requests.promFind({userId:req.body.userId}).sort({createdAt: -1}).limit(1)
+  var queryString = qs.parse(url.parse(req.url).query);
+
+  console.log('querystring: ',queryString);
+  UserRequest.promFind(
+    {userId: queryString.userId},
+    null,
+    {limit:1,sort: {createdAt:-1}})
   .then(function(data){
+    // console.log('DATA: ', data);
+
     console.log('MONGO REQUEST DATA: ', data);
-    res.send(200);
+    res.send(200, data[0]);
   })
 
   // //get email from session info
