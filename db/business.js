@@ -52,6 +52,7 @@ var Business = mongoose.model('Business', businessSchema);
 // converting model functions to promisified functions
 // Business.promFind = blue.promisify(Business.find);
 Business.promFindOne = blue.promisify(Business.findOne);
+Business.promFindOneAndUpdate = blue.promisify(Business.findOneAndUpdate);
 Business.promAggregate = blue.promisify(Business.aggregate);
 
 // argsArray contains 2 items: an Array of long/lat coordinates and the radius
