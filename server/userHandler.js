@@ -96,18 +96,15 @@ exports.request = function(req, res) {
 
   var requestObj = req.body; // make sure Joe sends id back as "userId"
 
+  //convert minutes to time
+  var dateTime = new Date();
+  dateTime.setMinutes(dateTime.getMinutes() + Number(obj.targetTime));
+  requestObj.targetDateTime = dateTime;
+
   // TODO: wrap this if/else statement in a promise itself
   // and then have a resolve point in the "if" and "else" sections
-  if (Array.isArray(req.body.location)) {
-    requestObj.address = 'Current Location';
-  } else {
-    requestObj.address = requestObj.location;
-    mapApi.getGeo(requestObj)
-    .then(mapApi.parseGeoResult)
-    .then(function (result) {
-      requestObj.location = result;
-    });
-  }
+
+  mapApi.convertUserRequestLocation()
 
   // create new request
   .then(function () {
@@ -116,59 +113,61 @@ exports.request = function(req, res) {
     //promisifying the save function
     request.promSave = blue.promisify(request.save);
     return request.promSave();
-  });
+  })
 
-  /*
-  var parsed = misc.parseRequestFormData(req.body);
-  var numbers;
 
-  // get userId of requestor through email
-  // TODO: store user ID in session (with email) to avoid this lookup
-  User.promGetUserId(req.session.userEmail)
 
-    //update the parsed object info with the requestorId
-    .then(function (data){
-      parsed.userId = data.userId;
+  
+  // var parsed = misc.parseRequestFormData(req.body);
+  // var numbers;
 
-      // TODO: do not need userEmail in next 'then', so no need for this?
-      //start another promise to keep the chain going
-      return new blue(function (resolve, reject) {
-        resolve(req.session.userEmail);
-      });
-    })
+  // // get userId of requestor through email
+  // // TODO: store user ID in session (with email) to avoid this lookup
+  // User.promGetUserId(req.session.userEmail)
 
-    //get the next request counter number
-    // .then(Counter.getRequestsCounter)
-    // .then(Counter.getCounter('requests'))
+  //   //update the parsed object info with the requestorId
+  //   .then(function (data){
+  //     parsed.userId = data.userId;
 
-    //update the parsed object info with the request counter
-    .then(function (data) {
-      // parsed.requestId = data.counter;
-      requestObj = new UserRequest(parsed);
+  //     // TODO: do not need userEmail in next 'then', so no need for this?
+  //     //start another promise to keep the chain going
+  //     return new blue(function (resolve, reject) {
+  //       resolve(req.session.userEmail);
+  //     });
+  //   })
 
-      //promisifying the save function
-      requestObj.promSave = blue.promisify(requestObj.save);
-      return requestObj.promSave();
-    })
+  //   //get the next request counter number
+  //   // .then(Counter.getRequestsCounter)
+  //   // .then(Counter.getCounter('requests'))
 
-    //create new promise to continue chain
-    .then(function () {
-      return new blue(function (resolve, reject) {
-        resolve(parsed);
-      })
-    })
+  //   //update the parsed object info with the request counter
+  //   .then(function (data) {
+  //     // parsed.requestId = data.counter;
+  //     requestObj = new UserRequest(parsed);
 
-    //get Long/Lat from google maps
-    .then(mapApi.getGeo)
+  //     //promisifying the save function
+  //     requestObj.promSave = blue.promisify(requestObj.save);
+  //     return requestObj.promSave();
+  //   })
 
-    //convert response to Long/Lat
-    .then(mapApi.parseGeoResult)
+  //   //create new promise to continue chain
+  //   .then(function () {
+  //     return new blue(function (resolve, reject) {
+  //       resolve(parsed);
+  //     })
+  //   })
 
-    //add long/lat results to location parameter on obj and save
-    .then(function(result){
-      requestObj.location = result;
-      return requestObj.promSave();
-    })
+  //   //get Long/Lat from google maps
+  //   .then(mapApi.getGeo)
+
+  //   //convert response to Long/Lat
+  //   .then(mapApi.parseGeoResult)
+
+  //   //add long/lat results to location parameter on obj and save
+  //   .then(function(result){
+  //     requestObj.location = result;
+  //     return requestObj.promSave();
+  //   })
 
     //create new promise to continue chain
     .then(function(){
@@ -186,22 +185,22 @@ exports.request = function(req, res) {
     //store the data as a parameter on the request Obj and save
     .then(function(data){
       console.log('storing results property');
-      requestObj.results = data[0];
-      numbers = data[1];
+      requestObj.results = data;
+      // numbers = data[1];
       return requestObj.promSave();
     })
 
     //create new promise to continue chain
-    .then(function(){
-      return new blue (function(resolve, reject){
-        resolve([numbers, requestObj]);
-      });
-    })
+    // .then(function(){
+    //   return new blue (function(resolve, reject){
+    //     resolve([numbers, requestObj]);
+    //   });
+    // })
 
     //send text messages
-    .then(twilio.massTwilSend);
+    // .then(twilio.massTwilSend);
 
-  res.send(200);
+  res.send(201);
 };
 
 exports.sendRequestInfo = function(req, res) {
@@ -232,7 +231,7 @@ exports.sendRequestInfo = function(req, res) {
     .then(function (data){
       res.send(200, data);
     })
-  */
+  
 };
 
 exports.acceptOffer = function(req,res){

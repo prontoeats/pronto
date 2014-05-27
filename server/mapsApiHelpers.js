@@ -49,3 +49,25 @@ exports.parseGeoResult = function (array) {
     resolve(result);
   });
 };
+
+exports.convertUserRequestLocation = function(){
+
+  return new blue(function(resolve, reject){
+    if (Array.isArray(req.body.location)) {
+      requestObj.address = 'Current Location';
+      resolve();
+
+    } else {
+      requestObj.address = requestObj.location;
+      mapApi.getGeo(requestObj)
+      .then(mapApi.parseGeoResult)
+      .then(function (result) {
+        requestObj.location = result;
+        resolve();
+      });
+    }    
+})
+
+
+
+}

@@ -4,7 +4,7 @@ var blue = require('bluebird');
 exports.parseNearbyData = function (array) {
   var allBus = [];
   var bus;
-  var phoneNums = [];
+  // var phoneNums = [];
 
   for (var i = 0; i < array.length; i++) {
 
@@ -20,14 +20,14 @@ exports.parseNearbyData = function (array) {
     bus.state = array[i].state;
 
     allBus.push(bus);
-    phoneNums.push(array[i].phoneNumber);
+    // phoneNums.push(array[i].phoneNumber);
   }
 
   console.log('allBus: ',allBus);
-  console.log('phoneNums: ',phoneNums);
+  // console.log('phoneNums: ',phoneNums);
 
   return new blue(function (resolve, reject) {
-    resolve([allBus, phoneNums]);
+    resolve(allBus);
   });
 
 };
