@@ -236,16 +236,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
   $scope.delete = function(index){
     var request = $scope.requests.splice(index, 1);
-    //TODO: send post request to server to remove request
-    Requests.reject(request);
+    console.log(request);
+    Requests.decline(request[0]);
   };
 })
 
 .controller('RequestDetailCtrl', function($scope, $stateParams, $location, Requests) {
   $scope.request = Requests.get($stateParams.requestId);
   $scope.discount = '';
-  $scope.accept = function(discount){
-    console.log(discount);
+  $scope.accept = function(offer){
+    console.log($scope.request, offer);
+    Requests.accept($scope.request.requestId, offer)
     $location.path('/rest')
   };
 })

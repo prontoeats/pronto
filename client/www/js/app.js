@@ -23,8 +23,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
     console.log('in ,run.moduel')
 
-      localStorageService.set('token', 'ya29.IwDKAHn4rdZRdBkAAACxyo0JRpIIE4DsUBjnPCnrNNmCjO5kQ5T8BlZJeT1_cQ');
-      localStorageService.set('restaurantId', '5383dba79c64f8000029f0ee');
+    //TODO:need to update this logic
+    localStorageService.set('token', 'ya29.IwDKAHn4rdZRdBkAAACxyo0JRpIIE4DsUBjnPCnrNNmCjO5kQ5T8BlZJeT1_cQ');
+    localStorageService.set('restaurantId', '5383dba79c64f8000029f0ee');
     var token = localStorageService.get('token');
     if(!token) {
       console.log('state transition to login')
