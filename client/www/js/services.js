@@ -1,5 +1,17 @@
 angular.module('starter.services', [])
 
+.factory('UserActiveRequest', function($http){
+  var all = function(){
+    return $http({
+      method: 'GET',
+      url: 'http://localhost:3000/requests'
+    });
+  };
+
+  return {
+    all:all
+  };
+})
 
 .factory('ActiveTestData', function(){
   var summaryData = {

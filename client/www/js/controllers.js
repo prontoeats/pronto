@@ -25,7 +25,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
         }).success(function(data, status){
           window.alert('http '+ data.accessToken);
           localStorageService.set('token', data.accessToken);
-          localStorageService.set('userId', data.id);
+          localStorageService.set('userId', data.userId);
           loginWindow.close();
           $state.transitionTo('user.new');
         }).error(function(data, status){
@@ -67,7 +67,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
             $state.transitionTo('signup.signup');
           }else{
             localStorageService.set('token', data.accessToken);
-            localStorageService.set('restaurantId', data.id);
+            localStorageService.set('restaurantId', data.businessId);
             window.alert('signup failed');
 
             loginWindow.close();
@@ -104,7 +104,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     })
     .success(function(data){
       localStorageService.set('token', data.accessToken);
-      localStorageService.set('restaurantId', data.id);
+      localStorageService.set('restaurantId', data.businessId);
       console.log('success! ', data);
       $state.transitionTo('rest.requests');
     })
@@ -127,7 +127,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
   $scope.model = {};
   $scope.model.inputLocation = 'Current Location';
-  console.log('Obj', $scope.requestObj);
+  //console.log('Obj', $scope.requestObj);
 
   //set the distance on the request object when a distance button is clicked
   $scope.setDistance = function(distance){
@@ -190,9 +190,16 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-.controller('ActiveCtrl', function($scope, ActiveTestData, OffersTestData) {
-  $scope.response = ActiveTestData;
-  $scope.offers = OffersTestData;
+.controller('ActiveCtrl', function($scope, UserActiveRequest, OffersTestData) {
+  UserActiveRequest.all()
+    .success(function(data, status){
+      console.log('got active requests back')
+      $scope.response = data.summary;
+      $scope.offers = data.offers;
+    })
+    .error(function(data, status){
+      console.log('active data request failed')
+    })
 
   $scope.declinedOffers = [];
   $scope.decline = function(index){
