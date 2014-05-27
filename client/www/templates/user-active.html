@@ -5,7 +5,7 @@
     <div class="item item-text-wrap">
       <h2>Request Summary</h2>
       <div>
-        {{response.distance}} miles from {{response.location}}
+        {{response.radius}} miles from {{response.address}}
       </div>
       <div>
         Group of {{response.groupSize}} in {{response.mins}} mins
@@ -15,13 +15,13 @@
 
   <h4>New Offers</h4>
   <ion-list can-swipe="true">
-    <ion-item ng-repeat="offer in offers">
+    <ion-item ng-repeat="offer in offers | filter: {status: 'active' }" >
 
     <div class='row'>
       <div class='col'>
         <div>{{offer.businessName}}</div>
         <div>{{offer.address}}</div>
-        <div>{{offer.distance}} miles away</div>
+        <div>{{offer.distance | number:2}} miles away</div>
       </div>
       <div class='col'>
         <div>Offer</div>

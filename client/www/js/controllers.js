@@ -195,9 +195,9 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('ActiveCtrl', function($scope, UserActiveRequest, OffersTestData) {
   UserActiveRequest.all()
     .success(function(data, status){
-      console.log('got active requests back')
-      $scope.response = data.summary;
-      $scope.offers = data.offers;
+      console.log('got active requests back', data);
+      $scope.response = data;
+      $scope.offers = data.results;
     })
     .error(function(data, status){
       console.log('active data request failed')
