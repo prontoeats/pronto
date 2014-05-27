@@ -222,16 +222,22 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------Restaurant Controllers
 
-.controller('RequestsCtrl', function($scope, $location, Requests) {
-  $scope.requests = Requests.all();
-  $scope.word = '';
-  $scope.go = function(request){
-    path = 'rest/request/' + request.id;
-    $location.path(path);
-  };
+.controller('RequestsCtrl', function($scope, Requests) {
+  Requests.all()
+    .success(function(data, status){
+      console.log('Got requests from server: ', data);
+      $scope.requests = data;      
+    })
+    .error(function(data, status){
+      console.log('error: requests from server');
+    })
+
+  $scope.go = Requests.go;
+
   $scope.delete = function(index){
-    $scope.requests.splice(index, 1);
+    var request = $scope.requests.splice(index, 1);
     //TODO: send post request to server to remove request
+    Requests.reject(request);
   };
 })
 
