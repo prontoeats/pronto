@@ -1,10 +1,15 @@
+
+var url = require('url');
+var qs = require('querystring');
 var Business = require('../db/business.js').Business;
-var Requests = require('../db/userRequest.js').UserRequest;
+var UserRequest = require('../db/userRequest.js').UserRequest;
 var Offer = require('../db/offers.js').Offer;
 var mapApi = require('./mapsApiHelpers.js');
 var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
 var login = require('./loginHelpers.js');
+var mongoose = require('mongoose');
+
 
 exports.sendBusIndex = function(req, res){
   res.sendfile('./views/busIndex.html');
@@ -131,41 +136,48 @@ exports.showRequests = function (req, res) {
   console.log('got to showRequests');
   var queryString = qs.parse(url.parse(req.url).query);
 
-  console.log('showRequests querystring: ',queryString);
+  var oid = mongoose.Types.ObjectId(queryString.businessId);
 
-  UserRequest.find({'results.businessId': queryString.businessId});
-  console.log('')
+  console.log('showRequests querystring oid: ',oid);
 
-  var businessId = req.session.businessId || 1;
+
+  UserRequest.promFind({'results.businessId': oid})
+  .then(function(data){
+    console.log('business query results: ', data);
+    res.send(200, data);
+  })
+
+  // var businessId = req.session.businessId || 1;
+
 
   // search through requests collection
   // TODO: filter so not all requests are retrieved...
-  Requests.find(function (err, data) {
+  // Requests.find(function (err, data) {
 
-    console.log('requests:');
-    console.dir(data);
-    var results = [];
-    for (var i = 0; i < data.length; i += 1) {
-      // look for results property on each document
-      for (var j = 0; j < data[i].results.length; j += 1) {
-        // check if document results array has an object with the business id
-        if (data[i].results[j].businessId === businessId) {
-          // TODO: or copy entire data[i] object and remove results?
-          var requestObj = {};
-          requestObj.address = data[i].address;
-          requestObj.city = data[i].city;
-          requestObj.groupSize = data[i].groupSize;
-          requestObj.requestNotes = data[i].requestNotes;
-          requestObj.requestId = data[i].requestId;
-          requestObj.userId = data[i].userId;
-          requestObj.targetDateTime = data[i].targetDateTime;
-          results.push(requestObj);
-        }
-      }
-    }
-    res.send(results);
+  //   console.log('requests:');
+  //   console.dir(data);
+  //   var results = [];
+  //   for (var i = 0; i < data.length; i += 1) {
+  //     // look for results property on each document
+  //     for (var j = 0; j < data[i].results.length; j += 1) {
+  //       // check if document results array has an object with the business id
+  //       if (data[i].results[j].businessId === businessId) {
+  //         // TODO: or copy entire data[i] object and remove results?
+  //         var requestObj = {};
+  //         requestObj.address = data[i].address;
+  //         requestObj.city = data[i].city;
+  //         requestObj.groupSize = data[i].groupSize;
+  //         requestObj.requestNotes = data[i].requestNotes;
+  //         requestObj.requestId = data[i].requestId;
+  //         requestObj.userId = data[i].userId;
+  //         requestObj.targetDateTime = data[i].targetDateTime;
+  //         results.push(requestObj);
+  //       }
+  //     }
+  //   }
+  //   res.send(results);
 
-  });
+  // });
 }
 
 exports.showOffers = function (req, res) {
