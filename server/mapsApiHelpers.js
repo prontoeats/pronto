@@ -6,10 +6,14 @@ exports.parseAddress = function(obj){
 
   var parsedAddress = [];
 
-  //parse the response body object and format the address
-  parsedAddress = parsedAddress.concat(obj.address.split(" "),',');
-  parsedAddress = parsedAddress.concat(obj.city.split(" "),',');
-  parsedAddress = parsedAddress.concat(obj.state.split(" "));
+  if (obj.city) {
+    //parse the response body object and format the address (for businesses)
+    parsedAddress = parsedAddress.concat(obj.address.split(" "),',');
+    parsedAddress = parsedAddress.concat(obj.city.split(" "),',');
+    parsedAddress = parsedAddress.concat(obj.state.split(" "));
+  } else {
+    parsedAddress = obj.location.split(' '); // for user requests
+  }
 
   return parsedAddress.join('+');
 };

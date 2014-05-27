@@ -69,7 +69,7 @@ exports.login = function(req, res){
           console.log(err);
           exports.sendAuthFail(res);
         }
-        res.send(201, {accessToken: data.accessToken, id: data._id});
+        res.send(201, {accessToken: data.accessToken, userId: data._id});
       })
     } else {
       console.log('data in else statement');
@@ -81,7 +81,7 @@ exports.login = function(req, res){
         {$set: {accessToken: access_token}},
         {new: true}
       ).then( function (data) {
-        res.send(201, {accessToken: data.accessToken, id: data._id});
+        res.send(201, {accessToken: data.accessToken, userId: data._id});
       });
     }
   })
@@ -90,46 +90,36 @@ exports.login = function(req, res){
   });
 };
 
-// exports.signup = function(req, res){
-
-//   console.log('got to user signup');
-//   User.promFindOne({email: req.body.email})
-//     .then(function (data) {
-
-//       //if the user email exists, redirect
-//       if(data){
-//         console.log('user email already exists')
-//         exports.sendAuthFail(res);
-
-//       //otherwise, save the user account into the database and redirect to user dashboard
-//       } else {
-//         new User(req.body).save(function (err) {
-//           if(err){
-//             console.log('issue saving new user account');
-//             exports.sendAuthFail(res);
-//           } else {
-//             authen.userCreateSession(req);
-//             res.redirect(302,'/dashboard');
-//           }
-//         });
-//       }
-//     })
-
-//     //if there was an issue searching for the user, redirect
-//     .catch(function (e) {
-//       console.log('signup fail: ', e);
-//       exports.sendAuthFail(res);
-//     });
-// };
-
 exports.request = function(req, res) {
 
   console.log('received data: ',req.body);
 
-  // console.log('url parse: ', req.url);
-  //parse the request form data
+  var requestObj = req.body; // make sure Joe sends id back as "userId"
+
+  // TODO: wrap this if/else statement in a promise itself
+  // and then have a resolve point in the "if" and "else" sections
+  if (Array.isArray(req.body.location)) {
+    requestObj.address = 'Current Location';
+  } else {
+    requestObj.address = requestObj.location;
+    mapApi.getGeo(requestObj)
+    .then(mapApi.parseGeoResult)
+    .then(function (result) {
+      requestObj.location = result;
+    });
+  }
+
+  // create new request
+  .then(function () {
+    request = new UserRequest(requestObj);
+
+    //promisifying the save function
+    request.promSave = blue.promisify(request.save);
+    return request.promSave();
+  });
+
+  /*
   var parsed = misc.parseRequestFormData(req.body);
-  var requestObj;
   var numbers;
 
   // get userId of requestor through email
@@ -242,6 +232,7 @@ exports.sendRequestInfo = function(req, res) {
     .then(function (data){
       res.send(200, data);
     })
+  */
 };
 
 exports.acceptOffer = function(req,res){

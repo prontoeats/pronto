@@ -40,7 +40,6 @@ exports.parseRequestFormData = function (obj) {
   var parsedObj = {
     targetDateTime: dateTime,
     groupSize: obj.groupSize,
-    requestNotes: obj.requestNotes,
     address: obj.address,
     city: obj.city,
     state: obj.state,
