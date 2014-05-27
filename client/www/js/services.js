@@ -136,7 +136,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = 'http://localhost:3000/business/requests?' +'userId='+businessId+'&accessToken='+accessToken;
+    var url = 'http://localhost:3000/business/requests?' +'businessId='+businessId+'&accessToken='+accessToken;
 
     return $http({
       method:'GET',
