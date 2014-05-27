@@ -182,6 +182,7 @@ exports.showRequests = function (req, res) {
 
 exports.declineRequests = function(req,res){
 
+  console.log('got to decline requests')
   var data = req.body;
 
   var businessId = mongoose.Types.ObjectId(data.businessId);
