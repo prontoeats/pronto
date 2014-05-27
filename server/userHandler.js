@@ -98,13 +98,13 @@ exports.request = function(req, res) {
 
   //convert minutes to time
   var dateTime = new Date();
-  dateTime.setMinutes(dateTime.getMinutes() + Number(obj.targetTime));
+  dateTime.setMinutes(dateTime.getMinutes() + Number(requestObj.mins));
   requestObj.targetDateTime = dateTime;
 
   // TODO: wrap this if/else statement in a promise itself
   // and then have a resolve point in the "if" and "else" sections
 
-  mapApi.convertUserRequestLocation()
+  mapApi.convertUserRequestLocation(requestObj)
 
   // create new request
   .then(function () {
@@ -185,9 +185,9 @@ exports.request = function(req, res) {
     //store the data as a parameter on the request Obj and save
     .then(function(data){
       console.log('storing results property');
-      requestObj.results = data;
+      request.results = data;
       // numbers = data[1];
-      return requestObj.promSave();
+      return request.promSave();
     })
 
     //create new promise to continue chain
@@ -199,8 +199,12 @@ exports.request = function(req, res) {
 
     //send text messages
     // .then(twilio.massTwilSend);
+  .then(function(){
+    console.log('requestObj: ', requestObj)
+    res.send(201);
 
-  res.send(201);
+    console.log('COMPLETED USER POST REQUEST');
+  })
 };
 
 exports.sendRequestInfo = function(req, res) {

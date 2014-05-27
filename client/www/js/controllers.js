@@ -115,15 +115,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 //---------------User Controllers---------------
-.controller('NewCtrl', function($q, $scope, $state, GetLocation, $http) {
+.controller('NewCtrl', function($q, $scope, $state, GetLocation, $http, localStorageService) {
 
   //Initialize defaults
 
   //requestObj will be sent to server after hitting submit
   $scope.requestObj = {};
-  $scope.requestObj.distance = 0.5;
+  $scope.requestObj.radius = 0.5;
   $scope.requestObj.mins = 15;
   $scope.requestObj.groupSize = 1;
+  $scope.requestObj.accessToken = localStorageService.get('token');
+  $scope.requestObj.userId = localStorageService.get('userId');
 
   $scope.model = {};
   $scope.model.inputLocation = 'Current Location';
@@ -131,8 +133,8 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
   //set the distance on the request object when a distance button is clicked
   $scope.setDistance = function(distance){
-    $scope.requestObj.distance = distance;
-    console.log('Distance: ', $scope.requestObj.distance);
+    $scope.requestObj.radius = distance;
+    console.log('Distance: ', $scope.requestObj.radius);
   };
 
   //set the minutes on the request object when a distance button is clicked

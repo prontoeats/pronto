@@ -4,7 +4,7 @@ var Counter = require('./counter.js').Counter;
 
 var requestSchema = mongoose.Schema({
   requestId:      {type: Number, index: {unique: true}},
-  userId:         {type: Number, required: true},
+  userId:         {type: String, required: true},
   targetDateTime: {type: Date, required: true},
   mins:           {type: Number, required: true},
   groupSize:      {type: Number, required: true},

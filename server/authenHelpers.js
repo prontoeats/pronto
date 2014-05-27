@@ -36,9 +36,10 @@ exports.logout = function(req,res){
   res.redirect('/');
 };
 
-exports.authenticateUserToken = function (token, id) {
+exports.authenticateUserToken = function (req, res, next) {
   // search if id === _id in user table
-  User.promFindOne({_id: id})
+  console.log('Req Body: ', req.body);
+  User.promFindOne({_id: req.body.userId})
   .then( function (data) {
     // no record
     if (data === null) {
@@ -47,10 +48,11 @@ exports.authenticateUserToken = function (token, id) {
     // record exists
     } else {
       // check if token matches for found user
-      if (data.accessToken === token) {
+      if (data.accessToken === req.body.accessToken) {
         console.log('user found, token matches user...proceed');
         next();
       } else {
+        console.log('Token in DB: ', data.accessToken);
         console.log('user found, but token does not match that user');
         res.send(400);
       }

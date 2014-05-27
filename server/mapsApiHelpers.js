@@ -50,10 +50,10 @@ exports.parseGeoResult = function (array) {
   });
 };
 
-exports.convertUserRequestLocation = function(){
+exports.convertUserRequestLocation = function(requestObj){
 
   return new blue(function(resolve, reject){
-    if (Array.isArray(req.body.location)) {
+    if (Array.isArray(requestObj.location)) {
       requestObj.address = 'Current Location';
       resolve();
 
