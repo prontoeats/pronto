@@ -133,8 +133,8 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
   //set the distance on the request object when a distance button is clicked
   $scope.setDistance = function(distance){
-    $scope.requestObj.distance = distance;
-    console.log('Distance: ', $scope.requestObj.distance);
+    $scope.requestObj.radius = distance;
+    console.log('Distance: ', $scope.requestObj.radius);
   };
 
   //set the minutes on the request object when a distance button is clicked

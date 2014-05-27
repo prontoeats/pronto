@@ -61,14 +61,14 @@ exports.login = function(req, res){
         email: email,
         firstName: firstName,
         lastName: lastName,
-        accessToken: access_token,
-        refreshToken: refresh_token
+        accessToken: access_token
       })
       .save(function (err, data) {
         if (err) {
           console.log(err);
           exports.sendAuthFail(res);
         }
+        console.log('save data: ',data);
         res.send(201, {accessToken: data.accessToken, userId: data._id});
       })
     } else {
@@ -209,32 +209,38 @@ exports.request = function(req, res) {
 
 exports.sendRequestInfo = function(req, res) {
 
-  //get email from session info
-  var email = req.session.userEmail;
-  console.log('url parse: ', req.url);
-  res.send(200);
+  console.log('got to send requestInfo');
+  Requests.promFind({userId:req.body.userId}).sort({createdAt: -1}).limit(1)
+  .then(function(data){
+    console.log('MONGO REQUEST DATA: ', data);
+    res.send(200);
+  })
+
+  // //get email from session info
+  // var email = req.session.userEmail;
+  // console.log('url parse: ', req.url);
 
 
-  //get username from session info
-  var username = req.session.userUsername;
+  // //get username from session info
+  // var username = req.session.userUsername;
 
-  //get userID
-  User.promFindOne({email: email})
+  // //get userID
+  // User.promFindOne({email: email})
 
-    //find records for that userId
-    .then(function (data) {
-      return UserRequest.promFind({userId: data.userId})
-    })
+  //   //find records for that userId
+  //   .then(function (data) {
+  //     return UserRequest.promFind({userId: data.userId})
+  //   })
 
-    .then(function(data){
-      return new blue(function (resolve, reject) {
-        resolve(misc.sendRequestInfoParser(data));
-      })
-    })
+  //   .then(function(data){
+  //     return new blue(function (resolve, reject) {
+  //       resolve(misc.sendRequestInfoParser(data));
+  //     })
+  //   })
 
-    .then(function (data){
-      res.send(200, data);
-    })
+  //   .then(function (data){
+  //     res.send(200, data);
+  //   })
   
 };
 

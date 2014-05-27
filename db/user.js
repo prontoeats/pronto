@@ -4,40 +4,40 @@ var prom = require('../server/promisified.js');
 var Counter = require('./counter.js').Counter;
 
 var userSchema = mongoose.Schema({
-  userId:       {type: Number, index: {unique: true}},
+  // userId:       {type: Number, index: {unique: true}},
   email:        {type: String, required: true, index: {unique: true}},
   accessToken:  {type: String, required: true},
   firstName:    {type: String, required: true},
   lastName:     {type: String, required: true},
-  phoneNumber:  {type: Number},
+  // phoneNumber:  {type: Number},
   createdAt:    {type: Date, default: Date.now}
 });
 
-userSchema.pre('save', function (next) {
+// userSchema.pre('save', function (next) {
 
-  if (!this.userId) {
+//   if (!this.userId) {
 
-    Counter.getCounter('users').bind(this)
+//     Counter.getCounter('users').bind(this)
 
-      .then(function (data) {
-        this.userId = data.counter;
-        return prom.bcryptHash(this.password, null, null)
-      })
+//       .then(function (data) {
+//         this.userId = data.counter;
+//         return prom.bcryptHash(this.password, null, null)
+//       })
 
-      .then(function (hash) {
-        this.password = hash;
-        next();
-      })
+//       .then(function (hash) {
+//         this.password = hash;
+//         next();
+//       })
 
-      .catch(function (err) {
-        throw err;
-      });
+//       .catch(function (err) {
+//         throw err;
+//       });
 
-  }
+//   }
 
-  next();
+//   next();
 
-});
+// });
 
 var User = mongoose.model('User', userSchema);
 

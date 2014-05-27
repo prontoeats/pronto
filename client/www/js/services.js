@@ -1,10 +1,14 @@
-angular.module('starter.services', [])
+angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('UserActiveRequest', function($http){
   var all = function(){
     return $http({
       method: 'GET',
-      url: 'http://localhost:3000/requests'
+      url: 'http://localhost:3000/requests',
+      data: {
+        userId: localStorageService.get('userId'),
+        accessToken: localStorageService.get('accessToken')
+      }
     });
   };
 
