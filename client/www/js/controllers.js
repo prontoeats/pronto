@@ -59,13 +59,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
             code: code[1]
           }
         }).success(function(data, status){
-          window.alert('http '+ data.access_token);
+          window.alert('http '+ data.accessToken);
           if (data.signup){
+            window.alert('signup is true');
             localStorageService.set('token', data.accessToken);
-            $state.transitionTo('signup');
+            loginWindow.close();
+            $state.transitionTo('signup.signup');
           }else{
             localStorageService.set('token', data.accessToken);
             localStorageService.set('restaurantId', data.id);
+            window.alert('signup failed');
+
             loginWindow.close();
             $state.transitionTo('rest.requests');
           }
@@ -82,14 +86,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 //---------------Signup Controllers---------------
 .controller('SignupCtrl', function($scope, localStorageService, $state, $http) {
   $scope.restInfo = {};
-  $scope.restInfo.name = '';
-  $scope.restInfo.address = '';
-  $scope.restInfo.city = '';
-  $scope.restInfo.state = '';
-  $scope.restInfo.zip = '';
-  $scope.restInfo.telephone = '';
-  $scope.restInfo.token = localStorageService.get('token');
-  $scope.restInfo.id = localStorageService.get('restaurantId');
+  $scope.restInfo.businessName = 'Jimmy';
+  $scope.restInfo.address = '944 Market St';
+  $scope.restInfo.city = 'San Francisco';
+  $scope.restInfo.state = 'CA';
+  $scope.restInfo.zipCode = '94103';
+  $scope.restInfo.phoneNumber = '3124794923';
+  $scope.restInfo.accessToken = localStorageService.get('token');
+  // $scope.restInfo.id = localStorageService.get('restaurantId');
 
   $scope.submit = function(){
     console.log($scope.restInfo);

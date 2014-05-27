@@ -68,7 +68,9 @@ exports.login = function(req, res){
 exports.signup = function (req, res) {
 
   // receive token and use to call Google to retrieve email/first/last
-  var businessInfo = req.body.businessInfo
+  console.log('BODY: ',req.body);
+
+  var businessInfo = req.body;
   var accessToken = businessInfo.accessToken;
 
   login.getUserInfo(accessToken)

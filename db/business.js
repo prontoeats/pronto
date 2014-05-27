@@ -23,39 +23,28 @@ var businessSchema = mongoose.Schema({
 
 businessSchema.pre('save', function (next) {
 
-  if (!this.businessId) {
+  //get Geo location from google maps
+  var that = this;
+  console.log('this1: ', this);
 
-    Counter.getCounter('businesses').bind(this)
+  mapApi.getGeo(this)
 
-      .then(function (data) {
-        this.businessId = data.counter;
-        return prom.bcryptHash(this.password, null, null)
-      })
+  //convert response to Long/Lat
+  .then(mapApi.parseGeoResult)
 
-      .then(function (hash) {
-        this.password = hash;
-        return this;
-      })
+  //update Long/Lat coordinates to location
+  .then(function (result) {
+    console.log('this2: ', that);
+    that.location = result;
+    console.log('LOCATION RESULT: ', result);
+    console.log('LOCATION RESULT on this: ', that.location);
 
-      //get Geo location from google maps
-      .then(mapApi.getGeo)
+    next();
+  })
 
-      //convert response to Long/Lat
-      .then(mapApi.parseGeoResult)
-
-      //update Long/Lat coordinates to location
-      .then(function (result) {
-        this.location = result;
-        next();
-      })
-
-      .catch(function (err) {
-        throw err;
-      });
-  }
-
-  next();
-
+  .catch(function (err) {
+    throw err;
+  });
 });
 
 var Business = mongoose.model('Business', businessSchema);

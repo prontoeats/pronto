@@ -1,6 +1,7 @@
 
 angular.module('starter.controllers', ['LocalStorageModule'])
 
+//---------------Login Controllers---------------
 .controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http) {
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
@@ -58,13 +59,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
             code: code[1]
           }
         }).success(function(data, status){
-          window.alert('http '+ data.access_token);
+          window.alert('http '+ data.accessToken);
           if (data.signup){
+            window.alert('signup is true');
             localStorageService.set('token', data.accessToken);
-            $state.transitionTo('signup');
+            loginWindow.close();
+            $state.transitionTo('signup.signup');
           }else{
             localStorageService.set('token', data.accessToken);
             localStorageService.set('restaurantId', data.id);
+            window.alert('signup failed');
+
             loginWindow.close();
             $state.transitionTo('rest.requests');
           }
@@ -78,11 +83,36 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   };
 })
 
+//---------------Signup Controllers---------------
 .controller('SignupCtrl', function($scope, localStorageService, $state, $http) {
-  
+  $scope.restInfo = {};
+  $scope.restInfo.businessName = 'Jimmy';
+  $scope.restInfo.address = '944 Market St';
+  $scope.restInfo.city = 'San Francisco';
+  $scope.restInfo.state = 'CA';
+  $scope.restInfo.zipCode = '94103';
+  $scope.restInfo.phoneNumber = '3124794923';
+  $scope.restInfo.accessToken = localStorageService.get('token');
+  // $scope.restInfo.id = localStorageService.get('restaurantId');
+
+  $scope.submit = function(){
+    console.log($scope.restInfo);
+    $http({
+      method: 'POST',
+      url: 'http://localhost:3000/signup/business',
+      data: $scope.restInfo
+    })
+    .success(function(data){
+      localStorageService.set('token', data.accessToken);
+      localStorageService.set('restaurantId', data.id);
+      console.log('success! ', data);
+      $state.transitionTo('rest.requests');
+    })
+    .error(function(data){
+      console.log('error! ', data);
+    })
+  }
 })
-
-
 
 //---------------User Controllers---------------
 .controller('NewCtrl', function($q, $scope, $state, GetLocation, $http) {

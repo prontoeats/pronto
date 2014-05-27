@@ -26,7 +26,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     var token = localStorageService.get('token');
     if(!token) {
       console.log('state transition to login')
-      $state.transitionTo('signup.signup');
+      $state.transitionTo('login.user');
     }
   });
 })
