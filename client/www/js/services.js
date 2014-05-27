@@ -154,12 +154,27 @@ angular.module('starter.services', ['LocalStorageModule'])
     $location.path(path);
   };
 
-  var reject = function(request){
+  var decline = function(request){
+    console.log(request.requestId);
     return $http({
       method: 'POST',
-      url: 'http://localhost:3000/business/requests',
+      url: 'http://localhost:3000/business/requests/decline',
       data: {
         requestId: request.requestId,
+        businessId: localStorageService.get('restaurantId'),
+        accessToken: localStorageService.get('token')
+      }
+    })
+  };
+
+  var accept = function(requestId, offer){
+    console.log(requestId, offer);
+    return $http({
+      method: 'POST',
+      url: 'http://localhost:3000/business/requests/accept',
+      data: {
+        requestId: requestId,
+        offer:  offer,
         businessId: localStorageService.get('restaurantId'),
         accessToken: localStorageService.get('token')
       }
@@ -170,7 +185,8 @@ angular.module('starter.services', ['LocalStorageModule'])
     all: all,
     get: get,
     go: go,
-    reject:reject
+    decline:decline,
+    accept: accept
   };
 })
 
