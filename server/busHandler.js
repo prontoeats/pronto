@@ -56,7 +56,7 @@ exports.login = function(req, res){
         {$set: {accessToken: access_token}},
         {new: true}
       ).then( function (data) {
-        res.send(201, {accessToken: data.accessToken, id: data._id, signup: false});
+        res.send(201, {accessToken: data.accessToken, businessId: data._id, signup: false});
       });
     }
   })
@@ -87,7 +87,7 @@ exports.signup = function (req, res) {
       }
       // with other information received, save to database
       console.log('new business saved to database');
-      res.send(201, {accessToken: data.accessToken, id: data._id});
+      res.send(201, {accessToken: data.accessToken, businessId: data._id});
     })
   })
   .catch( function (e) {
