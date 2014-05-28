@@ -45,14 +45,14 @@ app.post('/twilio', twiml.processPost);
 
 //routes requiring authentication
 app.get('/requests', userHandler.sendRequestInfo);
-app.post('/requests', userHandler.sendRequestInfo);
+app.post('/requests/accept', userHandler.acceptOffer);
+app.post('/requests/reject', userHandler.rejectOffer);
 
 app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
 app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
 app.post('/request', authen.authenticateUserToken, userHandler.request);
 
 app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
-// TODO: enable authentication after MVP
 app.get('/business/requests', busHandler.showRequests);
 app.post('/business/requests/decline', busHandler.declineRequests);
 app.post('/business/requests/accept', busHandler.acceptRequests);
