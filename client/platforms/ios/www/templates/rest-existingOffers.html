@@ -3,9 +3,9 @@
     <ion-list>
 <!--       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap" href="#/rest/existingOffer/{{existingOffer.id}}"> -->
       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap">
-        <span>ID: {{existingOffer.id}}</span>
-        <span>Party: {{existingOffer.party}}</span>
-        <span>Time of Arrival: {{existingOffer.time}}</span>
+        <span>ID: {{existingOffer.requestId}}</span>
+        <span>Party: {{existingOffer.groupSize}}</span>
+        <span>Time of Arrival: {{existingOffer.targetDateTime}}</span>
       </ion-item>
     </ion-list>
   </ion-content>
