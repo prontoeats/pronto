@@ -28,10 +28,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     // localStorageService.set('user', 'false');
     // $state.transitionTo('rest.requests');
 
-    //localStorageService.set('token', 'ya29.JAA9R6ea2WG-5RoAAAAfQRQzac06Jn0rx8ZzAh5kxJ5O50k2c38J4DDxb2zUwQ');
-    //localStorageService.set('userId', '538414db6e250e000008f614');
-    //localStorageService.set('user', 'true');
+    // localStorageService.set('token', 'ya29.JAD18I3NqkMKwh8AAADF7TtFYTsyoCRefMTpYFsLpbvdg90HKUHJa3FtBt_0Kg');
+    // localStorageService.set('userId', '53862d18bea4b17f10663629');
+    // localStorageService.set('user', 'true');
     // $state.transitionTo('user.new');
+
     localStorageService.set('token', null);
     localStorageService.set('userId', null);
     localStorageService.set('user', null);
