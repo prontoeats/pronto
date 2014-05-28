@@ -32,3 +32,4 @@ azure.err
 iisnode.yml
 bower_components
 client/platforms/ios/www/lib/angular-local-storage/.npmignore
+client/platforms

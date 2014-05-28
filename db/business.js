@@ -5,7 +5,7 @@ var mapApi = require('../server/mapsApiHelpers.js')
 var Counter = require('./counter.js').Counter;
 
 var businessSchema = mongoose.Schema({
-  businessId:   {type: Number, index: {unique: true}},
+  // businessId:   {type: Number, unique: true},
   email:        {type: String, required: true, index: {unique: true}},
   businessName: {type: String, required: true},
   address:      {type: String, required: true},

@@ -3,7 +3,7 @@ var blue = require('bluebird');
 var Counter = require('./counter.js').Counter;
 
 var requestSchema = mongoose.Schema({
-  requestId:      {type: Number, index: {unique: true}},
+  requestId:      {type: Number, unique: true},
   userId:         {type: String, required: true},
   targetDateTime: {type: Date, required: true},
   mins:           {type: Number, required: true},
@@ -17,25 +17,26 @@ var requestSchema = mongoose.Schema({
   createdAt:      {type: Date, default: Date.now}
 });
 
-// requestSchema.pre('save', function (next) {
+requestSchema.pre('save', function (next) {
 
-//   if (!this.requestId) {
+  if (!this.requestId) {
 
-//     Counter.getCounter('requests').bind(this)
+    Counter.getCounter('requests').bind(this)
 
-//       .then(function (data) {
-//         this.requestId = data.counter;
-//         next();
-//       })
+      .then(function (data) {
+        console.log('data.counter:', data.counter);
+        this.requestId = data.counter;
+        next();
+      })
 
-//       .catch(function (err) {
-//         throw err;
-//       });
-//   }
+      .catch(function (err) {
+        throw err;
+      });
+  }
 
-//   next();
+  next();
 
-// });
+});
 
 var UserRequest = mongoose.model('Request', requestSchema);
 

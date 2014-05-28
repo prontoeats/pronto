@@ -6,7 +6,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
-  var loginWindow;                                                                                
+  var loginWindow;
   $scope.login = function () {
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
 
@@ -17,7 +17,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
       if (code) {
         $http ({
-          method: 'POST', 
+          method: 'POST',
           url: 'http://localhost:3000/login/user',
           data: {
             code: code[1]
@@ -42,7 +42,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
-  var loginWindow;                                                                                
+  var loginWindow;
   $scope.login = function () {
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
 
@@ -53,7 +53,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
       if (code) {
         $http ({
-          method: 'POST', 
+          method: 'POST',
           url: 'http://localhost:3000/login/business',
           data: {
             code: code[1]
@@ -202,7 +202,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if($scope.response.requestStatus === 'Accepted'){
         $scope.filterOn = 'Accepted';
       } else {
-        $scope.filterOn = 'Accepted';
+        $scope.filterOn = 'Offered';
       }
 
     })
@@ -286,7 +286,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
-  var loginWindow;                                                                                
+  var loginWindow;
   $scope.login = function () {
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
 
@@ -299,10 +299,10 @@ angular.module('starter.controllers', ['LocalStorageModule'])
         var url2 = 'code='+code[1]+'&client_id='+Google.client_id+
         '&client_secret='+Google.client_secret+'&redirect_uri='+
         Google.redirect_uri+'&grant_type=authorization_code';
-        
+
         //window.alert('url: '+url2);
         $http ({
-          method: 'POST', 
+          method: 'POST',
           url: 'https://accounts.google.com/o/oauth2/token',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

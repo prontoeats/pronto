@@ -85,7 +85,7 @@ exports.signup = function (req, res) {
     businessInfo.email = data.emails[0]['value'];
     businessInfo.firstName = data.name.givenName;
     businessInfo.lastName = data.name.familyName;
-    new Business(businessInfo).save(function (err) {
+    new Business(businessInfo).save(function (err, data) {
       if (err) {
         console.log('problem saving new business');
         res.send(400, "OMG could not save");
@@ -93,7 +93,7 @@ exports.signup = function (req, res) {
       }
       // with other information received, save to database
       console.log('new business saved to database');
-      res.send(201, {accessToken: data.accessToken, businessId: data._id});
+      res.send(201, {accessToken: accessToken, businessId: data._id});
     })
   })
   .catch( function (e) {
@@ -135,7 +135,9 @@ exports.showRequests = function (req, res) {
   // TODO: remove default; require authentication (on app-config.js)
 
   console.log('got to showRequests');
+  console.log('req.url:', req.url);
   var queryString = qs.parse(url.parse(req.url).query);
+  console.log('queryString:', queryString);
 
   var oid = mongoose.Types.ObjectId(queryString.businessId);
 

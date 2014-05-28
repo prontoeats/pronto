@@ -12,6 +12,7 @@ var UserRequest = require('../db/userRequest.js').UserRequest;
 var Counter = require('../db/counter.js').Counter;
 var constants = require('./constants.js');
 var login = require('./loginHelpers.js');
+var mongoose = require('mongoose');
 
 exports.sendIndex = function (req, res){
   res.sendfile('./views/index.html');
@@ -187,7 +188,6 @@ exports.acceptOffer = function(req, res){
     console.log('Updated offer status to accepted: ', data);
     res.send(201);
   })
-
 };
 
 exports.rejectOffer = function(req, res){
@@ -205,5 +205,4 @@ exports.rejectOffer = function(req, res){
     console.log('Updated offer status to rejected: ', data);
     res.send(201);
   })
-
 };

@@ -31,7 +31,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       console.log('state transition to login')
       $state.transitionTo('login.user');
     }else{
-      $state.transitionTo('user.new');
+      $state.transitionTo('login.user');
     }
   });
 })
