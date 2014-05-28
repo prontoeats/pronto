@@ -106,7 +106,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 .factory('GetLocation', function($q) {
 
   var longLat = function(){
-    
+
     //create a promise since getting the position is an asynch
     var deferred = $q.defer();
 
@@ -129,7 +129,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 
 
-.factory('ExistingOffers', function($http) {
+.factory('ExistingOffers', function($http, localStorageService) {
   // Might use a resource here that returns a JSON array
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
@@ -226,7 +226,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
-.factory('AcceptedOffers', function() {
+.factory('AcceptedOffers', function($http, localStorageService) {
 
   var all = function(){
     var businessId = localStorageService.get('restaurantId');

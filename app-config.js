@@ -49,8 +49,6 @@ app.post('/request', authen.authenticateUserToken, userHandler.request);
 app.get('/business/requests', busHandler.showRequests);
 app.post('/business/requests/decline', busHandler.declineRequests);
 app.post('/business/requests/accept', busHandler.acceptRequests);
-app.get('/business/offers', busHandler.showOffers);
-app.post('/business/offers', busHandler.sendOffer);
 app.get('/business/offered', busHandler.showOffered);
 app.get('/business/accepted', busHandler.showAccepted);
 

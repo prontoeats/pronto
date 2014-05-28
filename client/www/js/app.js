@@ -23,10 +23,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
     console.log('in ,run.moduel')
 
-    localStorageService.set('token', 'ya29.IwC2UUT-RcRpdB8AAAAarQOOg2Xw1phjXoIQYlN3Cc4cb4V-2rOvl6kMsSwpBg');
-    localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
-    localStorageService.set('user', 'false');
-    $state.transitionTo('rest.requests');
+    // localStorageService.set('token', 'ya29.IwC2UUT-RcRpdB8AAAAarQOOg2Xw1phjXoIQYlN3Cc4cb4V-2rOvl6kMsSwpBg');
+    // localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
+    // localStorageService.set('user', 'false');
+    // $state.transitionTo('rest.requests');
 
     //localStorageService.set('token', 'ya29.JAA9R6ea2WG-5RoAAAAfQRQzac06Jn0rx8ZzAh5kxJ5O50k2c38J4DDxb2zUwQ');
     //localStorageService.set('userId', '538414db6e250e000008f614');
@@ -34,19 +34,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     // $state.transitionTo('user.new');
 
 
-    // var token = localStorageService.get('token');
-    // if(!token) {
-    //   console.log('state transition to login')
-    //   $state.transitionTo('login.user');
-    // }else{
-    //   if (localStorageService.get('user')){
-    //     console.log('user');
-    //     $state.transitionTo('user.new');
-    //   }else{
-    //     console.log('restaurant');
-    //     $state.transitionTo('rest.requests');
-    //   }
-    // }
+    var token = localStorageService.get('token');
+    if(!token) {
+      console.log('state transition to login')
+      $state.transitionTo('login.user');
+    }else{
+      if (localStorageService.get('user')){
+        console.log('user');
+        $state.transitionTo('user.new');
+      }else{
+        console.log('restaurant');
+        $state.transitionTo('rest.requests');
+      }
+    }
   });
 })
 

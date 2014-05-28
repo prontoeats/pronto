@@ -123,7 +123,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   //   {'filterId': 2,'distance': '1 mile'},
   //   {'filterId': 3,'distance': '5 miles'},
   //   {'filterId': 4,'distance': '0 miles'}
-  // ]; 
+  // ];
 
   // $scope.items = filters;
   // $scope.isActive = function(item) {
@@ -303,7 +303,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 .controller('AcceptedOffersCtrl', function($scope, AcceptedOffers) {
-  ExistingOffers.all()
+  AcceptedOffers.all()
   .success(function(data,status){
     console.log('got existing offer back');
     $scope.acceptedOffers = data;
