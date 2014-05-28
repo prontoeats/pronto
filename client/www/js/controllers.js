@@ -115,9 +115,23 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 //---------------User Controllers---------------
-.controller('NewCtrl', function($q, $scope, $state, GetLocation, $http, localStorageService) {
+.controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService) {
 
   //Initialize defaults
+  // var filters = [
+  //   {'filterId': 1,'distance': '0.5 mile'},
+  //   {'filterId': 2,'distance': '1 mile'},
+  //   {'filterId': 3,'distance': '5 miles'},
+  //   {'filterId': 4,'distance': '0 miles'}
+  // ]; 
+
+  // $scope.items = filters;
+  // $scope.isActive = function(item) {
+  //   if (item.path == $location.path()) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   //requestObj will be sent to server after hitting submit
   $scope.requestObj = {};
@@ -274,7 +288,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 .controller('ExistingOffersCtrl', function($scope, ExistingOffers) {
-  $scope.existingOffers = ExistingOffers.all();
+  ExistingOffers.all()
+  .success(function(data,status){
+    console.log('got existing offer back');
+    $scope.existingOffers = data;
+  })
+  .error(function(data, status){
+    console.log('existing offer error');
+  })
 })
 
 .controller('ExistingOfferDetailCtrl', function($scope, $stateParams, ExistingOffers) {
@@ -282,82 +303,16 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 .controller('AcceptedOffersCtrl', function($scope, AcceptedOffers) {
-  $scope.acceptedOffers = AcceptedOffers.all();
+  ExistingOffers.all()
+  .success(function(data,status){
+    console.log('got existing offer back');
+    $scope.acceptedOffers = data;
+  })
+  .error(function(data, status){
+    console.log('existing offer error');
+  })
 })
 
 .controller('AcceptedOfferDetailCtrl', function($scope, $stateParams, AcceptedOffers) {
   $scope.acceptedOffer = AcceptedOffers.get($stateParams.acceptedOfferId);
 });
-
-
-/*.controller('LoginCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http) {
-  var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
-    '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
-
-  var loginWindow;
-  $scope.login = function () {
-    loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-
-    loginWindow.addEventListener('loadstart', function(e) {
-      var url = e.url;
-      var code = /\?code=(.+)$/.exec(url);
-      var error = /\?error=(.+)$/.exec(url);
-
-      if (code) {
-        var url2 = 'code='+code[1]+'&client_id='+Google.client_id+
-        '&client_secret='+Google.client_secret+'&redirect_uri='+
-        Google.redirect_uri+'&grant_type=authorization_code';
-
-        //window.alert('url: '+url2);
-        $http ({
-          method: 'POST',
-          url: 'https://accounts.google.com/o/oauth2/token',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          data: url2
-        }).success(function(data, status){
-          window.alert('http '+ data.access_token);
-          // loginWindow.close();
-          // $state.transitionTo('tab.requests');
-          // $state.transitionTo('tab.request');
-          var url3 = 'https://www.googleapis.com/plus/v1/people/me?access_token=' + data.access_token;
-
-          $http({
-            method: 'GET',
-            url: url3,
-            // url: 'https://www.googleapis.com/plus/v1/people/me',
-            // headers: {
-            //   'Authorization': 'Bearer ' + data.access_token
-            // }
-          }).success(function(data){
-            var temp = JSON.stringify(data)
-            window.alert('success! '+ temp);
-
-            $http({
-              method: 'POST',
-              url: 'http://localhost:3000/request',
-              data: data
-            }).success(function(data){
-              window.alert('success! ');
-              // $state.go('user.active');
-            }).error(function(data, status){
-              window.alert('fail to get user info');
-            })
-
-            // $state.go('user.active');
-          }).error(function(data, status){
-            var temp = JSON.stringify(data);
-            window.alert('fail to get user info'+temp);
-          })
-        }).error(function(data, status){
-          window.alert('failed '+status);
-        });
-      }
-    });
-
-    $scope.showToken = function () {
-    $scope.token = localStorageService.get('token');
-    };
-  };
-})*/
