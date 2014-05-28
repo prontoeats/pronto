@@ -11,7 +11,7 @@ var requestSchema = mongoose.Schema({
   radius:         {type: Number, required: true},
   address:        {type: String},
   country:        {type: String, default: 'US'},
-  status:         {type: String, default: 'active'},
+  requestStatus:  {type: String, default: 'Active'},
   results:        {type: mongoose.Schema.Types.Mixed},
   location:       {type: Array, index: '2dsphere'},
   createdAt:      {type: Date, default: Date.now}
