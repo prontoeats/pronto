@@ -1,4 +1,3 @@
-
 var url = require('url');
 var qs = require('querystring');
 var User = require('../db/user.js').User;
@@ -117,60 +116,6 @@ exports.request = function(req, res) {
     return request.promSave();
   })
 
-
-
-  
-  // var parsed = misc.parseRequestFormData(req.body);
-  // var numbers;
-
-  // // get userId of requestor through email
-  // // TODO: store user ID in session (with email) to avoid this lookup
-  // User.promGetUserId(req.session.userEmail)
-
-  //   //update the parsed object info with the requestorId
-  //   .then(function (data){
-  //     parsed.userId = data.userId;
-
-  //     // TODO: do not need userEmail in next 'then', so no need for this?
-  //     //start another promise to keep the chain going
-  //     return new blue(function (resolve, reject) {
-  //       resolve(req.session.userEmail);
-  //     });
-  //   })
-
-  //   //get the next request counter number
-  //   // .then(Counter.getRequestsCounter)
-  //   // .then(Counter.getCounter('requests'))
-
-  //   //update the parsed object info with the request counter
-  //   .then(function (data) {
-  //     // parsed.requestId = data.counter;
-  //     requestObj = new UserRequest(parsed);
-
-  //     //promisifying the save function
-  //     requestObj.promSave = blue.promisify(requestObj.save);
-  //     return requestObj.promSave();
-  //   })
-
-  //   //create new promise to continue chain
-  //   .then(function () {
-  //     return new blue(function (resolve, reject) {
-  //       resolve(parsed);
-  //     })
-  //   })
-
-  //   //get Long/Lat from google maps
-  //   .then(mapApi.getGeo)
-
-  //   //convert response to Long/Lat
-  //   .then(mapApi.parseGeoResult)
-
-  //   //add long/lat results to location parameter on obj and save
-  //   .then(function(result){
-  //     requestObj.location = result;
-  //     return requestObj.promSave();
-  //   })
-
     //create new promise to continue chain
     .then(function(){
       return new blue (function (resolve, reject) {
@@ -225,42 +170,22 @@ exports.sendRequestInfo = function(req, res) {
     console.log('MONGO REQUEST DATA: ', data);
     res.send(200, data[0]);
   })
-
-  // //get email from session info
-  // var email = req.session.userEmail;
-  // console.log('url parse: ', req.url);
-
-
-  // //get username from session info
-  // var username = req.session.userUsername;
-
-  // //get userID
-  // User.promFindOne({email: email})
-
-  //   //find records for that userId
-  //   .then(function (data) {
-  //     return UserRequest.promFind({userId: data.userId})
-  //   })
-
-  //   .then(function(data){
-  //     return new blue(function (resolve, reject) {
-  //       resolve(misc.sendRequestInfoParser(data));
-  //     })
-  //   })
-
-  //   .then(function (data){
-  //     res.send(200, data);
-  //   })
-  
 };
 
-exports.acceptOffer = function(req,res){
-  res.send(201);
+exports.acceptOffer = function(req, res){
 
-  UserRequest.promFindOne({requestId: req.body.requestId})
-    .then(function(data){
-      var number = misc.acceptOfferProcessing(data.results, req.body.businessName);
+  var businessId = mongoose.Types.ObjectId(req.body.businessId);
 
-      twilio.sendConfirmation(number,data.requestId, data.groupSize, data.targetDateTime);
-    })
+  UserRequest.promFindOneAndUpdate(
+    {requestId: req.body.requestId, 'results.businessId': businessId},
+    {$set: {
+      'results.$.status': 'Accepted'
+    }},
+    {new: true}
+  )
+  .then(function (data) {
+    console.log('Updated offer status to accepted: ', data);
+    res.send(201);
+  })
+
 };
