@@ -27,10 +27,10 @@
         <div>Offer</div>
         <div>{{offer.offer}}</div>
       </div>
-        <ion-option-button class="button-positive" ng-click="decline($index)">
+        <ion-option-button class="button-positive" ng-click="reject(offer.businessId)">
           Decline
         </ion-option-button>
-        <ion-option-button class="button-info" ng-click="">
+        <ion-option-button class="button-info" ng-click="accept(offer.businessId)">
           Accept
         </ion-option-button>
       </div>

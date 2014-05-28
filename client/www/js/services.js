@@ -1,19 +1,52 @@
 angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('UserActiveRequest', function($http, localStorageService){
- var all = function(){
-   var userId = localStorageService.get('userId');
-   var accessToken = localStorageService.get('token');
-   var url = 'http://localhost:3000/requests?' +'userId='+userId+'&accessToken='+accessToken;
-   return $http({
-     method: 'GET',
-     url: url
-   });
- };
+
+
+
+   var all = function(){
+     var userId = localStorageService.get('userId');
+     var accessToken = localStorageService.get('token');
+     var url = 'http://localhost:3000/requests?' +'userId='+userId+'&accessToken='+accessToken;
+     return $http({
+       method: 'GET',
+       url: url
+     });
+   };
+
+  var reject = function(requestId, businessId){
+    console.log(requestId, businessId);
+    return $http({
+      method: 'POST',
+      url: 'http://localhost:3000/requests/reject',
+      data: {
+        requestId: requestId,
+        businessId: businessId,
+        userId: localStorageService.get('userId'),
+        accessToken: localStorageService.get('token')
+      }
+    })
+  };
+
+  var accept = function(requestId, businessId){
+    console.log('user accept: ', requestId, businessId);
+    return $http({
+      method: 'POST',
+      url: 'http://localhost:3000/requests/accept',
+      data: {
+        requestId: requestId,
+        businessId: businessId,
+        userId: localStorageService.get('userId'),
+        accessToken: localStorageService.get('token')
+      }
+    })
+  };
 
  return {
-   all:all
- };
+     all:all,
+     accept: accept,
+     reject: reject
+   };
 })
 
 .factory('ActiveTestData', function(){
