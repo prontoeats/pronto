@@ -30,6 +30,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
           window.alert('http '+ data.accessToken);
           localStorageService.set('token', data.accessToken);
           localStorageService.set('userId', data.userId);
+          localStorageService.set('user', true);
           loginWindow.close();
           $state.transitionTo('user.new');
         }).error(function(data, status){
@@ -72,8 +73,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
           }else{
             localStorageService.set('token', data.accessToken);
             localStorageService.set('restaurantId', data.businessId);
-            window.alert('signup failed');
-
+            localStorageService.set('user', false);
             loginWindow.close();
             $state.transitionTo('rest.requests');
           }
@@ -109,6 +109,8 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     .success(function(data){
       localStorageService.set('token', data.accessToken);
       localStorageService.set('restaurantId', data.businessId);
+      localStorageService.set('user', false);
+
       console.log('success! ', data);
       $state.transitionTo('rest.requests');
     })
@@ -210,7 +212,8 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-.controller('ActiveCtrl', function($scope, UserActiveRequest, OffersTestData) {
+.controller('ActiveCtrl', function($scope, $state, $stateParams, UserActiveRequest, OffersTestData) {
+  console.log('active state');
   UserActiveRequest.all()
     .success(function(data, status){
       console.log('got active requests back', data);
@@ -232,7 +235,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     UserActiveRequest.reject($scope.response.requestId, businessId)
     .then(function () {
       console.log('rejected request');
-      $state.go('user.active');
+    $state.transitionTo($state.current, $stateParams, {
+        reload: true,
+        inherit: false,
+        notify: true
+      });
     });
     console.log('got to scopeReject', $scope.response.requestId, businessId);
   };
@@ -241,15 +248,27 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     UserActiveRequest.accept($scope.response.requestId, businessId)
     .then(function () {
       console.log('accepted request');
-      $state.go('user.active');
+      $state.transitionTo($state.current, $stateParams, {
+        reload: true,
+        inherit: false,
+        notify: true
+      });
+
     });
     console.log('got to scopeaccept ', $scope.response.requestId, businessId);
   };
 })
 
-.controller('SettingsCtrl', function($scope) {
-  $scope.test = function(){
-    var ref = window.open('http://www.yelp.com/biz/kusina-ni-tess-san-francisco', '_blank');
+.controller('SettingsCtrl', function($scope, $state, localStorageService) {
+  // $scope.test = function(){
+  //   var ref = window.open('http://www.yelp.com/biz/kusina-ni-tess-san-francisco', '_blank');
+  // }
+  $scope.logout = function(){
+    console.log('user logout');
+    localStorageService.set('token', null);
+    localStorageService.set('userId', null);
+    localStorageService.set('user', null);
+    $state.go('login.user');
   }
 })
 
@@ -302,9 +321,9 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   })
 })
 
-.controller('ExistingOfferDetailCtrl', function($scope, $stateParams, ExistingOffers) {
-  $scope.existingOffer = ExistingOffers.get($stateParams.existingOfferId);
-})
+// .controller('ExistingOfferDetailCtrl', function($scope, $stateParams, ExistingOffers) {
+//   $scope.existingOffer = ExistingOffers.get($stateParams.existingOfferId);
+// })
 
 .controller('AcceptedOffersCtrl', function($scope, AcceptedOffers) {
   AcceptedOffers.all()
@@ -319,4 +338,13 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('AcceptedOfferDetailCtrl', function($scope, $stateParams, AcceptedOffers) {
   $scope.acceptedOffer = AcceptedOffers.get($stateParams.acceptedOfferId);
+})
+
+.controller('RestSettingsCtrl', function($scope, $state, localStorageService) {
+  $scope.logout = function(){
+    localStorageService.set('token', null);
+    localStorageService.set('restauarntId', null);
+    localStorageService.set('user', null);
+    $state.go('login.user');
+  }
 });
