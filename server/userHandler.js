@@ -180,6 +180,7 @@ exports.acceptOffer = function(req, res){
   UserRequest.promFindOneAndUpdate(
     {requestId: req.body.requestId, 'results.businessId': businessId},
     {$set: {
+      'requestStatus': 'Accepted',
       'results.$.status': 'Accepted'
     }},
     {new: true}
