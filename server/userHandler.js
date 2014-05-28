@@ -189,3 +189,21 @@ exports.acceptOffer = function(req, res){
   })
 
 };
+
+exports.rejectOffer = function(req, res){
+
+  var businessId = mongoose.Types.ObjectId(req.body.businessId);
+
+  UserRequest.promFindOneAndUpdate(
+    {requestId: req.body.requestId, 'results.businessId': businessId},
+    {$set: {
+      'results.$.status': 'Rejected'
+    }},
+    {new: true}
+  )
+  .then(function (data) {
+    console.log('Updated offer status to rejected: ', data);
+    res.send(201);
+  })
+
+};
