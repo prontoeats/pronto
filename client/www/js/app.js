@@ -33,13 +33,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     // localStorageService.set('user', 'true');
     // $state.transitionTo('user.new');
 
-    localStorageService.set('token', null);
-    localStorageService.set('userId', null);
-    localStorageService.set('user', null);
-    // $state.transitionTo('user.new');
-
     var token = localStorageService.get('token');
-
     if(!token) {
       console.log('state transition to login')
       $state.transitionTo('login.user');
@@ -208,15 +202,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     })
 
-    .state('rest.existingOffer-detail', {
-      url: '/existingOffer/:existingOfferId',
-      views: {
-        'rest-existingOffers': {
-          templateUrl: 'templates/rest-existingOffer-detail.html',
-          controller: 'ExistingOfferDetailCtrl'
-        }
-      }
-    })
+    // .state('rest.existingOffer-detail', {
+    //   url: '/existingOffer/:existingOfferId',
+    //   views: {
+    //     'rest-existingOffers': {
+    //       templateUrl: 'templates/rest-existingOffer-detail.html',
+    //       controller: 'ExistingOfferDetailCtrl'
+    //     }
+    //   }
+    // })
 
     .state('rest.acceptedOffers', {
       url: '/acceptedOffers',
@@ -234,6 +228,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         'rest-acceptedOffers': {
           templateUrl: 'templates/rest-acceptedOffer-detail.html',
           controller: 'AcceptedOfferDetailCtrl'
+        }
+      }
+    })
+
+    .state('rest.settings', {
+      url: '/settings',
+      views: {
+        'rest-settings': {
+          templateUrl: 'templates/rest-settings.html',
+          controller: 'RestSettingsCtrl'
         }
       }
     });
