@@ -31,7 +31,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       console.log('state transition to login')
       $state.transitionTo('login.user');
     }else{
-      $state.transitionTo('login.user');
+      if (localStorageService.get('user')){
+        console.log('user');
+        $state.transitionTo('user.new');
+      }else{
+        console.log('restaurant');
+        $state.transitionTo('rest.requests');
+      }
     }
   });
 })

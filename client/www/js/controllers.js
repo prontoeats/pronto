@@ -211,12 +211,20 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     })
 
   $scope.reject = function(businessId){
-    UserActiveRequest.reject($scope.response.requestId, businessId);
+    UserActiveRequest.reject($scope.response.requestId, businessId)
+    .then(function () {
+      console.log('rejected request');
+      $state.go('user.active');
+    });
     console.log('got to scopeReject', $scope.response.requestId, businessId);
   };
 
   $scope.accept = function(businessId){
-    UserActiveRequest.accept($scope.response.requestId, businessId);
+    UserActiveRequest.accept($scope.response.requestId, businessId)
+    .then(function () {
+      console.log('accepted request');
+      $state.go('user.active');
+    });
     console.log('got to scopeaccept ', $scope.response.requestId, businessId);
   };
 })
