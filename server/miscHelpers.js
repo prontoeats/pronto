@@ -1,5 +1,7 @@
 
 var blue = require('bluebird');
+var mongoose = require('mongoose');
+
 
 exports.parseNearbyData = function (array) {
   var allBus = [];
@@ -111,3 +113,26 @@ exports.acceptOfferProcessing = function(parsed, restaurant){
     }
   }
 };
+
+exports.parseBusinessOpenRequests = function(array, businessId){
+
+  var results = [];
+  var obj;
+
+  var request;
+  var business;
+
+
+  for (var i=0; i<array.length; i++){
+    request = array[i];
+    for (var y=0; y<request.results.length; y++){
+      business = array[i].results[y];
+      if( (business.businessId+'' === businessId+'') && (business.status === 'Pending')){
+        obj = request;
+        obj.results=[];
+        results.push(obj);
+      }
+    }
+  }
+  return results;
+}

@@ -247,7 +247,9 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   $scope.accept = function(offer){
     console.log($scope.request, offer);
     Requests.accept($scope.request.requestId, offer)
-    $location.path('/rest/requests')
+    .success(function(data,status){
+      $location.path('/rest/requests')
+    })
   };
 })
 

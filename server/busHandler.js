@@ -9,6 +9,7 @@ var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
+var misc = require('./miscHelpers.js');
 
 
 exports.sendBusIndex = function(req, res){
@@ -138,13 +139,24 @@ exports.showRequests = function (req, res) {
 
   var oid = mongoose.Types.ObjectId(queryString.businessId);
 
-  console.log('showRequests querystring oid: ',oid);
 
+//KEEP THIS FOR TESTING
+  // UserRequest.promFindOneAndUpdate(
+  //   {requestId: 95, 'results.businessId': oid},
+  //   {$set: {'results.$.status': 'Pending'}},
+  //   {new: true}
+  // )
+
+  // UserRequest.promFindOneAndUpdate(
+  //   {requestId: 97, 'results.businessId': oid},
+  //   {$set: {'results.$.status': 'Pending'}},
+  //   {new: true}
+  // )
 
   UserRequest.promFind({'results.businessId': oid})
   .then(function(data){
-    console.log('business query results: ', data);
-    res.send(200, data);
+    var results = misc.parseBusinessOpenRequests(data, oid);
+    res.send(200, results);
   })
 
   // var businessId = req.session.businessId || 1;
