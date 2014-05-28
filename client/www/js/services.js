@@ -1,9 +1,6 @@
 angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('UserActiveRequest', function($http, localStorageService){
-
-
-
    var all = function(){
      var userId = localStorageService.get('userId');
      var accessToken = localStorageService.get('token');
@@ -132,25 +129,27 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 
 
-.factory('ExistingOffers', function() {
+.factory('ExistingOffers', function($http) {
   // Might use a resource here that returns a JSON array
+  var all = function(){
+    var businessId = localStorageService.get('restaurantId');
+    var accessToken = localStorageService.get('token');
+    var url = 'http://localhost:3000/business/offered?' +'businessId='+businessId+
+      '&accessToken='+accessToken;
 
-  // Some fake testing data
-  var existingOffers = [
-    { id: 0, name: 'Scruff McGruff', party: '5', time: '15'},
-    { id: 1, name: 'G.I. Joe', party: '2', time: '30' },
-    { id: 2, name: 'Miss Frizzle', party: '3', time: '15' },
-    { id: 3, name: 'Ash Ketchum', party: '6', time: '45' }
-  ];
+    return $http({
+      method:'GET',
+      url: url
+    });
+  }
+
+  // get: function(existingOfferId) {
+  //   // Simple index lookup
+  //   return existingOffers[existingOfferId];
+  // }
 
   return {
-    all: function() {
-      return existingOffers;
-    },
-    get: function(existingOfferId) {
-      // Simple index lookup
-      return existingOffers[existingOfferId];
-    }
+    all: all
   };
 })
 
@@ -228,23 +227,20 @@ angular.module('starter.services', ['LocalStorageModule'])
 })
 
 .factory('AcceptedOffers', function() {
-  // Might use a resource here that returns a JSON array
 
-  // Some fake testing data
-  var acceptedOffers = [
-    { id: 0, name: 'Scruff McGruff', party: '5', time: '15'},
-    { id: 1, name: 'G.I. Joe', party: '2', time: '30' },
-    { id: 2, name: 'Miss Frizzle', party: '3', time: '15' },
-    { id: 3, name: 'Ash Ketchum', party: '6', time: '45' }
-  ];
+  var all = function(){
+    var businessId = localStorageService.get('restaurantId');
+    var accessToken = localStorageService.get('token');
+    var url = 'http://localhost:3000/business/accepted?' +'businessId='+businessId+
+      '&accessToken='+accessToken;
+
+    return $http({
+      method:'GET',
+      url: url
+    });
+  }
 
   return {
-    all: function() {
-      return acceptedOffers;
-    },
-    get: function(acceptedOfferId) {
-      // Simple index lookup
-      return acceptedOffers[acceptedOfferId];
-    }
+    all: all
   };
 })
