@@ -9,33 +9,33 @@ var requestSchema = mongoose.Schema({
   mins:           {type: Number, required: true},
   groupSize:      {type: Number, required: true},
   radius:         {type: Number, required: true},
-  active:         {type: Boolean},
   address:        {type: String},
   country:        {type: String, default: 'US'},
+  requestStatus:  {type: String, default: 'Active'},
   results:        {type: mongoose.Schema.Types.Mixed},
   location:       {type: Array, index: '2dsphere'},
   createdAt:      {type: Date, default: Date.now}
 });
 
-requestSchema.pre('save', function (next) {
+// requestSchema.pre('save', function (next) {
 
-  if (!this.requestId) {
+//   if (!this.requestId) {
 
-    Counter.getCounter('requests').bind(this)
+//     Counter.getCounter('requests').bind(this)
 
-      .then(function (data) {
-        this.requestId = data.counter;
-        next();
-      })
+//       .then(function (data) {
+//         this.requestId = data.counter;
+//         next();
+//       })
 
-      .catch(function (err) {
-        throw err;
-      });
-  }
+//       .catch(function (err) {
+//         throw err;
+//       });
+//   }
 
-  next();
+//   next();
 
-});
+// });
 
 var UserRequest = mongoose.model('Request', requestSchema);
 
