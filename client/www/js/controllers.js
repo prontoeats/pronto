@@ -202,7 +202,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if($scope.response.requestStatus === 'Accepted'){
         $scope.filterOn = 'Accepted';
       } else {
-        $scope.filterOn = 'Offered';
+        $scope.filterOn = 'Accepted';
       }
 
     })
@@ -210,9 +210,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       console.log('active data request failed')
     })
 
-  $scope.declinedOffers = [];
-  $scope.decline = function(index){
-    $scope.declinedOffers.push($scope.offers.splice(index,1));
+  $scope.reject = function(businessId){
+    UserActiveRequest.reject($scope.response.requestId, businessId);
+    console.log('got to scopeReject', $scope.response.requestId, businessId);
+  };
+
+  $scope.accept = function(businessId){
+    UserActiveRequest.accept($scope.response.requestId, businessId);
+    console.log('got to scopeaccept ', $scope.response.requestId, businessId);
   };
 })
 
