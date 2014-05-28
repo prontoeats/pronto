@@ -114,7 +114,7 @@ exports.acceptOfferProcessing = function(parsed, restaurant){
   }
 };
 
-exports.parseBusinessOpenRequests = function(array, businessId){
+exports.parseBusinessOpenRequests = function(array, businessId, status){
 
   var results = [];
   var obj;
@@ -127,7 +127,7 @@ exports.parseBusinessOpenRequests = function(array, businessId){
     request = array[i];
     for (var y=0; y<request.results.length; y++){
       business = array[i].results[y];
-      if( (business.businessId+'' === businessId+'') && (business.status === 'Pending')){
+      if( (business.businessId+'' === businessId+'') && (business.status === status)){
         obj = request;
         obj.results=[];
         results.push(obj);

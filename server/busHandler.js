@@ -157,7 +157,7 @@ exports.showRequests = function (req, res) {
 
   UserRequest.promFind({'results.businessId': oid})
   .then(function(data){
-    var results = misc.parseBusinessOpenRequests(data, oid);
+    var results = misc.parseBusinessOpenRequests(data, oid, 'Pending');
     res.send(200, results);
   })
 
@@ -234,58 +234,36 @@ exports.acceptRequests = function(req,res){
   })
 };
 
+exports.showOffered = function (req, res) {
 
-exports.showOffers = function (req, res) {
-  console.log('inside showOffers');
+  console.log('got to showOffered');
+  console.log('req.url:', req.url);
+  var queryString = qs.parse(url.parse(req.url).query);
+  console.log('queryString:', queryString);
 
-  // query offers collection, filtering by businessId
-  Offer.promFind({businessId: req.session.businessId})
-    .then(function (data) {
-      if (!data) {
-        console.log('no offers found');
-      } else {
-        console.log('offers found, returning...');
-        console.dir(data);
-        // return all offers as an array of objects
-        res.send(200, data);
-      }
-    })
+  var oid = mongoose.Types.ObjectId(queryString.businessId);
 
-    //if there was an issue searching for offers
-    .catch(function (e) {
-      console.log('offer lookup failed ', e);
-      throw e
-      res.redirect('/business/dashboard');
-    })
+  UserRequest.promFind({'results.businessId': oid})
+  .then(function(data){
+    var results = misc.parseBusinessOpenRequests(data, oid, 'Offered');
+    res.send(200, results);
+  })
+
 }
 
-exports.sendOffer = function (req, res) {
+exports.showAccepted = function (req, res) {
 
-  Offer.promFindOne({requestId: req.body.requestId, businessId: req.session.businessId})
+  console.log('got to showOffered');
+  console.log('req.url:', req.url);
+  var queryString = qs.parse(url.parse(req.url).query);
+  console.log('queryString:', queryString);
 
-    .then(function (data) {
-      //if the offer exists, redirect (cannot reply twice)
-      if (data) {
-        console.log('offer already exists')
+  var oid = mongoose.Types.ObjectId(queryString.businessId);
 
-      //otherwise, save the offer
-      } else {
-        req.body.businessId = req.session.businessId;
-        console.dir(req.body);
-        new Offer(req.body).save(function (err) {
-          if (err) {
-            console.log('error when saving new offer');
-          } else {
-            console.log('offer saved');
-          }
-        })
-      }
-      res.redirect('/business/dashboard');
-    })
+  UserRequest.promFind({'results.businessId': oid})
+  .then(function(data){
+    var results = misc.parseBusinessOpenRequests(data, oid, 'Accepted');
+    res.send(200, results);
+  })
 
-    //if there was an issue searching for offers
-    .catch(function (e) {
-      console.log('offer lookup failed ', e);
-      res.redirect('/business/dashboard');
-    })
 }

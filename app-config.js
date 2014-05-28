@@ -30,33 +30,28 @@ app.configure(function() {
 
 //Public user routes
 app.get('/', userHandler.sendIndex);
-app.get('/logout', authen.logout);
-// app.get('/about', userHandler.sendAbout);
 app.post('/login/user', userHandler.login);
-// app.post('/signup', userHandler.signup);
+app.get('/logout', authen.logout);
 
 //Public business routes
 app.get('/business', busHandler.sendBusIndex);
 app.post('/login/business', busHandler.login);
 app.post('/signup/business', busHandler.signup);
-// app.post('/business/signup', busHandler.signup);
 
-app.post('/twilio', twiml.processPost);
-
-//routes requiring authentication
+// private user routes
 app.get('/requests', userHandler.sendRequestInfo);
 app.post('/requests/accept', userHandler.acceptOffer);
 app.post('/requests/reject', userHandler.rejectOffer);
-
 app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
-app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
 app.post('/request', authen.authenticateUserToken, userHandler.request);
 
-app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
+// private business routes
 app.get('/business/requests', busHandler.showRequests);
 app.post('/business/requests/decline', busHandler.declineRequests);
 app.post('/business/requests/accept', busHandler.acceptRequests);
 app.get('/business/offers', busHandler.showOffers);
 app.post('/business/offers', busHandler.sendOffer);
+app.get('/business/offered', busHandler.showOffered);
+app.get('/business/accepted', busHandler.showAccepted);
 
 module.exports = app;
