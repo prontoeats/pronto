@@ -343,7 +343,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('RestSettingsCtrl', function($scope, $state, localStorageService) {
   $scope.logout = function(){
     localStorageService.set('token', null);
-    localStorageService.set('restauarntId', null);
+    localStorageService.set('restaurantId', null);
     localStorageService.set('user', null);
     $state.go('login.user');
   }

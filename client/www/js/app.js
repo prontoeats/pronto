@@ -34,15 +34,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     // $state.transitionTo('user.new');
 
     var token = localStorageService.get('token');
+
     if(!token) {
-      console.log('state transition to login')
       $state.transitionTo('login.user');
     }else{
-      if (localStorageService.get('user')){
-        console.log('user');
+      if (localStorageService.get('user') === 'true'){
         $state.transitionTo('user.new');
       }else{
-        console.log('restaurant');
         $state.transitionTo('rest.requests');
       }
     }
