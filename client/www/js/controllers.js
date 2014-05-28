@@ -222,11 +222,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------Restaurant Controllers
 
-.controller('RequestsCtrl', function($scope, Requests) {
+.controller('RequestsCtrl', function($scope, $rootScope, Requests) {
   Requests.all()
     .success(function(data, status){
       console.log('Got requests from server: ', data);
-      $scope.requests = data;      
+      $scope.requests = data;
+      $rootScope.requests = data;
     })
     .error(function(data, status){
       console.log('error: requests from server');
@@ -242,12 +243,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 .controller('RequestDetailCtrl', function($scope, $stateParams, $location, Requests) {
-  $scope.request = Requests.get($stateParams.requestId);
-  $scope.discount = '';
+  $scope.request = Requests.get($scope.requests, $stateParams.requestId);
   $scope.accept = function(offer){
     console.log($scope.request, offer);
     Requests.accept($scope.request.requestId, offer)
-    $location.path('/rest')
+    $location.path('/rest/requests')
   };
 })
 
