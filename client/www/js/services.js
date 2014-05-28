@@ -126,12 +126,12 @@ angular.module('starter.services', ['LocalStorageModule'])
   // GET Request with route
 
   // Some fake testing data
-  var requests = [
-    { id: 0, name: 'Scruff McGruff', party: '5', time: '15'},
-    { id: 1, name: 'G.I. Joe', party: '2', time: '30' },
-    { id: 2, name: 'Miss Frizzle', party: '3', time: '15' },
-    { id: 3, name: 'Ash Ketchum', party: '6', time: '45' }
-  ];
+  // var requests = [
+  //   { id: 0, name: 'Scruff McGruff', party: '5', time: '15'},
+  //   { id: 1, name: 'G.I. Joe', party: '2', time: '30' },
+  //   { id: 2, name: 'Miss Frizzle', party: '3', time: '15' },
+  //   { id: 3, name: 'Ash Ketchum', party: '6', time: '45' }
+  // ];
 
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
@@ -144,13 +144,17 @@ angular.module('starter.services', ['LocalStorageModule'])
     })
   };
 
-  var get = function(requestId) {
+  var get = function(requests, requestId) {
     // Simple index lookup
-    return requests[requestId];
+    for(var i =0; i<requests.length; i++){
+      if (requests[i].requestId === requestId*1){
+        return requests[i];
+      }
+    }
   }
 
   var go = function(request){
-    path = 'rest/request/' + request.id;
+    path = 'rest/request/' + request.requestId;
     $location.path(path);
   };
 

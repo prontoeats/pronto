@@ -1,4 +1,4 @@
-<ion-view title="{{request.id}}">
+<ion-view title="{{request.requestId}}">
   <ion-content has-header="true" padding="true">
     <div><br></div>
     <div class="row">
@@ -7,9 +7,9 @@
       <div class="col col-33 text-center">Size</div>
     </div>
     <div class="row">
-      <div class="col col-33 text-center">{{request.id}}</div>
-      <div class="col col-33 text-center">{{request.time}}</div>
-      <div class="col col-33 text-center">{{request.party}}</div>
+      <div class="col col-33 text-center">{{request.requestId}}</div>
+      <div class="col col-33 text-center">{{request.mins}}</div>
+      <div class="col col-33 text-center">{{request.groupSize}}</div>
     </div>
     
     <form onsubmit="this.reset();">
