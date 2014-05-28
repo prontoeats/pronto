@@ -198,6 +198,13 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       console.log('got active requests back', data);
       $scope.response = data;
       $scope.offers = data.results;
+
+      if($scope.response.requestStatus === 'Accepted'){
+        $scope.filterOn = 'Accepted';
+      } else {
+        $scope.filterOn = 'Offered';
+      }
+
     })
     .error(function(data, status){
       console.log('active data request failed')

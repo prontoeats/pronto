@@ -141,17 +141,17 @@ exports.showRequests = function (req, res) {
 
 
 //KEEP THIS FOR TESTING
-  // UserRequest.promFindOneAndUpdate(
-  //   {requestId: 95, 'results.businessId': oid},
-  //   {$set: {'results.$.status': 'Pending'}},
-  //   {new: true}
-  // )
+    // UserRequest.promFindOneAndUpdate(
+    //   {requestId: 95, 'results.businessId': oid},
+    //   {$set: {'results.$.status': 'Pending'}},
+    //   {new: true}
+    // )
 
-  // UserRequest.promFindOneAndUpdate(
-  //   {requestId: 97, 'results.businessId': oid},
-  //   {$set: {'results.$.status': 'Pending'}},
-  //   {new: true}
-  // )
+    // UserRequest.promFindOneAndUpdate(
+    //   {requestId: 97, 'results.businessId': oid},
+    //   {$set: {'results.$.status': 'Pending'}},
+    //   {new: true}
+    // )
 
   UserRequest.promFind({'results.businessId': oid})
   .then(function(data){
@@ -221,7 +221,7 @@ exports.acceptRequests = function(req,res){
   UserRequest.promFindOneAndUpdate(
     {requestId: data.requestId, 'results.businessId': businessId},
     {$set: {
-      'results.$.status': 'Accepted',
+      'results.$.status': 'Offered',
       'results.$.replies': data.offer
     }},
     {new: true}
