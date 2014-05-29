@@ -174,6 +174,19 @@ exports.acceptRequests = function(req,res){
     console.log('Successful Accepted Update: ', data);
     res.send(201);
   })
+  .then(function () {
+    // if offer is still outstanding (status: offered) after ten minutes
+    // convert status to "expired"
+    setTimeout(function () {
+      UserRequest.promFindOneAndUpdate(
+        {requestId: data.requestId, 'results.businessId': businessId, 'results.status': 'Active'},
+        {$set: {
+          'results.$.status': 'Expired'
+        }},
+        {new: true}
+      )
+    }, 1000 * 60 * 10);
+  });
 };
 
 exports.showOffered = function (req, res) {
@@ -190,7 +203,6 @@ exports.showOffered = function (req, res) {
     var results = misc.parseBusinessOpenRequests(data, oid, 'Offered');
     res.send(200, results);
   })
-
 }
 
 exports.showAccepted = function (req, res) {
@@ -207,5 +219,4 @@ exports.showAccepted = function (req, res) {
     var results = misc.parseBusinessOpenRequests(data, oid, 'Accepted');
     res.send(200, results);
   })
-
 }
