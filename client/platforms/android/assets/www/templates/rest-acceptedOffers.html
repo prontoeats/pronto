@@ -7,10 +7,14 @@
             <span>{{acceptedOffer.name}}</span>
           </div>
           <div>
+            <div>
             <span>ID: {{acceptedOffer.requestId}}</span>
             <span>Party: {{acceptedOffer.groupSize}}</span>
-            <span>Arrival: {{acceptedOffer.targetDateTime}}</span>
-            <span>Arrival: {{acceptedOffer.requestNotes}}</span>
+            <span>Arrival: {{acceptedOffer.targetDateTime|date:'shortTime'}}</span>
+            </div>
+            <div>
+            <span>Offer: {{acceptedOffer.requestNotes}}</span>
+            </div>
           </div>
         </div>      
       </ion-item>

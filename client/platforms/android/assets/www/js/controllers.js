@@ -70,7 +70,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
             localStorageService.set('token', data.accessToken);
             localStorageService.set('restaurantId', data.businessId);
             localStorageService.set('user', false);
-            loginWindow.close();
+            // loginWindow.close();
             $state.transitionTo('rest.requests');
           }
         }).error(function(data, status){
@@ -85,12 +85,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 //---------------Signup Controllers---------------
 .controller('SignupCtrl', function($scope, localStorageService, $state, $http, ServerUrls) {
   $scope.restInfo = {};
-  $scope.restInfo.businessName = 'Jimmy';
-  $scope.restInfo.address = '944 Market St';
-  $scope.restInfo.city = 'San Francisco';
-  $scope.restInfo.state = 'CA';
-  $scope.restInfo.zipCode = '94103';
-  $scope.restInfo.phoneNumber = '3124794923';
+  $scope.restInfo.businessName;
+  $scope.restInfo.address;
+  $scope.restInfo.city;
+  $scope.restInfo.state;
+  $scope.restInfo.zipCode;
+  $scope.restInfo.phoneNumber;
   $scope.restInfo.accessToken = localStorageService.get('token');
   // $scope.restInfo.id = localStorageService.get('restaurantId');
 
@@ -262,16 +262,21 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------Restaurant Controllers
 
-.controller('RequestsCtrl', function($scope, $rootScope, Requests) {
-  Requests.all()
-    .success(function(data, status){
-      console.log('Got requests from server: ', data);
-      $scope.requests = data;
-      $rootScope.requests = data;
-    })
-    .error(function(data, status){
-      console.log('error: requests from server');
-    })
+.controller('RequestsCtrl', function($scope, $rootScope, $interval, Requests) {
+
+  var updateData = function () {
+    Requests.all()
+      .success(function(data, status){
+        console.log('Got requests from server: ', data);
+        $scope.requests = data;
+        $rootScope.requests = data;
+      })
+      .error(function(data, status){
+        console.log('error: requests from server');
+      });
+  };
+
+  updateData();
 
   $scope.go = Requests.go;
 
@@ -280,6 +285,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     console.log(request);
     Requests.decline(request[0]);
   };
+
+  stopUpdate = $interval(updateData, 1000 * 3);
+
+  $rootScope.$on('$stateChangeStart', function() {
+    $interval.cancel(stopUpdate);
+  });
 })
 
 .controller('RequestDetailCtrl', function($scope, $stateParams, $location, Requests) {
@@ -293,30 +304,46 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   };
 })
 
-.controller('ExistingOffersCtrl', function($scope, ExistingOffers) {
-  ExistingOffers.all()
-  .success(function(data,status){
-    console.log('got existing offer back');
-    $scope.existingOffers = data;
-  })
-  .error(function(data, status){
-    console.log('existing offer error');
-  })
+.controller('ExistingOffersCtrl', function($scope, $rootScope, $interval, ExistingOffers) {
+  var updateData = function () {
+    ExistingOffers.all()
+    .success(function(data,status){
+      console.log('got existing offer back');
+      $scope.existingOffers = data;
+    })
+    .error(function(data, status){
+      console.log('existing offer error');
+    })
+  };
+  updateData();
+  stopUpdate = $interval(updateData, 1000 * 3);
+
+  $rootScope.$on('$stateChangeStart', function() {
+    $interval.cancel(stopUpdate);
+  });
 })
 
 // .controller('ExistingOfferDetailCtrl', function($scope, $stateParams, ExistingOffers) {
 //   $scope.existingOffer = ExistingOffers.get($stateParams.existingOfferId);
 // })
 
-.controller('AcceptedOffersCtrl', function($scope, AcceptedOffers) {
-  AcceptedOffers.all()
-  .success(function(data,status){
-    console.log('got existing offer back');
-    $scope.acceptedOffers = data;
-  })
-  .error(function(data, status){
-    console.log('existing offer error');
-  })
+.controller('AcceptedOffersCtrl', function($scope, $rootScope, $interval, AcceptedOffers) {
+  var updateData = function () {
+    AcceptedOffers.all()
+    .success(function(data,status){
+      console.log('got accepted offer back');
+      $scope.acceptedOffers = data;
+    })
+    .error(function(data, status){
+      console.log('existing offer error');
+    })
+  };
+  updateData();
+  stopUpdate = $interval(updateData, 1000 * 3);
+
+  $rootScope.$on('$stateChangeStart', function() {
+    $interval.cancel(stopUpdate);
+  });
 })
 
 .controller('AcceptedOfferDetailCtrl', function($scope, $stateParams, AcceptedOffers) {
