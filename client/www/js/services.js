@@ -1,10 +1,16 @@
 angular.module('starter.services', ['LocalStorageModule'])
 
-.factory('UserActiveRequest', function($http, localStorageService){
+
+.factory('ServerUrls', function(){
+  return {
+    url: 'http://groupeats.azurewebsites.net'
+  };
+})
+.factory('UserActiveRequest', function($http, localStorageService,ServerUrls){
    var all = function(){
      var userId = localStorageService.get('userId');
      var accessToken = localStorageService.get('token');
-     var url = 'http://groupeats.azurewebsites.net/requests?userId='+userId+'&accessToken='+accessToken;
+     var url = ServerUrls.url+'/requests?userId='+userId+'&accessToken='+accessToken;
      return $http({
        method: 'GET',
        url: url
@@ -15,7 +21,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log(requestId, businessId);
     return $http({
       method: 'POST',
-      url: 'http://groupeats.azurewebsites.net/requests/reject',
+      url: ServerUrls.url+'/requests/reject',
       data: {
         requestId: requestId,
         businessId: businessId,
@@ -29,7 +35,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log('user accept: ', requestId, businessId);
     return $http({
       method: 'POST',
-      url: 'http://groupeats.azurewebsites.net/requests/accept',
+      url: ServerUrls.url+'/requests/accept',
       data: {
         requestId: requestId,
         businessId: businessId,
@@ -129,12 +135,12 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 
 
-.factory('ExistingOffers', function($http, localStorageService) {
+.factory('ExistingOffers', function($http, localStorageService,ServerUrls) {
   // Might use a resource here that returns a JSON array
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = 'http://groupeats.azurewebsites.net?businessId='+businessId+
+    var url = ServerUrls.url+'business/offered?businessId='+businessId+
       '&accessToken='+accessToken;
 
     return $http({
@@ -153,7 +159,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
-.factory('Requests', function($http, localStorageService, $location) {
+.factory('Requests', function($http, localStorageService, $location, ServerUrls) {
   // Might use a resource here that returns a JSON array
   // GET Request with route
 
@@ -168,7 +174,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = 'http://groupeats.azurewebsites.net/business/requests?businessId='+businessId+'&accessToken='+accessToken;
+    var url = ServerUrls.url+'/business/requests?businessId='+businessId+'&accessToken='+accessToken;
 
     return $http({
       method:'GET',
@@ -194,7 +200,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log(request.requestId);
     return $http({
       method: 'POST',
-      url: 'http://groupeats.azurewebsites.net/business/requests/decline',
+      url: ServerUrls.url+'/business/requests/decline',
       data: {
         requestId: request.requestId,
         businessId: localStorageService.get('restaurantId'),
@@ -207,7 +213,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log(requestId, offer);
     return $http({
       method: 'POST',
-      url: 'http://groupeats.azurewebsites.net/business/requests/accept',
+      url: ServerUrls.url+'/business/requests/accept',
       data: {
         requestId: requestId,
         offer:  offer,
@@ -226,12 +232,12 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
-.factory('AcceptedOffers', function($http, localStorageService) {
+.factory('AcceptedOffers', function($http, localStorageService, ServerUrlsl) {
 
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = 'http://groupeats.azurewebsites.net/business/accepted?businessId='+businessId+
+    var url = ServerUrls.url+'/business/accepted?businessId='+businessId+
       '&accessToken='+accessToken;
 
     return $http({

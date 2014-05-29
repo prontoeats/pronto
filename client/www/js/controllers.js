@@ -2,7 +2,7 @@
 angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------------Login Controllers---------------
-.controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http) {
+.controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls) {
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
@@ -22,19 +22,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if (code) {
         $http ({
           method: 'POST',
-          url: 'http://groupeats.azurewebsites.net/login/user',
+          url: ServerUrls.url+'/login/user',
           data: {
             code: code[1]
           }
         }).success(function(data, status){
-          window.alert('http '+ data.accessToken);
           localStorageService.set('token', data.accessToken);
           localStorageService.set('userId', data.userId);
           localStorageService.set('user', true);
           loginWindow.close();
           $state.transitionTo('user.new');
         }).error(function(data, status){
-          window.alert('failed '+status);
           loginWindow.close();
           $state.transitionTo('login.user');
         });
@@ -43,7 +41,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   };
 })
 
-.controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http) {
+.controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls) {
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
@@ -59,14 +57,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if (code) {
         $http ({
           method: 'POST',
-          url: 'http://groupeats.azurewebsites.net/login/business',
+          url: ServerUrls.url+'/login/business',
           data: {
             code: code[1]
           }
         }).success(function(data, status){
-          window.alert('http '+ data.accessToken);
           if (data.signup){
-            window.alert('signup is true');
             localStorageService.set('token', data.accessToken);
             loginWindow.close();
             $state.transitionTo('signup.signup');
@@ -78,7 +74,6 @@ angular.module('starter.controllers', ['LocalStorageModule'])
             $state.transitionTo('rest.requests');
           }
         }).error(function(data, status){
-          window.alert('failed '+status);
           loginWindow.close();
           $state.transitionTo('login.restaurant');
         });
@@ -88,7 +83,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 //---------------Signup Controllers---------------
-.controller('SignupCtrl', function($scope, localStorageService, $state, $http) {
+.controller('SignupCtrl', function($scope, localStorageService, $state, $http, ServerUrls) {
   $scope.restInfo = {};
   $scope.restInfo.businessName = 'Jimmy';
   $scope.restInfo.address = '944 Market St';
@@ -103,7 +98,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     console.log($scope.restInfo);
     $http({
       method: 'POST',
-      url: 'http://groupeats.azurewebsites.net/signup/business',
+      url: ServerUrls.url+'/signup/business',
       data: $scope.restInfo
     })
     .success(function(data){
@@ -186,7 +181,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
       $http({
         method: 'POST',
-        url: 'http://groupeats.azurewebsites.net/request',
+        url: ServerUrls.url+'/request',
         data: $scope.requestObj
       })
       .success(function(data){
