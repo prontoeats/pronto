@@ -25,7 +25,7 @@ exports.getGeo = function(obj){
   //format the request url
   var googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
   var sensor = 'sensor=false';
-  var key = process.env.GEOCODEKEY;
+  var key = 'key='+process.env.GEOCODEKEY;
   var fullUrl = googleUrl+'address='+parsedAddress+'&'+sensor+'&'+key;
 
   //assemble to request options object
