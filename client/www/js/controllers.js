@@ -311,7 +311,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('AcceptedOffersCtrl', function($scope, AcceptedOffers) {
   AcceptedOffers.all()
   .success(function(data,status){
-    console.log('got existing offer back');
+    console.log('got accepted offer back');
     $scope.acceptedOffers = data;
   })
   .error(function(data, status){
