@@ -114,27 +114,40 @@ exports.request = function(req, res) {
     return request.promSave();
   })
 
-    //create new promise to continue chain
-    .then(function(){
-      return new blue (function (resolve, reject) {
-        resolve([requestObj.location, requestObj.radius]);
-      })
+  //create new promise to continue chain
+  .then(function(){
+    return new blue (function (resolve, reject) {
+      resolve([requestObj.location, requestObj.radius]);
     })
+  })
 
-    //find businesses nearby the request location
-    .then(Business.promFindNearby)
+  //find businesses nearby the request location
+  .then(Business.promFindNearby)
 
-    //parse and format the data
-    .then(misc.parseNearbyData)
+  //parse and format the data
+  .then(misc.parseNearbyData)
 
-    //store the data as a parameter on the request Obj and save
-    .then(function(data){
-      console.log('storing results property');
-      request.results = data;
-      // numbers = data[1];
-      return request.promSave();
-    })
-
+  //store the data as a parameter on the request Obj and save
+  .then(function(data){
+    console.log('storing results property');
+    request.results = data;
+    // numbers = data[1];
+    return request.promSave();
+  })
+  .then(function (data) {
+    // data should be an array of success values [request, numberAffected]
+    console.log('data:', data);
+    // convert a request still in 'active' state to 'expired' after 10 mins
+    setTimeout(function () {
+      UserRequest.promFindOneAndUpdate(
+        {requestId: data[0].requestId, requestStatus: 'Active'},
+        {$set: {
+          'requestStatus': 'Expired'
+        }},
+        {new: true}
+      )
+    }, 1000 * 60 * 10);
+  })
   .then(function(){
     console.log('requestObj: ', requestObj)
     res.send(201);
@@ -161,7 +174,7 @@ exports.sendRequestInfo = function(req, res) {
   })
 };
 
-exports.acceptOffer = function(req, res){
+exports.acceptOffer = function(req, res) {
 
   var businessId = mongoose.Types.ObjectId(req.body.businessId);
 
@@ -179,7 +192,7 @@ exports.acceptOffer = function(req, res){
   })
 };
 
-exports.rejectOffer = function(req, res){
+exports.rejectOffer = function(req, res) {
 
   var businessId = mongoose.Types.ObjectId(req.body.businessId);
 

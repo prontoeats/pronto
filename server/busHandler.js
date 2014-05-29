@@ -195,7 +195,7 @@ exports.showOffered = function (req, res) {
 
 exports.showAccepted = function (req, res) {
 
-  console.log('got to showOffered');
+  console.log('got to showAccepted');
   console.log('req.url:', req.url);
   var queryString = qs.parse(url.parse(req.url).query);
   console.log('queryString:', queryString);
