@@ -20,6 +20,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       }
 
       if (code) {
+        loginWindow.close();
         $http ({
           method: 'POST',
           url: ServerUrls.url+'/login/user',
@@ -30,7 +31,6 @@ angular.module('starter.controllers', ['LocalStorageModule'])
           localStorageService.set('token', data.accessToken);
           localStorageService.set('userId', data.userId);
           localStorageService.set('user', true);
-          loginWindow.close();
           $state.transitionTo('user.new');
         }).error(function(data, status){
           loginWindow.close();
@@ -55,6 +55,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       var error = /\?error=(.+)$/.exec(url);
 
       if (code) {
+        loginWindow.close();
         $http ({
           method: 'POST',
           url: ServerUrls.url+'/login/business',
@@ -64,13 +65,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
         }).success(function(data, status){
           if (data.signup){
             localStorageService.set('token', data.accessToken);
-            loginWindow.close();
             $state.transitionTo('signup.signup');
           }else{
             localStorageService.set('token', data.accessToken);
             localStorageService.set('restaurantId', data.businessId);
             localStorageService.set('user', false);
-            loginWindow.close();
+            // loginWindow.close();
             $state.transitionTo('rest.requests');
           }
         }).error(function(data, status){
@@ -116,7 +116,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 //---------------User Controllers---------------
-.controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService) {
+.controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService, ServerUrls) {
   //requestObj will be sent to server after hitting submit
 
   $scope.tabA = 1;
@@ -311,7 +311,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('AcceptedOffersCtrl', function($scope, AcceptedOffers) {
   AcceptedOffers.all()
   .success(function(data,status){
-    console.log('got existing offer back');
+    console.log('got accepted offer back');
     $scope.acceptedOffers = data;
   })
   .error(function(data, status){
