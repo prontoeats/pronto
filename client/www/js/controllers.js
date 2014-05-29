@@ -22,7 +22,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if (code) {
         $http ({
           method: 'POST',
-          url: 'http://localhost:3000/login/user',
+          url: 'http://groupeats.azurewebsites.net/login/user',
           data: {
             code: code[1]
           }
@@ -59,7 +59,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       if (code) {
         $http ({
           method: 'POST',
-          url: 'http://localhost:3000/login/business',
+          url: 'http://groupeats.azurewebsites.net/login/business',
           data: {
             code: code[1]
           }
@@ -103,7 +103,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     console.log($scope.restInfo);
     $http({
       method: 'POST',
-      url: 'http://localhost:3000/signup/business',
+      url: 'http://groupeats.azurewebsites.net/signup/business',
       data: $scope.restInfo
     })
     .success(function(data){
@@ -186,7 +186,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
       $http({
         method: 'POST',
-        url: 'http://localhost:3000/request',
+        url: 'http://groupeats.azurewebsites.net/request',
         data: $scope.requestObj
       })
       .success(function(data){
