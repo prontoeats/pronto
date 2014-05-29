@@ -3,7 +3,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('ServerUrls', function(){
   return {
-    url: 'http://groupeats.azurewebsites.net'
+    url: 'http://prontoeats.azurewebsites.net'
   };
 })
 .factory('UserActiveRequest', function($http, localStorageService,ServerUrls){
@@ -140,7 +140,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = ServerUrls.url+'business/offered?businessId='+businessId+
+    var url = ServerUrls.url+'/business/offered?businessId='+businessId+
       '&accessToken='+accessToken;
 
     return $http({
@@ -232,7 +232,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
-.factory('AcceptedOffers', function($http, localStorageService, ServerUrlsl) {
+.factory('AcceptedOffers', function($http, localStorageService, ServerUrls) {
 
   var all = function(){
     var businessId = localStorageService.get('restaurantId');

@@ -23,7 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
     }
     console.log('in ,run.moduel')
 
-    // localStorageService.set('token', 'ya29.IwC2UUT-RcRpdB8AAAAarQOOg2Xw1phjXoIQYlN3Cc4cb4V-2rOvl6kMsSwpBg');
+    // localStorageService.set('token', 'ya29.JAB0fsOcppJjux8AAACm0dqtoVFAHSWLBxJRNr9ZiGdTbAcDH3KdOxoPphWsPA');
     // localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
     // localStorageService.set('user', 'false');
     // $state.transitionTo('rest.requests');
@@ -49,7 +49,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .constant('Google', {
   authorize: 'https://accounts.google.com/o/oauth2/auth',
-  client_id: '375716811110-79psrqpffqjqb3d1cb9l2fvq6jhl9jh7.apps.googleusercontent.com',
+  client_id: '375716811110-4g5qmacale5q8lcg1skemks7rou13dqa.apps.googleusercontent.com',
   redirect_uri: 'http://localhost',
   scope: 'email'
 })

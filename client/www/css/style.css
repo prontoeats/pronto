@@ -5,6 +5,11 @@
   height: 400px;
 }
 
-.active {
-  background-color: red;
+.login {
+  padding: 20px;
+}
+
+.logo {
+  background-color: transparent;
+  border: none;
 }
