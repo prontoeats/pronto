@@ -4,7 +4,7 @@ angular.module('starter.services', ['LocalStorageModule'])
    var all = function(){
      var userId = localStorageService.get('userId');
      var accessToken = localStorageService.get('token');
-     var url = 'http://localhost:3000/requests?' +'userId='+userId+'&accessToken='+accessToken;
+     var url = 'http://groupeats.azurewebsites.net/requests?userId='+userId+'&accessToken='+accessToken;
      return $http({
        method: 'GET',
        url: url
@@ -15,7 +15,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log(requestId, businessId);
     return $http({
       method: 'POST',
-      url: 'http://localhost:3000/requests/reject',
+      url: 'http://groupeats.azurewebsites.net/requests/reject',
       data: {
         requestId: requestId,
         businessId: businessId,
@@ -29,7 +29,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log('user accept: ', requestId, businessId);
     return $http({
       method: 'POST',
-      url: 'http://localhost:3000/requests/accept',
+      url: 'http://groupeats.azurewebsites.net/requests/accept',
       data: {
         requestId: requestId,
         businessId: businessId,
@@ -134,7 +134,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = 'http://localhost:3000/business/offered?' +'businessId='+businessId+
+    var url = 'http://groupeats.azurewebsites.net?businessId='+businessId+
       '&accessToken='+accessToken;
 
     return $http({
@@ -168,7 +168,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = 'http://localhost:3000/business/requests?' +'businessId='+businessId+'&accessToken='+accessToken;
+    var url = 'http://groupeats.azurewebsites.net/business/requests?businessId='+businessId+'&accessToken='+accessToken;
 
     return $http({
       method:'GET',
@@ -194,7 +194,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log(request.requestId);
     return $http({
       method: 'POST',
-      url: 'http://localhost:3000/business/requests/decline',
+      url: 'http://groupeats.azurewebsites.net/business/requests/decline',
       data: {
         requestId: request.requestId,
         businessId: localStorageService.get('restaurantId'),
@@ -207,7 +207,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log(requestId, offer);
     return $http({
       method: 'POST',
-      url: 'http://localhost:3000/business/requests/accept',
+      url: 'http://groupeats.azurewebsites.net/business/requests/accept',
       data: {
         requestId: requestId,
         offer:  offer,
@@ -231,7 +231,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
-    var url = 'http://localhost:3000/business/accepted?' +'businessId='+businessId+
+    var url = 'http://groupeats.azurewebsites.net/business/accepted?businessId='+businessId+
       '&accessToken='+accessToken;
 
     return $http({
