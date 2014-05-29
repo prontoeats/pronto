@@ -195,24 +195,26 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-.controller('ActiveCtrl', function($scope, $state, $stateParams, UserActiveRequest, OffersTestData) {
+.controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $interval, UserActiveRequest, OffersTestData) {
   console.log('active state');
-  UserActiveRequest.all()
-    .success(function(data, status){
-      console.log('got active requests back', data);
-      $scope.response = data;
-      $scope.offers = data.results;
+  var updateData = function () {
+    UserActiveRequest.all()
+      .success(function(data, status){
+        console.log('got active requests back', data);
+        $scope.response = data;
+        $scope.offers = data.results;
 
-      if($scope.response.requestStatus === 'Accepted'){
-        $scope.filterOn = 'Accepted';
-      } else {
-        $scope.filterOn = 'Offered';
-      }
+        if($scope.response.requestStatus === 'Accepted'){
+          $scope.filterOn = 'Accepted';
+        } else {
+          $scope.filterOn = 'Offered';
+        }
 
-    })
-    .error(function(data, status){
-      console.log('active data request failed')
-    })
+      })
+      .error(function(data, status){
+        console.log('active data request failed')
+      })
+  };
 
   $scope.reject = function(businessId){
     UserActiveRequest.reject($scope.response.requestId, businessId)
@@ -240,6 +242,13 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     });
     console.log('got to scopeaccept ', $scope.response.requestId, businessId);
   };
+
+  updateData();
+  stopUpdate = $interval(updateData, 1000 * 3);
+
+  $rootScope.$on('$stateChangeStart', function() {
+    $interval.cancel(stopUpdate);
+  });
 })
 
 .controller('SettingsCtrl', function($scope, $state, localStorageService) {
