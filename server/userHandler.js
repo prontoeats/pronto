@@ -223,3 +223,16 @@ exports.cancelRequest = function(req, res) {
     res.send(201);
   })
 };
+
+exports.checkLastRequestStatus = function(req, res) {
+  UserRequest.promFindOne(
+    {userId: data._id},
+    null,
+    {sort: {createdAt: -1}}
+  )
+  .then(function (data) {
+    console.log('Last request for this user: ', data);
+    console.log('requestStatus of last request:', data.requestStatus);
+    res.send(201);
+  })
+};
