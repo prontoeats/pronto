@@ -3,7 +3,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('ServerUrls', function(){
   return {
-    url: 'http://groupeats.azurewebsites.net'
+    url: 'http://prontoeats.azurewebsites.net'
   };
 })
 .factory('UserActiveRequest', function($http, localStorageService,ServerUrls){
