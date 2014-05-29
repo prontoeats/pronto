@@ -27,7 +27,7 @@ exports.dashboard = function(req, res){
 exports.login = function(req, res){
 
   // receive POST request with 'code'
-  var code = req.body.code || '4/LLfI8uvWrbPXG2Y-YMDgkwqI51hS.wl7iENCqCTMfEnp6UAPFm0Fq-bN1jAI';
+  var code = req.body.code;
   var access_token;
   var email;
   var firstName;
@@ -102,33 +102,6 @@ exports.signup = function (req, res) {
     throw e;
   });
 
-  //check to see if business username exists in database
-  // Business.promFindOne({email: req.body.email})
-  //   .then(function (data){
-
-  //     //if the business username exists, redirect
-  //     if (data) {
-  //       console.log('business username already exists')
-  //       exports.businessSendAuthFail(res);
-
-  //     //otherwise, save the business account into the database and redirect to business dashboard
-  //     } else {
-  //       new Business(req.body).save(function (err) {
-  //         if (err) {
-  //           console.log('issue saving new business account');
-  //           exports.businessSendAuthFail(res);
-  //         } else {
-  //           res.sendfile('./views/busDashboard.html');
-  //         }
-  //       })
-  //     }
-  //   })
-
-  //   //if there was an issue searching for the user, redirect
-  //   .catch(function (e) {
-  //     console.log('business signup failed ', e);
-  //     exports.businessSendAuthFail(res);
-  //   })
 };
 
 exports.showRequests = function (req, res) {
@@ -161,37 +134,6 @@ exports.showRequests = function (req, res) {
     res.send(200, results);
   })
 
-  // var businessId = req.session.businessId || 1;
-
-
-  // search through requests collection
-  // TODO: filter so not all requests are retrieved...
-  // Requests.find(function (err, data) {
-
-  //   console.log('requests:');
-  //   console.dir(data);
-  //   var results = [];
-  //   for (var i = 0; i < data.length; i += 1) {
-  //     // look for results property on each document
-  //     for (var j = 0; j < data[i].results.length; j += 1) {
-  //       // check if document results array has an object with the business id
-  //       if (data[i].results[j].businessId === businessId) {
-  //         // TODO: or copy entire data[i] object and remove results?
-  //         var requestObj = {};
-  //         requestObj.address = data[i].address;
-  //         requestObj.city = data[i].city;
-  //         requestObj.groupSize = data[i].groupSize;
-  //         requestObj.requestNotes = data[i].requestNotes;
-  //         requestObj.requestId = data[i].requestId;
-  //         requestObj.userId = data[i].userId;
-  //         requestObj.targetDateTime = data[i].targetDateTime;
-  //         results.push(requestObj);
-  //       }
-  //     }
-  //   }
-  //   res.send(results);
-
-  // });
 }
 
 exports.declineRequests = function(req,res){

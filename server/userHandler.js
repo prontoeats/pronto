@@ -33,7 +33,7 @@ exports.dashboard = function(req, res){
 exports.login = function(req, res){
 
   // receive POST request with 'code'
-  var code = req.body.code || '4/40BgwsT5hUDRO72YCdGgZoKQpWWG.4gfjZP0ZRagWEnp6UAPFm0HUuaF1jAI';
+  var code = req.body.code;
   var access_token;
   var email;
   var firstName;
@@ -103,9 +103,6 @@ exports.request = function(req, res) {
   dateTime.setMinutes(dateTime.getMinutes() + Number(requestObj.mins));
   requestObj.targetDateTime = dateTime;
 
-  // TODO: wrap this if/else statement in a promise itself
-  // and then have a resolve point in the "if" and "else" sections
-
   mapApi.convertUserRequestLocation(requestObj)
 
   // create new request
@@ -138,15 +135,6 @@ exports.request = function(req, res) {
       return request.promSave();
     })
 
-    //create new promise to continue chain
-    // .then(function(){
-    //   return new blue (function(resolve, reject){
-    //     resolve([numbers, requestObj]);
-    //   });
-    // })
-
-    //send text messages
-    // .then(twilio.massTwilSend);
   .then(function(){
     console.log('requestObj: ', requestObj)
     res.send(201);
