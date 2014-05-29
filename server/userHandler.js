@@ -208,3 +208,18 @@ exports.rejectOffer = function(req, res) {
     res.send(201);
   })
 };
+
+exports.cancelRequest = function(req, res) {
+
+  UserRequest.promFindOneAndUpdate(
+    {requestId: req.body.requestId},
+    {$set: {
+      'requestStatus': 'Canceled'
+    }},
+    {new: true}
+  )
+  .then(function (data) {
+    console.log('Updated request to be rejected: ', data);
+    res.send(201);
+  })
+};
