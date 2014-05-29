@@ -1,0 +1,38 @@
+<ion-view title="Pronto">
+  <ion-content class="has-header padding">
+
+    <div class="list list-inset">
+      <label class="item item-input">
+        <i class="icon ion-ios7-location"></i>
+        <input type="text" ng-model="model.inputLocation">
+      </label>
+    </div>
+    Your location: {{model.inputLocation}}
+    <div class="button-bar button-energize">
+      <a class="button" ng-click='setDistance(0.5); tabA=1' ng-class='{active:tabA===1}'>0.5 mile</a>
+      <a class="button" ng-click='setDistance(1); tabA=2' ng-class='{active:tabA===2}'>1 mile</a>
+      <a class="button" ng-click='setDistance(5); tabA=3' ng-class='{active:tabA===3}'>5 miles</a>
+      <a class="button" ng-click='setDistance(20); tabA=4'ng-class='{active:tabA===4}'>20 miles</a>
+    </div>
+    <br/>
+    <div class="button-bar button-balanced">
+      <a class="button" ng-click='setMins(15); tabB=1' ng-class='{active:tabB===1}'>15 mins</a>
+      <a class="button" ng-click='setMins(30); tabB=2' ng-class='{active:tabB===2}'>30 mins</a>
+      <a class="button" ng-click='setMins(45); tabB=3' ng-class='{active:tabB===3}'>45 mins</a>
+      <a class="button" ng-click='setMins(60); tabB=4' ng-class='{active:tabB===4}'>60 mins</a>
+    </div>
+    <br/>
+    <div>
+      <label class="item item-input">
+        <span class="input-label">Group Size</span>
+        <input type="tel" ng-model='requestObj.groupSize'>
+      </label>
+    </div>
+
+  <div class="row">
+    <div class="col col-33 col-offset-33">
+      <button class="button button-positive" ng-click='sendRequest()'>Submit</button>
+    </div>
+  </div>
+  </ion-content>
+</ion-view>
