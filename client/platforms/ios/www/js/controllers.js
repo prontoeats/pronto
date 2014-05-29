@@ -122,24 +122,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------------User Controllers---------------
 .controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService) {
-
-  //Initialize defaults
-  // var filters = [
-  //   {'filterId': 1,'distance': '0.5 mile'},
-  //   {'filterId': 2,'distance': '1 mile'},
-  //   {'filterId': 3,'distance': '5 miles'},
-  //   {'filterId': 4,'distance': '0 miles'}
-  // ];
-
-  // $scope.items = filters;
-  // $scope.isActive = function(item) {
-  //   if (item.path == $location.path()) {
-  //     return true;
-  //   }
-  //   return false;
-  // };
-
   //requestObj will be sent to server after hitting submit
+
+  $scope.tabA = 1;
+  $scope.tabB = 1;
+
+
   $scope.requestObj = {};
   $scope.requestObj.radius = 0.5;
   $scope.requestObj.mins = 15;
