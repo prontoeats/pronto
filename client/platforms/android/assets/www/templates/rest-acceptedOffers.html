@@ -1,0 +1,19 @@
+<ion-view title="Accepted Offers">
+  <ion-content class="has-header">
+    <ion-list>
+      <ion-item ng-repeat="acceptedOffer in acceptedOffers" type="item-text-wrap" href="#/rest/acceptedOffer/{{acceptedOffer.id}}">
+        <div>
+          <div>
+            <span>{{acceptedOffer.name}}</span>
+          </div>
+          <div>
+            <span>ID: {{acceptedOffer.requestId}}</span>
+            <span>Party: {{acceptedOffer.groupSize}}</span>
+            <span>Arrival: {{acceptedOffer.targetDateTime}}</span>
+            <span>Arrival: {{acceptedOffer.requestNotes}}</span>
+          </div>
+        </div>      
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
