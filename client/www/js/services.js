@@ -1,13 +1,13 @@
 angular.module('starter.services', ['LocalStorageModule'])
 
-.factory('ServerUrls', function($state, ){
+.factory('ServerUrls', function(){
   return {
     // url: 'http://localhost:3000'
     url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
-.factory('PushNotification', function(){
+.factory('PushNotification', function($state){
   var pushNotification;
 
   var onDeviceReady = function(){
@@ -42,6 +42,9 @@ angular.module('starter.services', ['LocalStorageModule'])
     } catch (err){
       console.log('errer registering with the device');
     }
+      // pushNotification.unregister(function(e){console.log('unregistered', e)}, 
+      // function(e){
+      // console.log('issue unregistering',e)});
   };
 
   window.prontoApp = {};
