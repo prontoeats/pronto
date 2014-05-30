@@ -5,7 +5,7 @@
       <ion-item ng-repeat="request in requests" type="item-text-wrap">
         <span>ID: {{request.requestId}}</span>
         <span>Party: {{request.groupSize}}</span>
-        <span>Time of Expected Arrival: {{request.targetDateTime |date:'shortTime'}}</span>
+        <span>Time of Expected Arrival: {{request.targetDateTime |date:'shortTime' | orderby: updatedAt}}</span>
         <ion-option-button class="button-assertive" ng-click="delete($index)">
           Decline
         </ion-option-button>
