@@ -14,7 +14,8 @@ var requestSchema = mongoose.Schema({
   requestStatus:  {type: String, default: 'Active'},
   results:        {type: mongoose.Schema.Types.Mixed},
   location:       {type: Array, index: '2dsphere'},
-  createdAt:      {type: Date, default: Date.now}
+  createdAt:      {type: Date, default: Date.now},
+  updatedAt:      {type: Date, default: Date.now}
 });
 
 requestSchema.pre('save', function (next) {
@@ -26,6 +27,7 @@ requestSchema.pre('save', function (next) {
       .then(function (data) {
         console.log('data.counter:', data.counter);
         this.requestId = data.counter;
+        this.updatedAt = new Date();
         next();
       })
 
@@ -34,6 +36,7 @@ requestSchema.pre('save', function (next) {
       });
   }
 
+  this.updatedAt = new Date();
   next();
 
 });
