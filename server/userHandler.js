@@ -183,7 +183,9 @@ exports.acceptOffer = function(req, res) {
     {requestId: req.body.requestId, 'results.businessId': businessId},
     {$set: {
       'requestStatus': 'Accepted',
-      'results.$.status': 'Accepted'
+      'results.$.status': 'Accepted',
+      'updatedAt': new Date(),
+      'results.$.updatedAt': new Date()
     }},
     {new: true}
   )
@@ -200,7 +202,8 @@ exports.rejectOffer = function(req, res) {
   UserRequest.promFindOneAndUpdate(
     {requestId: req.body.requestId, 'results.businessId': businessId},
     {$set: {
-      'results.$.status': 'Rejected'
+      'results.$.status': 'Rejected',
+      'results.$.updatedAt': new Date()
     }},
     {new: true}
   )

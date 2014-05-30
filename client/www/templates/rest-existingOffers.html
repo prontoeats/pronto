@@ -5,7 +5,7 @@
       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap">
         <span>ID: {{existingOffer.requestId}}</span>
         <span>Party: {{existingOffer.groupSize}}</span>
-        <span>Time of Arrival: {{existingOffer.targetDateTime |date:'shortTime'}}</span>
+        <span>Time of Arrival: {{existingOffer.targetDateTime |date:'shortTime' | orderby: updatedAt}}</span>
       </ion-item>
     </ion-list>
   </ion-content>
