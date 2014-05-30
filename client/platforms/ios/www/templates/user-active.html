@@ -1,22 +1,33 @@
 <ion-view title="Pronto">
-  <ion-content class="has-header padding">
-
-  <div class="card">
-    <div class="item item-text-wrap">
-      <h2>Request Summary</h2>
-      <div>
-        {{response.radius}} miles from {{response.address}}
-      </div>
-      <div>
-        Group of {{response.groupSize}} in {{response.mins}} mins
+  <ion-content class="has-header">
+    <ion-list>
+      <div class="card">
+        <div class="item item-text-wrap">
+          <h2>Request Summary</h2>
+          <div>
+            {{response.radius}} miles from {{response.address}}
+          </div>
+          <div>
+            Group of {{response.groupSize}} in {{response.mins}} mins
+          </div>
+        </div>
       </div>
       <div>
         Expiration time: <span am-time-ago="response.targetDateTime"></span>
       </div>
     </div>
   </div>
+    </ion-list>
 
-  <h4>New Offers</h4>
+  <div class="item item-divider">
+    New Offers
+  </div>
+  <ion-refresher
+    pulling-text="Pull to refresh..."
+    on-refresh="updateData()"
+    refreshing-text="Refreshing!"
+    refreshing-icon="ion-loading-c">
+  </ion-refresher>
   <ion-list can-swipe="true">
     <ion-item ng-repeat="offer in offers | filter: {status: filterOn} | orderBy:'updatedAt'" >
 

@@ -8,7 +8,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'angularMoment'])
 
-.run(function($ionicPlatform, $state, localStorageService) {
+.run(function($ionicPlatform, $state, localStorageService, PushNotification) {
 // .run(function($ionicPlatform) {
 
   $ionicPlatform.ready(function() {
@@ -21,7 +21,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    console.log('in ,run.moduel')
+    console.log('in ,run.module');
 
     // localStorageService.set('token', 'ya29.JAB0fsOcppJjux8AAACm0dqtoVFAHSWLBxJRNr9ZiGdTbAcDH3KdOxoPphWsPA');
     // localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
@@ -44,6 +44,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         $state.transitionTo('rest.requests');
       }
     }
+
+
+    var onDeviceReady = PushNotification.onDeviceReady;
+
+    console.log('before listener');
+    document.addEventListener('deviceready', onDeviceReady, true);
+
   });
 })
 
