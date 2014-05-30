@@ -27,7 +27,6 @@ requestSchema.pre('save', function (next) {
       .then(function (data) {
         console.log('data.counter:', data.counter);
         this.requestId = data.counter;
-        this.updatedAt = new Date();
         next();
       })
 
@@ -36,7 +35,6 @@ requestSchema.pre('save', function (next) {
       });
   }
 
-  this.updatedAt = new Date();
   next();
 
 });

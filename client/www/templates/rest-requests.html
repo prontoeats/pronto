@@ -2,10 +2,10 @@
   <ion-content class="has-header">
 <!--     <h1>Dashtest</h1> -->
     <ion-list can-swipe  = 'true'>
-      <ion-item ng-repeat="request in requests" type="item-text-wrap">
+      <ion-item ng-repeat="request in requests | orderby: 'updatedAt'" type="item-text-wrap">
         <span>ID: {{request.requestId}}</span>
         <span>Party: {{request.groupSize}}</span>
-        <span>Time of Expected Arrival: {{request.targetDateTime |date:'shortTime' | orderby: updatedAt}}</span>
+        <span>Time of Expected Arrival: {{request.targetDateTime | date:'shortTime'}}</span>
         <ion-option-button class="button-assertive" ng-click="delete($index)">
           Decline
         </ion-option-button>

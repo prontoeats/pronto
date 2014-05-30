@@ -64,6 +64,7 @@
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/README.md \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/templates \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/css/style.css \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/img/google-bar.jpg \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/img/google-icon.png \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/img/ionic.png \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/js/app.js \

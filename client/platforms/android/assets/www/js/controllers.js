@@ -54,6 +54,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       var code = /\?code=(.+)$/.exec(url);
       var error = /\?error=(.+)$/.exec(url);
 
+      if (error){
+        loginWindow.close();
+        $state.transitionTo('login.user');
+      }
+
       if (code) {
         loginWindow.close();
         $http ({
