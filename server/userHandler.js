@@ -193,6 +193,19 @@ exports.acceptOffer = function(req, res) {
     console.log('Updated offer status to accepted: ', data);
     res.send(201);
   })
+  // set outstanding offers for this request (status: offered) to rejected
+  .then(function () {
+    UserRequest.promUpdate(
+    {
+      'requestId': req.body.requestId,
+      'results.status': 'Offered'
+    },
+    {$set: {
+      'results.status': 'Rejected',
+      'results.updatedAt': new Date()
+    }},
+    {new: true}
+  )})
 };
 
 exports.rejectOffer = function(req, res) {
