@@ -1,5 +1,11 @@
 <ion-view title="Existing Offers">
   <ion-content class="has-header">
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="updateData()"
+      refreshing-text="Refreshing!"
+      refreshing-icon="ion-loading-c">
+    </ion-refresher>
     <ion-list>
 <!--       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap" href="#/rest/existingOffer/{{existingOffer.id}}"> -->
       <ion-item ng-repeat="existingOffer in existingOffers | orderBy:'updatedAt'" type="item-text-wrap">

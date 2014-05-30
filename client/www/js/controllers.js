@@ -131,12 +131,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   $scope.requestObj = {};
   $scope.requestObj.radius = 0.5;
   $scope.requestObj.mins = 15;
-  $scope.requestObj.groupSize = 1;
+  $scope.requestObj.groupSize;
   $scope.requestObj.accessToken = localStorageService.get('token');
   $scope.requestObj.userId = localStorageService.get('userId');
 
   $scope.model = {};
-  $scope.model.inputLocation = 'Current Location';
+  $scope.model.inputLocation;
   //console.log('Obj', $scope.requestObj);
 
   //set the distance on the request object when a distance button is clicked
@@ -149,11 +149,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   $scope.setMins = function(mins){
     $scope.requestObj.mins = mins;
     console.log('Distance: ', $scope.requestObj.mins);
-    console.log('Group Size ', $scope.requestObj.groupSize);
   };
 
   //Configure the location data
   $scope.setLocation = function(){
+
+    if ($scope.model.inputLocation === undefined){
+      $scope.model.inputLocation = 'current location'
+    }
 
     var deferred = $q.defer();
     console.log('input: ',$scope.model.inputLocation);
@@ -180,6 +183,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   //send the request
   $scope.sendRequest = function(){
 
+    if ($scope.requestObj.groupSize === undefined){
+      $scope.requestObj.groupSize = 1;
+    }
+    console.log('Group Size ', $scope.requestObj.groupSize);
+
     $scope.setLocation()
     .then(function(){
       console.log('Request Object ',$scope.requestObj);
@@ -200,9 +208,9 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-.controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $interval, UserActiveRequest, OffersTestData) {
+.controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $interval, UserActiveRequest) {
   console.log('active state');
-  var updateData = function () {
+  $scope.updateData = function () {
     UserActiveRequest.all()
       .success(function(data, status){
         console.log('got active requests back', data);
@@ -219,6 +227,10 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       .error(function(data, status){
         console.log('active data request failed')
       })
+      .finally(function() {
+       // Stop the ion-refresher from spinning
+       $scope.$broadcast('scroll.refreshComplete');
+     });
   };
 
   $scope.reject = function(businessId){
@@ -248,12 +260,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     console.log('got to scopeaccept ', $scope.response.requestId, businessId);
   };
 
-  updateData();
-  stopUpdate = $interval(updateData, 1000 * 3);
+  $scope.updateData();
+  // stopUpdate = $interval(updateData, 1000 * 3);
 
-  $rootScope.$on('$stateChangeStart', function() {
-    $interval.cancel(stopUpdate);
-  });
+  // $rootScope.$on('$stateChangeStart', function() {
+  //   $interval.cancel(stopUpdate);
+  // });
 })
 
 .controller('SettingsCtrl', function($scope, $state, localStorageService) {
@@ -278,7 +290,8 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('RequestsCtrl', function($scope, $rootScope, $interval, Requests) {
 
-  var updateData = function () {
+  $scope.updateData = function () {
+    console.log('calling update data');
     Requests.all()
       .success(function(data, status){
         console.log('Got requests from server: ', data);
@@ -287,10 +300,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       })
       .error(function(data, status){
         console.log('error: requests from server');
-      });
+      })
+      .finally(function() {
+       // Stop the ion-refresher from spinning
+       $scope.$broadcast('scroll.refreshComplete');
+     });
   };
 
-  updateData();
+  $scope.updateData();
 
   $scope.go = Requests.go;
 
@@ -300,11 +317,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     Requests.decline(request[0]);
   };
 
-  stopUpdate = $interval(updateData, 1000 * 3);
+  // stopUpdate = $interval(updateData, 1000 * 3);
 
-  $rootScope.$on('$stateChangeStart', function() {
-    $interval.cancel(stopUpdate);
-  });
+  // $rootScope.$on('$stateChangeStart', function() {
+  //   $interval.cancel(stopUpdate);
+  // });
 })
 
 .controller('RequestDetailCtrl', function($scope, $stateParams, $location, Requests) {
@@ -319,7 +336,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 .controller('ExistingOffersCtrl', function($scope, $rootScope, $interval, ExistingOffers) {
-  var updateData = function () {
+  $scope.updateData = function () {
     ExistingOffers.all()
     .success(function(data,status){
       console.log('got existing offer back');
@@ -328,13 +345,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     .error(function(data, status){
       console.log('existing offer error');
     })
+    .finally(function() {
+      // Stop the ion-refresher from spinning
+      $scope.$broadcast('scroll.refreshComplete');
+    });
   };
-  updateData();
-  stopUpdate = $interval(updateData, 1000 * 3);
+  $scope.updateData();
+  // stopUpdate = $interval(updateData, 1000 * 3);
 
-  $rootScope.$on('$stateChangeStart', function() {
-    $interval.cancel(stopUpdate);
-  });
+  // $rootScope.$on('$stateChangeStart', function() {
+  //   $interval.cancel(stopUpdate);
+  // });
 })
 
 // .controller('ExistingOfferDetailCtrl', function($scope, $stateParams, ExistingOffers) {
@@ -342,7 +363,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 // })
 
 .controller('AcceptedOffersCtrl', function($scope, $rootScope, $interval, AcceptedOffers) {
-  var updateData = function () {
+  $scope.updateData = function () {
     AcceptedOffers.all()
     .success(function(data,status){
       console.log('got accepted offer back');
@@ -351,13 +372,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     .error(function(data, status){
       console.log('existing offer error');
     })
+    .finally(function() {
+      // Stop the ion-refresher from spinning
+      $scope.$broadcast('scroll.refreshComplete');
+    });
   };
-  updateData();
-  stopUpdate = $interval(updateData, 1000 * 3);
+  $scope.updateData();
+  // stopUpdate = $interval(updateData, 1000 * 3);
 
-  $rootScope.$on('$stateChangeStart', function() {
-    $interval.cancel(stopUpdate);
-  });
+  // $rootScope.$on('$stateChangeStart', function() {
+  //   $interval.cancel(stopUpdate);
+  // });
 })
 
 .controller('AcceptedOfferDetailCtrl', function($scope, $stateParams, AcceptedOffers) {

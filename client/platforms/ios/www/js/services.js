@@ -101,7 +101,6 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log('error:', result);
   }
 
-
   return {
     onDeviceReady: onDeviceReady
   };
