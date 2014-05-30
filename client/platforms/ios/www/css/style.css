@@ -5,6 +5,22 @@
   height: 400px;
 }
 
-.active {
-  background-color: red;
+.login {
+  background-color: transparent;
+  border: none;
+}
+
+.login img {
+    width: 100%;
+    height: auto;
+}
+
+.login2 {
+  width: 200px;
+  height: 120px;
+}
+
+.logo {
+  background-color: transparent;
+  border: none;
 }
