@@ -1,6 +1,12 @@
 <ion-view title="New Requests">
   <ion-content class="has-header">
 <!--     <h1>Dashtest</h1> -->
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="updateData()"
+      refreshing-text="Refreshing!"
+      refreshing-icon="ion-loading-c">
+    </ion-refresher>
     <ion-list can-swipe  = 'true'>
       <ion-item ng-repeat="request in requests | orderBy:'updatedAt'" type="item-text-wrap">
         <span>ID: {{request.requestId}}</span>

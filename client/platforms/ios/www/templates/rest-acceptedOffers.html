@@ -1,7 +1,13 @@
 <ion-view title="Accepted Offers">
   <ion-content class="has-header">
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="updateData()"
+      refreshing-text="Refreshing!"
+      refreshing-icon="ion-loading-c">
+    </ion-refresher>
     <ion-list>
-      <ion-item ng-repeat="acceptedOffer in acceptedOffers | orderBy:'-updatedAt'" type="item-text-wrap" href="#/rest/acceptedOffer/{{acceptedOffer.id}}">
+      <ion-item ng-repeat="acceptedOffer in acceptedOffers | orderBy:'updatedAt'" type="item-text-wrap" href="#/rest/acceptedOffer/{{acceptedOffer.id}}">
         <div>
           <div>
             <span>{{acceptedOffer.name}}</span>
