@@ -54,6 +54,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       var code = /\?code=(.+)$/.exec(url);
       var error = /\?error=(.+)$/.exec(url);
 
+      if (error){
+        loginWindow.close();
+        $state.transitionTo('login.user');
+      }
+
       if (code) {
         loginWindow.close();
         $http ({
@@ -85,12 +90,12 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 //---------------Signup Controllers---------------
 .controller('SignupCtrl', function($scope, localStorageService, $state, $http, ServerUrls) {
   $scope.restInfo = {};
-  $scope.restInfo.businessName = 'Jimmy';
-  $scope.restInfo.address = '944 Market St';
-  $scope.restInfo.city = 'San Francisco';
-  $scope.restInfo.state = 'CA';
-  $scope.restInfo.zipCode = '94103';
-  $scope.restInfo.phoneNumber = '3124794923';
+  $scope.restInfo.businessName;
+  $scope.restInfo.address;
+  $scope.restInfo.city;
+  $scope.restInfo.state;
+  $scope.restInfo.zipCode;
+  $scope.restInfo.phoneNumber;
   $scope.restInfo.accessToken = localStorageService.get('token');
   // $scope.restInfo.id = localStorageService.get('restaurantId');
 
