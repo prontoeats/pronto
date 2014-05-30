@@ -22,11 +22,6 @@ exports.parseNearbyData = function (array) {
     bus.state = array[i].state;
     bus.updatedAt = new Date();
 
-    // TODO: earlier of ten minutes from now and request targetDateTime
-    // (do not have access to targetDateTime)
-    var dateTime = new Date();
-    bus.expirationDateTime = dateTime.setMinutes(dateTime.getMinutes() + 10);
-
     allBus.push(bus);
     // phoneNums.push(array[i].phoneNumber);
   }
