@@ -21,6 +21,25 @@
     <!-- relative times libraries -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.7.1/angular-moment.min.js"></script>
+    <script>
+      moment.lang('en', {
+        relativeTime : {
+          future: "s in %s",
+          past:   "d %s ago",
+          s:  "seconds",
+          m:  "a minute",
+          mm: "%d minutes",
+          h:  "an hour",
+          hh: "%d hours",
+          d:  "a day",
+          dd: "%d days",
+          M:  "a month",
+          MM: "%d months",
+          y:  "a year",
+          yy: "%d years"
+        }
+      });
+    </script>
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
