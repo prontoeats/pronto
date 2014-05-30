@@ -20,6 +20,7 @@ exports.parseNearbyData = function (array) {
     bus.address = array[i].address;
     bus.city = array[i].city;
     bus.state = array[i].state;
+    bus.updatedAt = new Date();
 
     allBus.push(bus);
     // phoneNums.push(array[i].phoneNumber);
