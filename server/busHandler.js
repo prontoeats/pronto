@@ -181,7 +181,8 @@ exports.acceptRequests = function(req,res){
       UserRequest.promFindOneAndUpdate(
         {requestId: data.requestId, 'results.businessId': businessId, 'results.status': 'Active'},
         {$set: {
-          'results.$.status': 'Expired'
+          'results.$.status': 'Expired',
+          'results.$.updatedAt': new Date()
         }},
         {new: true}
       )

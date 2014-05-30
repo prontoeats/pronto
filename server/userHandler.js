@@ -142,7 +142,8 @@ exports.request = function(req, res) {
       UserRequest.promFindOneAndUpdate(
         {requestId: data[0].requestId, requestStatus: 'Active'},
         {$set: {
-          'requestStatus': 'Expired'
+          'requestStatus': 'Expired',
+          'updatedAt': new Date()
         }},
         {new: true}
       )
