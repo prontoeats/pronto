@@ -44,6 +44,8 @@
 		C66E5E10D2F344E484F4896B /* CDVInAppBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2358FCD3EB2B4F2C94D0EF3C /* CDVInAppBrowser.m */; };
 		3BE18F83A74646A2B7D268C7 /* IonicKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 99AB33A21F574EB58BC4DF15 /* IonicKeyboard.m */; };
 		B668A4BFBA974AB1903712EC /* UIWebViewExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 35FCA76B061747D9A53A23D3 /* UIWebViewExtension.m */; };
+		1463D8C36E34455695D578BA /* AppDelegate+notification.m in Sources */ = {isa = PBXBuildFile; fileRef = B8064096AC494FFF9EBA7A38 /* AppDelegate+notification.m */; };
+		23A0994C694E431A862DABC7 /* PushPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = C391A6B5ED62414C94ADFD11 /* PushPlugin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +122,10 @@
 		35FCA76B061747D9A53A23D3 /* UIWebViewExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIWebViewExtension.m"; path = "com.ionic.keyboard/UIWebViewExtension.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		1E63EF7E001844ADAD2DB73E /* IonicKeyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "IonicKeyboard.h"; path = "com.ionic.keyboard/IonicKeyboard.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		E73924F2FF7F4399A5DA3BB8 /* UIWebViewExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "UIWebViewExtension.h"; path = "com.ionic.keyboard/UIWebViewExtension.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		B8064096AC494FFF9EBA7A38 /* AppDelegate+notification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "AppDelegate+notification.m"; path = "com.phonegap.plugins.PushPlugin/AppDelegate+notification.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		C391A6B5ED62414C94ADFD11 /* PushPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "PushPlugin.m"; path = "com.phonegap.plugins.PushPlugin/PushPlugin.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		3DCBC77677A746D7A30F20DF /* AppDelegate+notification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AppDelegate+notification.h"; path = "com.phonegap.plugins.PushPlugin/AppDelegate+notification.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		B05765A428E74002B6B6B59E /* PushPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "PushPlugin.h"; path = "com.phonegap.plugins.PushPlugin/PushPlugin.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +258,10 @@
 				35FCA76B061747D9A53A23D3 /* UIWebViewExtension.m */,
 				1E63EF7E001844ADAD2DB73E /* IonicKeyboard.h */,
 				E73924F2FF7F4399A5DA3BB8 /* UIWebViewExtension.h */,
+				B8064096AC494FFF9EBA7A38 /* AppDelegate+notification.m */,
+				C391A6B5ED62414C94ADFD11 /* PushPlugin.m */,
+				3DCBC77677A746D7A30F20DF /* AppDelegate+notification.h */,
+				B05765A428E74002B6B6B59E /* PushPlugin.h */,
 			);
 			name = Plugins;
 			path = "HelloCordova/Plugins";
@@ -452,6 +462,8 @@
 				C66E5E10D2F344E484F4896B /* CDVInAppBrowser.m in Sources */,
 				3BE18F83A74646A2B7D268C7 /* IonicKeyboard.m in Sources */,
 				B668A4BFBA974AB1903712EC /* UIWebViewExtension.m in Sources */,
+				1463D8C36E34455695D578BA /* AppDelegate+notification.m in Sources */,
+				23A0994C694E431A862DABC7 /* PushPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

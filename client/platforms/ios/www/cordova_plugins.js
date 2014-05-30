@@ -62,6 +62,13 @@ module.exports = [
         "clobbers": [
             "cordova.plugins.Keyboard"
         ]
+    },
+    {
+        "file": "plugins/com.phonegap.plugins.PushPlugin/www/PushNotification.js",
+        "id": "com.phonegap.plugins.PushPlugin.PushNotification",
+        "clobbers": [
+            "PushNotification"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -71,7 +78,8 @@ module.exports.metadata =
     "org.apache.cordova.console": "0.2.9-dev",
     "org.apache.cordova.device": "0.2.10-dev",
     "org.apache.cordova.inappbrowser": "0.4.1-dev",
-    "com.ionic.keyboard": "0.0.1"
+    "com.ionic.keyboard": "0.0.1",
+    "com.phonegap.plugins.PushPlugin": "2.2.0"
 }
 // BOTTOM OF METADATA
 });

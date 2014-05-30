@@ -8,7 +8,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform, $state, localStorageService) {
+.run(function($ionicPlatform, $state, localStorageService, PushNotification) {
 // .run(function($ionicPlatform) {
 
   $ionicPlatform.ready(function() {
@@ -21,12 +21,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    console.log('in ,run.moduel')
+    console.log('in ,run.module');
 
-    // localStorageService.set('token', 'ya29.JAB0fsOcppJjux8AAACm0dqtoVFAHSWLBxJRNr9ZiGdTbAcDH3KdOxoPphWsPA');
-    // localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
-    // localStorageService.set('user', 'false');
-    // $state.transitionTo('rest.requests');
+    localStorageService.set('token', 'ya29.JAB0fsOcppJjux8AAACm0dqtoVFAHSWLBxJRNr9ZiGdTbAcDH3KdOxoPphWsPA');
+    localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
+    localStorageService.set('user', 'false');
+    $state.transitionTo('rest.requests');
 
     // localStorageService.set('token', 'ya29.JAD18I3NqkMKwh8AAADF7TtFYTsyoCRefMTpYFsLpbvdg90HKUHJa3FtBt_0Kg');
     // localStorageService.set('userId', '53862d18bea4b17f10663629');
@@ -44,6 +44,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         $state.transitionTo('rest.requests');
       }
     }
+
+    var onDeviceReady = PushNotification.onDeviceReady;
+
+    document.addEventListener('deviceready', onDeviceReady);
   });
 })
 
