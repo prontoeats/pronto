@@ -1,7 +1,13 @@
 var request = require('request');
 var prom = require('./promisified.js');
 var blue = require('bluebird');
-var config = require('../config.js');
+try {
+  var config = require('../config.js');
+}
+catch (e) {
+  console.log('did not load config file');
+  console.log(e);
+}
 
 exports.parseAddress = function(obj){
 

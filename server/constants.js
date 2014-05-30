@@ -1,4 +1,10 @@
-var config = require('../config.js');
+try {
+  var config = require('../config.js');
+}
+catch (e) {
+  console.log('did not load config file');
+  console.log(e);
+}
 
 exports.Google = {
   authorize: 'https://accounts.google.com/o/oauth2/token',

@@ -15,7 +15,7 @@
 
   <h4>New Offers</h4>
   <ion-list can-swipe="true">
-    <ion-item ng-repeat="offer in offers | filter: {status: filterOn }" >
+    <ion-item ng-repeat="offer in offers | filter: {status: filterOn | orderBy:'-updatedAt'}" >
 
     <div class='row'>
       <div class='col'>
