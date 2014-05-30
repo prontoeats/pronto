@@ -2,7 +2,7 @@
   <ion-content class="has-header">
     <ion-list>
 <!--       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap" href="#/rest/existingOffer/{{existingOffer.id}}"> -->
-      <ion-item ng-repeat="existingOffer in existingOffers | orderby: 'updatedAt'" type="item-text-wrap">
+      <ion-item ng-repeat="existingOffer in existingOffers | orderBy:'-updatedAt'" type="item-text-wrap">
         <span>ID: {{existingOffer.requestId}}</span>
         <span>Party: {{existingOffer.groupSize}}</span>
         <span>Time of Arrival: {{existingOffer.targetDateTime | date:'shortTime'}}</span>

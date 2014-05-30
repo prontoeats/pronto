@@ -3,6 +3,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('ServerUrls', function(){
   return {
+    // url: 'http://localhost:3000'
     url: 'http://prontoeats.azurewebsites.net'
   };
 })
