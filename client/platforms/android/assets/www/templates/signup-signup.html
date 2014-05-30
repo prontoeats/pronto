@@ -1,6 +1,32 @@
 <ion-view title="Restaurant Signup">
   <ion-content class="has-header">
-    <label class="item item-input">
+    <div class="list list-inset">
+      <label class="item item-input">
+        <input type="text" placeholder="Business Name" ng-model='restInfo.businessName'>
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="Address" ng-model='restInfo.address'>
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="City" ng-model='restInfo.city'>
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="State" ng-model='restInfo.state'>
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="Zip Code" ng-model='restInfo.zipCode'>
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="Telephone" ng-model='restInfo.phoneNumber'>
+      </label>
+    </div>
+
+    <div class="row">
+      <button class="button button-block button-positive" ng-click='submit()'>Signup With Pronto</button>
+    </div>
+
+
+<!--     <label class="item item-input">
       <span class="input-label">Business Name</span>
       <input type="text" ng-model='restInfo.businessName'>
     </label>
@@ -23,13 +49,13 @@
     <label class="item item-input">
       <span class="input-label">Telephone</span>
       <input type="tel" ng-model='restInfo.phoneNumber'>
-    </label>
+    </label> 
 
     <div class="row">
       <div class="col col-33 col-offset-33">
         <button class="button button-positive" ng-click='submit()'>Submit</button>
       </div>
-    </div>
+    </div>-->
 
   </ion-content>
 </ion-view>

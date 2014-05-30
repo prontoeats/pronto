@@ -1,18 +1,22 @@
 <ion-view title="Accepted Offers">
   <ion-content class="has-header">
     <ion-list>
-      <ion-item ng-repeat="acceptedOffer in acceptedOffers" type="item-text-wrap" href="#/rest/acceptedOffer/{{acceptedOffer.id}}">
+      <ion-item ng-repeat="acceptedOffer in acceptedOffers | orderby: 'updatedAt'" type="item-text-wrap" href="#/rest/acceptedOffer/{{acceptedOffer.id}}">
         <div>
           <div>
             <span>{{acceptedOffer.name}}</span>
           </div>
           <div>
+            <div>
             <span>ID: {{acceptedOffer.requestId}}</span>
             <span>Party: {{acceptedOffer.groupSize}}</span>
-            <span>Arrival: {{acceptedOffer.targetDateTime}}</span>
-            <span>Arrival: {{acceptedOffer.requestNotes}}</span>
+            <span>Arrival: {{acceptedOffer.targetDateTime | date:'shortTime'}}</span>
+            </div>
+            <div>
+            <span>Offer: {{acceptedOffer.requestNotes}}</span>
+            </div>
           </div>
-        </div>      
+        </div>
       </ion-item>
     </ion-list>
   </ion-content>

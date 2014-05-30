@@ -14,7 +14,8 @@ var requestSchema = mongoose.Schema({
   requestStatus:  {type: String, default: 'Active'},
   results:        {type: mongoose.Schema.Types.Mixed},
   location:       {type: Array, index: '2dsphere'},
-  createdAt:      {type: Date, default: Date.now}
+  createdAt:      {type: Date, default: Date.now},
+  updatedAt:      {type: Date, default: Date.now}
 });
 
 requestSchema.pre('save', function (next) {

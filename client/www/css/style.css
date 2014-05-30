@@ -6,10 +6,11 @@
 }
 
 .login {
-  padding: 20px;
-}
-
-.logo {
   background-color: transparent;
   border: none;
+}
+
+.login img {
+    width: 100%;
+    height: auto;
 }
