@@ -101,7 +101,6 @@ exports.signup = function (req, res) {
     res.send(400, "OMG could not find that token in google");
     throw e;
   });
-
 };
 
 exports.showRequests = function (req, res) {
@@ -146,7 +145,10 @@ exports.declineRequests = function(req,res){
 
   UserRequest.promFindOneAndUpdate(
     {requestId: data.requestId, 'results.businessId': businessId},
-    {$set: {'results.$.status': 'Declined'}},
+    {$set: {
+      'results.$.status': 'Declined',
+      'results.$.updatedAt': new Date()
+    }},
     {new: true}
   )
   .then(function(data){
@@ -166,6 +168,7 @@ exports.acceptRequests = function(req,res){
     {requestId: data.requestId, 'results.businessId': businessId},
     {$set: {
       'results.$.status': 'Offered',
+      'results.$.updatedAt': new Date(),
       'results.$.replies': data.offer
     }},
     {new: true}
@@ -190,7 +193,6 @@ exports.showOffered = function (req, res) {
     var results = misc.parseBusinessOpenRequests(data, oid, 'Offered');
     res.send(200, results);
   })
-
 }
 
 exports.showAccepted = function (req, res) {
@@ -207,5 +209,4 @@ exports.showAccepted = function (req, res) {
     var results = misc.parseBusinessOpenRequests(data, oid, 'Accepted');
     res.send(200, results);
   })
-
 }
