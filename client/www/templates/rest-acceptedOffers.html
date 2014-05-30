@@ -1,7 +1,7 @@
 <ion-view title="Accepted Offers">
   <ion-content class="has-header">
     <ion-list>
-      <ion-item ng-repeat="acceptedOffer in acceptedOffers | orderBy:'-updatedAt'" type="item-text-wrap" href="#/rest/acceptedOffer/{{acceptedOffer.id}}">
+      <ion-item ng-repeat="acceptedOffer in acceptedOffers | orderBy:'updatedAt'" type="item-text-wrap" href="#/rest/acceptedOffer/{{acceptedOffer.id}}">
         <div>
           <div>
             <span>{{acceptedOffer.name}}</span>
