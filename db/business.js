@@ -17,6 +17,7 @@ var businessSchema = mongoose.Schema({
   lastName:     {type: String, required: true},
   phoneNumber:  {type: Number, required: true},
   accessToken:  {type: String, required: true},
+  pushNotification: {type: mongoose.Schema.Types.Mixed, default: {apn: [],gcm:[]}},
   location:     {type: Array, index: '2dsphere'},
   createdAt:    {type: Date, default: Date.now}
 });

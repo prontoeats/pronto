@@ -5,10 +5,14 @@ var mongoose = require('mongoose');
 
 exports.parseNearbyData = function (array) {
   var allBus = [];
+  var apn = [];
+  var gcm = [];
   var bus;
   // var phoneNums = [];
 
   for (var i = 0; i < array.length; i++) {
+
+    console.log('business array: ', array);
 
     bus = {};
     bus.businessId = array[i]._id;
@@ -22,15 +26,22 @@ exports.parseNearbyData = function (array) {
     bus.state = array[i].state;
     bus.updatedAt = new Date();
 
+    bus.pushNotification = array[i].pushNotification;
+
+    console.log('apn', apn, array[i].pushNotification.apn);
+
+    if (array[i].pushNotification.apn.length){
+      apn = apn.concat(array[i].pushNotification.apn);
+
+    } else if (array[i].pushNotification.gcm.length){
+      gcm = gcm.concat(array[i].pushNotificaion.gcm);
+    }
+
     allBus.push(bus);
-    // phoneNums.push(array[i].phoneNumber);
   }
 
-  console.log('allBus: ',allBus);
-  // console.log('phoneNums: ',phoneNums);
-
   return new blue(function (resolve, reject) {
-    resolve(allBus);
+    resolve([allBus, apn, gcm]);
   });
 
 };

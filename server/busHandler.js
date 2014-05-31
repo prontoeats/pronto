@@ -230,3 +230,59 @@ exports.showAccepted = function (req, res) {
     res.send(200, results);
   })
 }
+
+exports.registerToken = function (req, res){
+
+  var businessId = mongoose.Types.ObjectId(req.body.businessId);
+
+  console.log('got to business token registration. businessId: ', businessId, req.body.code);
+
+
+  var query = {_id: businessId};
+
+  //if true, then the code is a apn token. 
+  //if false, then the code is a gcm registration id
+  var apn; 
+
+  if (req.body.type === 'apn'){
+    apn = true;
+    query['pushNotification.apn'] = {$in: [req.body.code]};
+
+  } else if (req.body.type === 'gcm'){
+    apn = false;
+    query['pushNotification.gcm'] = {$in: [req.body.code]};
+
+  } else {
+    res.send(400, 'You must supply a type (apn/gcm)');
+    return;
+  }
+
+
+  Business.promFindOne(query)
+  .then(function(data){
+
+
+    if (data){
+      res.send(200);
+    } else {
+      var updateQuery
+      if (apn){
+        updateQuery = {$push: {'pushNotification.apn': req.body.code}};
+      } else {
+        updateQuery = {$push: {'pushNotification.gcm': req.body.code}};
+      }
+      return Business.promFindOneAndUpdate({_id: businessId}, updateQuery);
+    }
+  })
+  .then(function(data){
+    res.send(201);
+  })
+  .catch(function(error){
+    res.send(404);
+  })
+}
+
+
+
+
+

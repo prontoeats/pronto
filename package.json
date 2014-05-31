@@ -4,6 +4,7 @@
   "private": true,
   "main": "app.js",
   "dependencies": {
+    "apn": "^1.5.2",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "1.0.8",
     "ejs": "~0.8.5",

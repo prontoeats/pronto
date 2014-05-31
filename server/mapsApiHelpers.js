@@ -66,8 +66,8 @@ exports.convertUserRequestLocation = function(requestObj){
 
     } else {
       requestObj.address = requestObj.location;
-      mapApi.getGeo(requestObj)
-      .then(mapApi.parseGeoResult)
+      exports.getGeo(requestObj)
+      .then(exports.parseGeoResult)
       .then(function (result) {
         requestObj.location = result;
         resolve();

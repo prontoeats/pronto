@@ -2,12 +2,13 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('ServerUrls', function(){
   return {
+    url: 'http://142.131.192.198:3000'
     // url: 'http://localhost:3000'
-    url: 'http://prontoeats.azurewebsites.net'
+    // url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
-.factory('PushNotification', function($state){
+.factory('PushNotification', function($state, $http, ServerUrls, localStorageService){
   var pushNotification;
 
   var onDeviceReady = function(){
@@ -29,6 +30,7 @@ angular.module('starter.services', ['LocalStorageModule'])
           }
         );
       } else {
+        console.log('got to else statement');
         pushNotification.register(
           tokenHandler,
           errorHandler,
@@ -91,6 +93,32 @@ angular.module('starter.services', ['LocalStorageModule'])
 
   var tokenHandler = function(result){
     console.log('token: ', result);
+
+    var accessToken = localStorageService.get('token');
+    var businessId = localStorageService.get('restaurantId');
+
+    console.log('access token: ', accessToken);
+    console.log('businessId: ', businessId);
+
+    var httpObj = {
+      method: 'POST',
+      url: ServerUrls.url+'/business/token',
+      data: {
+        accessToken: accessToken,
+        businessId: businessId,
+        code: result,
+        type: 'apn'
+      }
+    };
+
+    $http(httpObj)
+    .success(function(data){
+      console.log('Token Send Successful ',data);
+    })
+    .fail(function(err){
+      console.log('Token Send Failed ', err);
+    })
+
   }
 
   var successHandler = function (result){

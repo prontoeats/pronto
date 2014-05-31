@@ -13,6 +13,7 @@ var Counter = require('../db/counter.js').Counter;
 var constants = require('./constants.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
+var push = require('./pushHelpers.js');
 
 exports.sendIndex = function (req, res){
   res.sendfile('./views/index.html');
@@ -95,7 +96,8 @@ exports.login = function(req, res){
 exports.request = function(req, res) {
 
   console.log('received data: ',req.body);
-
+  var apn;  //apple tokens to push to
+  var gcm;  //google registration ids to push to
   var requestObj = req.body; // make sure Joe sends id back as "userId"
 
   //convert minutes to time
@@ -130,7 +132,11 @@ exports.request = function(req, res) {
   //store the data as a parameter on the request Obj and save
   .then(function(data){
     console.log('storing results property');
-    request.results = data;
+
+    apn = data[1];
+    gcm = data[2];
+
+    request.results = data[0];
     // numbers = data[1];
     return request.promSave();
   })
@@ -150,6 +156,11 @@ exports.request = function(req, res) {
     }, 1000 * 60 * 10);
   })
   .then(function(){
+    //send out push notifications
+    console.log('apn to push to: ', apn);
+    var pushBody = 'You have a new request.'
+    var payload = {view: 'rest.requests'};
+    push.sendApnMessage(apn, pushBody, payload);
     console.log('requestObj: ', requestObj)
     res.send(201);
 
@@ -253,3 +264,45 @@ exports.checkLastRequestStatus = function(req, res) {
     res.send(201);
   })
 };
+
+exports.registerToken = function (req, res){
+
+  var userId = mongoose.Types.ObjectId(req.body.userId);
+
+  var query = {_id: userId};
+
+  //if true, then the code is a apn token. 
+  //if false, then the code is a gcm registration id
+  var apn; 
+
+  if (req.body.type === 'apn'){
+    apn = true;
+    query['pushNotification.apn'] = {$in: [req.body.code]};
+
+  } else if (req.body.type === 'gcm'){
+    apn = false;
+    query['pushNotification.gcm'] = {$in: [req.body.code]};
+
+  } else {
+    res.send(400, 'You must supply a type (apn/gcm)');
+    return;
+  }
+
+  User.promFindOne(query)
+  .then(function(data){
+    if (data){
+      res.send(200);
+    } else {
+      var updateQuery
+      if (apn){
+        updateQuery = {$push: {'pushNotification.apn': req.body.code}};
+      } else {
+        updateQuery = {$push: {'pushNotification.gcm': req.body.code}};
+      }
+      return User.promFindOneAndUpdate({_id: userId}, updateQuery);
+    }
+  })
+  .then(function(data){
+    res.send(201);
+  })
+}
