@@ -2,8 +2,8 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('ServerUrls', function(){
   return {
-    url: 'http://localhost:3000'
-    // url: 'http://prontoeats.azurewebsites.net'
+    // url: 'http://localhost:3000'
+    url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
@@ -24,7 +24,7 @@ angular.module('starter.services', ['LocalStorageModule'])
         pushNotification.register(
           successHandler,
           errorHandler,
-          { senderID:"xxxxxxx", 
+          { senderID:"xxxxxxx",
             ecb: "window.prontoApp.onNotificationGCM"
           }
         );
@@ -42,7 +42,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     } catch (err){
       console.log('errer registering with the device');
     }
-      // pushNotification.unregister(function(e){console.log('unregistered', e)}, 
+      // pushNotification.unregister(function(e){console.log('unregistered', e)},
       // function(e){
       // console.log('issue unregistering',e)});
   };
@@ -85,7 +85,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     } else if( e.event === 'error'){
       console.log('ERROR -> MSG:' + e.msg);
     } else {
-      console.log('EVENT -> Unknown, an event was received and we do not know what it is');      
+      console.log('EVENT -> Unknown, an event was received and we do not know what it is');
     }
   }
 
