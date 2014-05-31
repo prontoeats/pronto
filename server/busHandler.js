@@ -164,12 +164,18 @@ exports.acceptRequests = function(req,res){
   var businessId = mongoose.Types.ObjectId(data.businessId);
 
 
+  // TODO: earlier of ten minutes from now and request targetDateTime
+  // (need to look up requests targetDateTime)
+  var dateTime = new Date();
+  dateTime.setMinutes(dateTime.getMinutes() + 10);
+
   UserRequest.promFindOneAndUpdate(
     {requestId: data.requestId, 'results.businessId': businessId},
     {$set: {
       'results.$.status': 'Offered',
       'results.$.updatedAt': new Date(),
-      'results.$.replies': data.offer
+      'results.$.replies': data.offer,
+      'results.$.expirationDateTime': dateTime
     }},
     {new: true}
   )

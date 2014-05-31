@@ -1,38 +1,38 @@
 <ion-view title="Pronto">
   <ion-content class="has-header padding">
-
-    <div class="list list-inset">
-      <label class="item item-input">
-        <i class="icon ion-ios7-location"></i>
-        <input type="text" ng-model="model.inputLocation">
-      </label>
-    </div>
-    Your location: {{model.inputLocation}}
-    <div class="button-bar">
-      <a class="button" ng-click='setDistance(0.5); tabA=1' ng-class='{"button-positive":tabA===1}'>0.5 mile</a>
-      <a class="button" ng-click='setDistance(1); tabA=2' ng-class='{"button-positive":tabA===2}'>1 mile</a>
-      <a class="button" ng-click='setDistance(5); tabA=3' ng-class='{"button-positive":tabA===3}'>5 miles</a>
-      <a class="button" ng-click='setDistance(20); tabA=4'ng-class='{"button-positive":tabA===4}'>20 miles</a>
-    </div>
-    <br/>
-    <div class="button-bar">
-      <a class="button" ng-click='setMins(15); tabB=1' ng-class='{"button-positive":tabB===1}'>15 mins</a>
-      <a class="button" ng-click='setMins(30); tabB=2' ng-class='{"button-positive":tabB===2}'>30 mins</a>
-      <a class="button" ng-click='setMins(45); tabB=3' ng-class='{"button-positive":tabB===3}'>45 mins</a>
-      <a class="button" ng-click='setMins(60); tabB=4' ng-class='{"button-positive":tabB===4}'>60 mins</a>
-    </div>
-    <br/>
+    <div>From</div>
     <div>
       <label class="item item-input">
+        <i class="icon ion-ios7-location"></i>
+        <input type="text" ng-model="model.inputLocation" placeholder="Current Location">
+      </label>
+    </div>
+    <br/>
+    <div>Distance (Miles)</div>
+    <div class="button-bar"> 
+      <a class="button" ng-click='setDistance(0.5); tabA=1' ng-class='{"button-positive":tabA===1}'>0.5</a>
+      <a class="button" ng-click='setDistance(1); tabA=2' ng-class='{"button-positive":tabA===2}'>1</a>
+      <a class="button" ng-click='setDistance(5); tabA=3' ng-class='{"button-positive":tabA===3}'>5</a>
+      <a class="button" ng-click='setDistance(20); tabA=4'ng-class='{"button-positive":tabA===4}'>20</a>
+    </div>
+    <br/>
+    <div>Time (Mins)</div>
+    <div class="button-bar">
+      <a class="button" ng-click='setMins(15); tabB=1' ng-class='{"button-positive":tabB===1}'>15</a>
+      <a class="button" ng-click='setMins(30); tabB=2' ng-class='{"button-positive":tabB===2}'>30</a>
+      <a class="button" ng-click='setMins(45); tabB=3' ng-class='{"button-positive":tabB===3}'>45</a>
+      <a class="button" ng-click='setMins(60); tabB=4' ng-class='{"button-positive":tabB===4}'>60</a>
+    </div>
+    <br/>
+    <div class="col col-50 col-offset-25">
+      <label class="item item-input">
         <span class="input-label">Group Size</span>
-        <input type="tel" ng-model='requestObj.groupSize'>
+        <input type="tel" ng-model='requestObj.groupSize' placeholder="1">
       </label>
     </div>
 
   <div class="row">
-    <div class="col col-33 col-offset-33">
-      <button class="button button-positive" ng-click='sendRequest()'>Submit</button>
-    </div>
+      <button class="button button-positive col col-50 col-offset-25" ng-click='sendRequest()'>Submit</button>
   </div>
   </ion-content>
 </ion-view>
