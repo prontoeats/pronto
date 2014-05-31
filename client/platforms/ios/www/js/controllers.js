@@ -2,13 +2,16 @@
 angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------------Login Controllers---------------
-.controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls) {
+.controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $stateParams, $http, ServerUrls, $ionicLoading) {
+  $scope.show = true;
+
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
   var loginWindow;
   $scope.login = function () {
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
+    $scope.show = false;
 
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;
@@ -16,10 +19,18 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       var error = /\?error=(.+)$/.exec(url);
       if (error){
         loginWindow.close();
-        $state.transitionTo('login.user');
+        reload();
       }
 
       if (code) {
+        $ionicLoading.show({
+          content: 'Loading',
+          animation: 'fade-in',
+          showBackdrop: true,
+          maxWidth: 200,
+          showDelay: 0
+        });
+
         loginWindow.close();
         $http ({
           method: 'POST',
@@ -31,14 +42,22 @@ angular.module('starter.controllers', ['LocalStorageModule'])
           localStorageService.set('token', data.accessToken);
           localStorageService.set('userId', data.userId);
           localStorageService.set('user', true);
+          $ionicLoading.hide();
           $state.transitionTo('user.new');
         }).error(function(data, status){
           loginWindow.close();
-          $state.transitionTo('login.user');
+          reload();
         });
       }
     });
   };
+  var reload = function(){
+    $state.transitionTo($state.current, $stateParams, {
+      reload: true,
+      inherit: false,
+      notify: true
+    });
+  }
 })
 
 .controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls) {
@@ -237,7 +256,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     UserActiveRequest.reject($scope.response.requestId, businessId)
     .then(function () {
       console.log('rejected request');
-    $state.transitionTo($state.current, $stateParams, {
+      $state.transitionTo($state.current, $stateParams, {
         reload: true,
         inherit: false,
         notify: true
