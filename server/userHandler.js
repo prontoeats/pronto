@@ -86,33 +86,29 @@ exports.login = function(req, res){
 
 exports.request = function(req, res) {
 
-  var apn;  //apple tokens to push to
-  var gcm;  //google registration ids to push to
-  var requestObj = req.body; // make sure Joe sends id back as "userId"
+  //APN tokens and GCM registration IDs to send push notifications to 
+  //later in this function
+  var apn;
+  var gcm;
 
-  //convert minutes to time
+  //Object that will be used to create a new User Request 
+  var requestObj = req.body; 
+
+  //Convert requested minutes to time and save to requestObj
   var dateTime = new Date();
   dateTime.setMinutes(dateTime.getMinutes() + Number(requestObj.mins));
   requestObj.targetDateTime = dateTime;
 
+  //Convert location information to latitude/longitude if needed
   mapApi.convertUserRequestLocation(requestObj)
 
-  // create new request
-  .then(function () {
-    request = new UserRequest(requestObj);
-
-    //promisifying the save function
-    request.promSave = blue.promisify(request.save);
-    return request.promSave();
-  })
-
+  //Look for userId in database to store push notification tokens/reg IDs
   .then(function(){
     var userId = mongoose.Types.ObjectId(requestObj.userId);
     return User.promFindOne({_id: userId});
   })
-
   .then(function(data){
-    request.pushNotification = data.pushNotification;
+    requestObj.pushNotification = data.pushNotification;
   
     //create new promise to continue chain
     return new blue (function (resolve, reject) {
@@ -120,52 +116,53 @@ exports.request = function(req, res) {
     })
   })
 
-  //find businesses nearby the request location
+  //find businesses nearby the requested location
   .then(Business.promFindNearby)
 
   //parse and format the data
   .then(misc.parseNearbyData)
 
-  //store the data as a parameter on the request Obj and save
+  //store the query results data as a parameter on the request Obj and save
+  //store the apn/gcm numbers for pushing notifications later in the function
   .then(function(data){
 
+    requestObj.results = data[0];
     apn = data[1];
     gcm = data[2];
 
-    request.results = data[0];
-    // numbers = data[1];
+    request = new UserRequest(requestObj);
+
+    //promisifying the save function to enable chaining
+    request.promSave = blue.promisify(request.save);
     return request.promSave();
   })
-  .then(function (data) {
-    // data should be an array of success values [request, numberAffected]
-    // convert a request still in 'active' state to 'expired' after 10 mins
-    setTimeout(function () {
-      UserRequest.promFindOneAndUpdate(
-        {requestId: data[0].requestId, requestStatus: 'Active'},
-        {$set: {
-          'requestStatus': 'Expired',
-          'updatedAt': new Date()
-        }},
-        {new: true}
-      )
-    }, 1000 * 60 * 10);
-  })
+
   .then(function(){
-    //send out push notifications
-    var pushBody = 'You have a new request.'
+    //format messages and information to send out via push notifications
+    var pushBody = 'You have a new request!'
     var payload = {view: 'rest.requests'};
 
+    //if there are apn tokens to push to, push the message to them
     if(apn.length){
       push.sendApnMessage(apn, pushBody, payload);
     }
 
+    //if there are gcm registration IDs to push to, push the message to them
     if(gcm.length){
       push.sendGcmMessage(gcm, pushBody);
     }
-    res.send(201);
 
+    //send successful response back to user
+    res.send(201);
     console.log('COMPLETED USER POST REQUEST');
   })
+
+  .catch(function(err){
+    var error = 'Error with user request submission: '+err;
+    res.send(400, error);
+    console.log(error);
+  })
+
 };
 
 exports.sendRequestInfo = function(req, res) {
@@ -200,16 +197,20 @@ exports.acceptOffer = function(req, res) {
   .then(function (data) {
     res.send(201);
 
-    //TODO: DEBUG
-    
-    // return UserRequest.promUpdate({
-    //   'requestId': req.body.requestId,
-    //   'results.status': 'Offered'},
-    //   {$set: {
-    //     'results.status': 'Rejected',
-    //     'results.updatedAt': new Date()}},
-    //   {new: true}
-    // )
+  var tempResults = UserRequest.promFindOne({requestId: req.body.requestId}).results;
+     for (var i = 0; i < tempResults.length; i += 1) {
+       if (tempResults[i].status === 'Offered') {
+         tempResults[i].status = 'Rejected';
+         tempResults[i].updatedAt = new Date();
+       }
+     }
+     return UserRequest.promFindOneAndUpdate(
+       {requestId: req.body.requestId},
+       {$set: {
+         'results': tempResults
+       }},
+       {new: true}
+     )
   })
   // set outstanding offers for this request (status: offered) to rejected
   .then(function(){

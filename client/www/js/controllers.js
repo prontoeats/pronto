@@ -17,10 +17,10 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       var url = e.url;
       var code = /\?code=(.+)$/.exec(url);
       var error = /\?error=(.+)$/.exec(url);
-      if (error){
-        loginWindow.close();
-        reload();
-      }
+      // if (error){
+      //   loginWindow.close();
+      //   reload();
+      // }
 
       if (code) {
         $ionicLoading.show({

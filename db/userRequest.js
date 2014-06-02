@@ -31,11 +31,13 @@ requestSchema.pre('save', function (next) {
       })
 
       .catch(function (err) {
+        console.log('error inside Counter.getCounter pre: ', err);
         throw err;
       });
-  }
 
-  next();
+  } else {
+    next();
+  }
 
 });
 
