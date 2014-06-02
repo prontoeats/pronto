@@ -24,13 +24,14 @@ exports.parseNearbyData = function (array) {
     bus.updatedAt = new Date();
 
     bus.pushNotification = array[i].pushNotification;
+    console.log('push notifications', bus.pushNotification);
 
-    if (array[i].pushNotification.apn){
-      apn = apn.concat(array[i].pushNotification.apn);
+    if (bus.pushNotification.apn.length){
+      apn = apn.concat(bus.pushNotification.apn);
     }
-
-    if (array[i].pushNotification.gcm){
-      gcm = gcm.concat(array[i].pushNotificaion.gcm);
+    
+    if (bus.pushNotification.gcm.length){
+      gcm = gcm.concat(bus.pushNotificaion.gcm);
     }
 
     allBus.push(bus);
