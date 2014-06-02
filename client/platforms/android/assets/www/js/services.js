@@ -19,7 +19,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log('registering device type: ' + device.platform);
 
     var tokenHandler;
-    var successHandler;
+    // var successHandler;
 
     if(type === 'user'){
       tokenHandler = userTokenHandler;
@@ -83,7 +83,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 
     if (e.event === "registered"){
       if (e.regid.length > 0 ){
-        console.log('android register id: ', regid);
+        console.log('android register id: ', e.regid);
 
         var accessToken = localStorageService.get('token');
         var userId = localStorageService.get('userId')
