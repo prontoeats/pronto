@@ -69,6 +69,7 @@
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/img/ionic.png \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/js/app.js \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/js/controllers.js \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/js/PushNotification.js \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/js/services.js \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/lib/angular-local-storage \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/lib/ionic \
@@ -144,10 +145,13 @@
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/lib/ionic/scss/ionicons/_ionicons-variables.scss \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/lib/ionic/scss/ionicons/ionicons.scss \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/com.ionic.keyboard \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/com.phonegap.plugins.PushPlugin \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/org.apache.cordova.device \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/org.apache.cordova.inappbrowser \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/com.ionic.keyboard/www \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/com.ionic.keyboard/www/keyboard.js \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/com.phonegap.plugins.PushPlugin/www \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/com.phonegap.plugins.PushPlugin/www/PushNotification.js \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/org.apache.cordova.device/www \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/org.apache.cordova.device/www/device.js \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/assets/www/plugins/org.apache.cordova.inappbrowser/www \

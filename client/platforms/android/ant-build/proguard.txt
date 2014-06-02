@@ -1,3 +1,12 @@
 # view AndroidManifest.xml #generated:6
 -keep class com.ionicframework.starter.HelloCordova { <init>(...); }
 
+# view AndroidManifest.xml #generated:13
+-keep class com.plugin.gcm.CordovaGCMBroadcastReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:20
+-keep class com.plugin.gcm.GCMIntentService { <init>(...); }
+
+# view AndroidManifest.xml #generated:12
+-keep class com.plugin.gcm.PushHandlerActivity { <init>(...); }
+

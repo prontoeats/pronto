@@ -10,6 +10,7 @@
       <ion-item ng-repeat="acceptedOffer in acceptedOffers | orderBy:'updatedAt'" type="item-text-wrap">
         <div class='col'>
         <div>Party of {{acceptedOffer.groupSize}} at {{acceptedOffer.targetDateTime | date:'shortTime'}}</div>
+        {{acceptedOffer.results[0].replies}}
       </div>
       </ion-item>
     </ion-list>
