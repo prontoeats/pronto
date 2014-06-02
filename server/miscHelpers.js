@@ -25,11 +25,11 @@ exports.parseNearbyData = function (array) {
 
     bus.pushNotification = array[i].pushNotification;
 
-    if (array[i].pushNotification.apn.length){
+    if (array[i].pushNotification.apn){
       apn = apn.concat(array[i].pushNotification.apn);
     }
-    
-    if (array[i].pushNotification.gcm.length){
+
+    if (array[i].pushNotification.gcm){
       gcm = gcm.concat(array[i].pushNotificaion.gcm);
     }
 

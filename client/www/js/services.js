@@ -23,11 +23,11 @@ angular.module('starter.services', ['LocalStorageModule'])
 
     if(type === 'user'){
       tokenHandler = userTokenHandler;
-      successHandler = userSuccessHandler;
+      window.prontoApp.onNotificationGCM = window.prontoApp.userOnNotificationGCM
       console.log('got to user handler in services', typeof tokenHandler);
     } else {
       tokenHandler = businessTokenHandler;
-      successHandler = busSuccessHandler;
+      window.prontoApp.onNotificationGCM = window.prontoApp.businessOnNotificationGCM
     }
 
 
@@ -73,13 +73,38 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
   }
 
-  window.prontoApp.onNotificationGCM  = function(e) {
+  window.prontoApp.userOnNotificationGCM  = function(e) {
     console.log('Event from android: ', e.event);
 
     if (e.event === "registered"){
       if (e.regid.length > 0 ){
         console.log('android register id: ', regid);
-        //TODO: add regid to server
+
+        var accessToken = localStorageService.get('token');
+        var userId = localStorageService.get('userId')
+
+        console.log('access token: ', accessToken);
+        console.log('businessId: ', userId);
+
+        var httpObj = {
+          method: 'POST',
+          url: ServerUrls.url+'/token',
+          data: {
+            accessToken: accessToken,
+            userId: userId,
+            code: e.regid,
+            type: 'gcm'
+          }
+        };
+
+        $http(httpObj)
+        .success(function(data){
+          console.log('Token Send Successful ',data);
+        })
+        .fail(function(err){
+          console.log('Token Send Failed ', err);
+        })
+
       }
     }else if(e.event === "message"){
       if (e.foreground){
@@ -103,6 +128,62 @@ angular.module('starter.services', ['LocalStorageModule'])
       console.log('EVENT -> Unknown, an event was received and we do not know what it is');
     }
   }
+
+  window.prontoApp.businessOnNotificationGCM  = function(e) {
+    console.log('Event from android: ', e.event);
+
+    if (e.event === "registered"){
+      if (e.regid.length > 0 ){
+        console.log('android register id: ', e.regid);
+
+        var accessToken = localStorageService.get('token');
+        var businessId = localStorageService.get('restaurantId');
+
+        console.log('access token: ', accessToken);
+        console.log('businessId: ', businessId);
+
+        var httpObj = {
+          method: 'POST',
+          url: ServerUrls.url+'/business/token',
+          data: {
+            accessToken: accessToken,
+            businessId: businessId,
+            code: e.regid,
+            type: 'gcm'
+          }
+        };
+
+        $http(httpObj)
+        .success(function(data){
+          console.log('RegId Send Successful ',data);
+        })
+        .fail(function(err){
+          console.log('RegId Send Failed ', err);
+        })
+      }
+    }else if(e.event === "message"){
+      if (e.foreground){
+        console.log('inline notification');
+      } else { // otherwise we were launched because the user touched a notification in the notification tray.
+        if (e.coldstart){
+          console.log('-COLDSTART NOTIFICATION-');
+        } else {
+          console.log('-BACKGROUND NOTIFICATION-');
+        }
+      }
+
+      console.log('MESSAGE -> MSG: ' + e.payload.message);
+      //android only
+      console.log('MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
+      //amazon-fireos only
+      console.log('MESSAGE -> TIMESTAMP: ' + e.payload.timeStamp);
+    } else if( e.event === 'error'){
+      console.log('ERROR -> MSG:' + e.msg);
+    } else {
+      console.log('EVENT -> Unknown, an event was received and we do not know what it is');
+    }
+  }
+
 
   var userTokenHandler = function(result){
     console.log('token: ', result);
@@ -164,63 +245,8 @@ angular.module('starter.services', ['LocalStorageModule'])
 
   }
 
-  var userSuccessHandler = function (result){
+  var successHandler = function (result){
     console.log('success:', result);
-
-    var accessToken = localStorageService.get('token');
-    var userId = localStorageService.get('userId')
-
-    console.log('access token: ', accessToken);
-    console.log('businessId: ', userId);
-
-    var httpObj = {
-      method: 'POST',
-      url: ServerUrls.url+'/token',
-      data: {
-        accessToken: accessToken,
-        userId: userId,
-        code: result,
-        type: 'gcm'
-      }
-    };
-
-    $http(httpObj)
-    .success(function(data){
-      console.log('Token Send Successful ',data);
-    })
-    .fail(function(err){
-      console.log('Token Send Failed ', err);
-    })
-
-  }
-
-  var busSuccessHandler = function (result){
-    console.log('success:', result);
-
-    var accessToken = localStorageService.get('token');
-    var businessId = localStorageService.get('restaurantId');
-
-    console.log('access token: ', accessToken);
-    console.log('businessId: ', businessId);
-
-    var httpObj = {
-      method: 'POST',
-      url: ServerUrls.url+'/business/token',
-      data: {
-        accessToken: accessToken,
-        businessId: businessId,
-        code: result,
-        type: 'gcm'
-      }
-    };
-
-    $http(httpObj)
-    .success(function(data){
-      console.log('RegId Send Successful ',data);
-    })
-    .fail(function(err){
-      console.log('RegId Send Failed ', err);
-    })
   }
 
   var errorHandler = function(result){
