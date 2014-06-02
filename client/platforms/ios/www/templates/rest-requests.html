@@ -9,15 +9,17 @@
     </ion-refresher>
     <ion-list can-swipe  = 'true'>
       <ion-item ng-repeat="request in requests | orderBy:'updatedAt'" type="item-text-wrap">
-        <span>ID: {{request.requestId}}</span>
-        <span>Party: {{request.groupSize}}</span>
-        <span>Time of Expected Arrival: {{request.targetDateTime | date:'shortTime'}}</span>
+      <div class='col'>
+        <!-- <span>ID: {{request.requestId}}</span> -->
+        <div>Party of {{request.groupSize}} at
+        {{request.targetDateTime | date:'shortTime'}}</div>
         <ion-option-button class="button-assertive" ng-click="delete($index)">
           Decline
         </ion-option-button>
         <ion-option-button class="button-balanced" ng-click="go(request)">
           Offer
         </ion-option-button>
+      </div>
       </ion-item>
     </ion-list>
   </ion-content>

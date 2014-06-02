@@ -9,9 +9,11 @@
     <ion-list>
 <!--       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap" href="#/rest/existingOffer/{{existingOffer.id}}"> -->
       <ion-item ng-repeat="existingOffer in existingOffers | orderBy:'updatedAt'" type="item-text-wrap">
-        <span>ID: {{existingOffer.requestId}}</span>
-        <span>Party: {{existingOffer.groupSize}}</span>
-        <span>Time of Arrival: {{existingOffer.targetDateTime | date:'shortTime'}}</span>
+      <div class='col'>
+        <!-- <div>ID: {{existingOffer.requestId}}</div> -->
+        <div>Party of {{existingOffer.groupSize}} at {{existingOffer.targetDateTime | date:'shortTime'}}</div>
+        <!-- <div>Offer: {{existingOffer.results}}</div> -->
+      </div>
       </ion-item>
     </ion-list>
   </ion-content>
