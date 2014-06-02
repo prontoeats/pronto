@@ -27,8 +27,9 @@ exports.parseNearbyData = function (array) {
 
     if (array[i].pushNotification.apn.length){
       apn = apn.concat(array[i].pushNotification.apn);
-
-    } else if (array[i].pushNotification.gcm.length){
+    }
+    
+    if (array[i].pushNotification.gcm.length){
       gcm = gcm.concat(array[i].pushNotificaion.gcm);
     }
 

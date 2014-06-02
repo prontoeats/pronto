@@ -24,6 +24,7 @@
     "grunt-shell": "^0.6.4",
     "less-middleware": "1.0.x",
     "mongoose": "^3.8.9",
+    "node-gcm": "^0.9.11",
     "request": "^2.34.0",
     "twilio": "^1.6.0"
   }

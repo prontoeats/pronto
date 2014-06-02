@@ -2,7 +2,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('ServerUrls', function(){
   return {
-    url: 'http://10.0.0.5:3000'
+    url: 'http://10.8.32.232:3000'
     // url: 'http://localhost:3000'
     // url: 'http://prontoeats.azurewebsites.net'
   };

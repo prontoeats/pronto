@@ -156,6 +156,11 @@ exports.acceptRequests = function(req,res){
       push.sendApnMessage(data.pushNotification.apn, 'You have a new offer!', {view: 'user.active'});
     }
 
+    if (data.pushNotification.gcm.length){
+      push.sendGcmMessage(data.pushNotification.gcm, 'You have a new offer!');
+
+    }
+
     res.send(201);
   })
   .then(function () {
