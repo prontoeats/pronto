@@ -152,6 +152,10 @@ exports.acceptRequests = function(req,res){
   )
   .then(function(data){
 
+    console.log('data in accept requests: ', data.pushNotification);
+    console.log('type: ', typeof data.pushNotification);
+
+
     if (data.pushNotification.apn.length){
       push.sendApnMessage(data.pushNotification.apn, 'You have a new offer!', {view: 'user.active'});
     }

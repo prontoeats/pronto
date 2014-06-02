@@ -29,9 +29,10 @@ exports.parseNearbyData = function (array) {
     if (bus.pushNotification.apn.length){
       apn = apn.concat(bus.pushNotification.apn);
     }
-    
+
+    console.log('pushnotification gcm: ', bus.pushNotification.gcm);
     if (bus.pushNotification.gcm.length){
-      gcm = gcm.concat(bus.pushNotificaion.gcm);
+      gcm = gcm.concat(bus.pushNotification.gcm);
     }
 
     allBus.push(bus);
@@ -138,7 +139,7 @@ exports.parseBusinessOpenRequests = function(array, businessId, status){
       business = array[i].results[y];
       if( (business.businessId+'' === businessId+'') && (business.status === status)){
         obj = request;
-        obj.results=[];
+        obj.results=[business];
         results.push(obj);
       }
     }
