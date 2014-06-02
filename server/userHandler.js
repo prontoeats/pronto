@@ -197,25 +197,30 @@ exports.acceptOffer = function(req, res) {
   .then(function (data) {
     res.send(201);
 
-  var tempResults = UserRequest.promFindOne({requestId: req.body.requestId}).results;
-     for (var i = 0; i < tempResults.length; i += 1) {
-       if (tempResults[i].status === 'Offered') {
-         tempResults[i].status = 'Rejected';
-         tempResults[i].updatedAt = new Date();
+    UserRequest.promFindOne({requestId: req.body.requestId})
+
+    .then(function(data){
+      
+      var tempResults = data.results;
+       for (var i = 0; i < tempResults.length; i += 1) {
+         if (tempResults[i].status === 'Offered') {
+           tempResults[i].status = 'Rejected';
+           tempResults[i].updatedAt = new Date();
+         }
        }
-     }
-     return UserRequest.promFindOneAndUpdate(
-       {requestId: req.body.requestId},
-       {$set: {
-         'results': tempResults
-       }},
-       {new: true}
-     )
+       return UserRequest.promFindOneAndUpdate(
+         {requestId: req.body.requestId},
+         {$set: {
+           'results': tempResults
+         }},
+         {new: true}
+       );
+    });
   })
   // set outstanding offers for this request (status: offered) to rejected
   .then(function(){
     return UserRequest.promFindOne({requestId: req.body.requestId, 'results.businessId': businessId}, 
-      {'results.pushNotification':1})
+      {'results.pushNotification':1});
   })
   .then(function(data){
     if(data.results[0].pushNotification.apn.length){
