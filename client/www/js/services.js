@@ -30,6 +30,11 @@ angular.module('starter.services', ['LocalStorageModule'])
       window.prontoApp.onNotificationGCM = window.prontoApp.businessOnNotificationGCM
     }
 
+    // console.log('types --------');
+    // console.log('successHandler', typeof successHandler);
+    // console.log('errorHandler', typeof errorHandler);
+    // console.log('window push', typeof window.prontoApp.onNotificationGCM);
+
 
     try{
       if (device.platform === 'android'

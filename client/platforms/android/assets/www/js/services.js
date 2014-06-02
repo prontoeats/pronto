@@ -1,12 +1,268 @@
 angular.module('starter.services', ['LocalStorageModule'])
 
-
 .factory('ServerUrls', function(){
   return {
+    url: 'http://10.8.32.232:3000'
     // url: 'http://localhost:3000'
-    url: 'http://prontoeats.azurewebsites.net'
+    // url: 'http://prontoeats.azurewebsites.net'
   };
 })
+
+.factory('PushNotification', function($state, $http, ServerUrls, localStorageService){
+  var pushNotification;
+
+  var onDeviceReady = function(type){
+    console.log('device ready, even received');
+
+    pushNotification = window.plugins.pushNotification;
+
+    console.log('registering device type: ' + device.platform);
+
+    var tokenHandler;
+    var successHandler;
+
+    if(type === 'user'){
+      tokenHandler = userTokenHandler;
+      window.prontoApp.onNotificationGCM = window.prontoApp.userOnNotificationGCM
+      console.log('got to user handler in services', typeof tokenHandler);
+    } else {
+      tokenHandler = businessTokenHandler;
+      window.prontoApp.onNotificationGCM = window.prontoApp.businessOnNotificationGCM
+    }
+
+    console.log('types --------');
+    console.log('successHandler', typeof successHandler);
+    console.log('errorHandler', typeof errorHandler);
+    console.log('window push', typeof window.prontoApp.onNotificationGCM);
+
+
+    try{
+      if (device.platform === 'android'
+        || device.platform === 'Android'
+        || device.platform === 'amazon-fireos'){
+        pushNotification.register(
+          successHandler,
+          errorHandler,
+          { senderID:"763850460204",
+            ecb: "window.prontoApp.onNotificationGCM"
+          }
+        );
+      } else {
+        console.log('got to else statement');
+        pushNotification.register(
+          tokenHandler,
+          errorHandler,
+          { badge: 'true',
+            sound: 'true',
+            alert: 'true',
+            ecb: "window.prontoApp.onNotificationAPN"
+          }
+        );
+      }
+    } catch (err){
+      console.log('errer registering with the device');
+    }
+      // pushNotification.unregister(function(e){console.log('unregistered', e)},
+      // function(e){
+      // console.log('issue unregistering',e)});
+  };
+
+  window.prontoApp = {};
+
+  window.prontoApp.onNotificationAPN = function(e) {
+    var state = JSON.stringify($state);
+    console.log('state variable', state);
+
+    if (e.badge){
+      pushNotification.setApplicationIconBadgeNumber(badgeSuccessHandler, e.badge);
+    }
+  }
+
+  window.prontoApp.userOnNotificationGCM  = function(e) {
+    console.log('Event from android: ', e.event);
+
+    if (e.event === "registered"){
+      if (e.regid.length > 0 ){
+        console.log('android register id: ', regid);
+
+        var accessToken = localStorageService.get('token');
+        var userId = localStorageService.get('userId')
+
+        console.log('access token: ', accessToken);
+        console.log('businessId: ', userId);
+
+        var httpObj = {
+          method: 'POST',
+          url: ServerUrls.url+'/token',
+          data: {
+            accessToken: accessToken,
+            userId: userId,
+            code: e.regid,
+            type: 'gcm'
+          }
+        };
+
+        $http(httpObj)
+        .success(function(data){
+          console.log('Token Send Successful ',data);
+        })
+        .fail(function(err){
+          console.log('Token Send Failed ', err);
+        })
+
+      }
+    }else if(e.event === "message"){
+      if (e.foreground){
+        console.log('inline notification');
+      } else { // otherwise we were launched because the user touched a notification in the notification tray.
+        if (e.coldstart){
+          console.log('-COLDSTART NOTIFICATION-');
+        } else {
+          console.log('-BACKGROUND NOTIFICATION-');
+        }
+      }
+
+      console.log('MESSAGE -> MSG: ' + e.payload.message);
+      //android only
+      console.log('MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
+      //amazon-fireos only
+      console.log('MESSAGE -> TIMESTAMP: ' + e.payload.timeStamp);
+    } else if( e.event === 'error'){
+      console.log('ERROR -> MSG:' + e.msg);
+    } else {
+      console.log('EVENT -> Unknown, an event was received and we do not know what it is');
+    }
+  }
+
+  window.prontoApp.businessOnNotificationGCM  = function(e) {
+    console.log('Event from android: ', e.event);
+
+    if (e.event === "registered"){
+      if (e.regid.length > 0 ){
+        console.log('android register id: ', e.regid);
+
+        var accessToken = localStorageService.get('token');
+        var businessId = localStorageService.get('restaurantId');
+
+        console.log('access token: ', accessToken);
+        console.log('businessId: ', businessId);
+
+        var httpObj = {
+          method: 'POST',
+          url: ServerUrls.url+'/business/token',
+          data: {
+            accessToken: accessToken,
+            businessId: businessId,
+            code: e.regid,
+            type: 'gcm'
+          }
+        };
+
+        $http(httpObj)
+        .success(function(data){
+          console.log('RegId Send Successful ',data);
+        })
+        .fail(function(err){
+          console.log('RegId Send Failed ', err);
+        })
+      }
+    }else if(e.event === "message"){
+      if (e.foreground){
+        console.log('inline notification');
+      } else { // otherwise we were launched because the user touched a notification in the notification tray.
+        if (e.coldstart){
+          console.log('-COLDSTART NOTIFICATION-');
+        } else {
+          console.log('-BACKGROUND NOTIFICATION-');
+        }
+      }
+
+      console.log('MESSAGE -> MSG: ' + e.payload.message);
+      //android only
+      console.log('MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
+      //amazon-fireos only
+      console.log('MESSAGE -> TIMESTAMP: ' + e.payload.timeStamp);
+    } else if( e.event === 'error'){
+      console.log('ERROR -> MSG:' + e.msg);
+    } else {
+      console.log('EVENT -> Unknown, an event was received and we do not know what it is');
+    }
+  }
+
+
+  var userTokenHandler = function(result){
+    console.log('token: ', result);
+
+    var accessToken = localStorageService.get('token');
+    var userId = localStorageService.get('userId')
+
+    console.log('access token: ', accessToken);
+    console.log('businessId: ', userId);
+
+    var httpObj = {
+      method: 'POST',
+      url: ServerUrls.url+'/token',
+      data: {
+        accessToken: accessToken,
+        userId: userId,
+        code: result,
+        type: 'apn'
+      }
+    };
+
+    $http(httpObj)
+    .success(function(data){
+      console.log('Token Send Successful ',data);
+    })
+    .fail(function(err){
+      console.log('Token Send Failed ', err);
+    })
+
+  }
+
+  var businessTokenHandler = function(result){
+    console.log('token: ', result);
+
+    var accessToken = localStorageService.get('token');
+    var businessId = localStorageService.get('restaurantId');
+
+    console.log('access token: ', accessToken);
+    console.log('businessId: ', businessId);
+
+    var httpObj = {
+      method: 'POST',
+      url: ServerUrls.url+'/business/token',
+      data: {
+        accessToken: accessToken,
+        businessId: businessId,
+        code: result,
+        type: 'apn'
+      }
+    };
+
+    $http(httpObj)
+    .success(function(data){
+      console.log('Token Send Successful ',data);
+    })
+    .fail(function(err){
+      console.log('Token Send Failed ', err);
+    })
+
+  }
+
+  var successHandler = function (result){
+    console.log('success:', result);
+  }
+
+  var errorHandler = function(result){
+    console.log('error:', result);
+  }
+
+  return {
+    onDeviceReady: onDeviceReady
+  };
+})
+
 .factory('UserActiveRequest', function($http, localStorageService,ServerUrls){
    var all = function(){
      var userId = localStorageService.get('userId');
@@ -53,61 +309,6 @@ angular.module('starter.services', ['LocalStorageModule'])
    };
 })
 
-.factory('ActiveTestData', function(){
-  var summaryData = {
-    distance: 5,
-    location: 'Current Location',
-    groupSize: 3,
-    mins: 15
-  };
-
-  var offersData = [
-    {
-      businessName: 'Jims',
-      address: '1452 Howard St',
-      distance: 0.23,
-      offer: '20% off'
-    },
-    {
-      businessName: 'Joes',
-      address: '1234 Market St',
-      distance: 0.45,
-      offer: '15% off'
-    },
-    {
-      businessName: 'Jeffs',
-      address: '944 Market St',
-      distance: 0.75,
-      offer: '30% off'
-    }
-  ]
-  return summaryData;
-})
-
-.factory('OffersTestData', function(){
-  var offersData = [
-    {
-      businessName: 'Jims',
-      address: '1452 Howard St',
-      distance: 0.23,
-      offer: '20% off'
-    },
-    {
-      businessName: 'Joes',
-      address: '1234 Market St',
-      distance: 0.45,
-      offer: '15% off'
-    },
-    {
-      businessName: 'Jeffs',
-      address: '944 Market St',
-      distance: 0.75,
-      offer: '30% off'
-    }
-  ]
-  return offersData;
-})
-
 
 //Get the longitude and latitude coordinates from device GPS
 .factory('GetLocation', function($q) {
@@ -134,8 +335,6 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
-
-
 .factory('ExistingOffers', function($http, localStorageService,ServerUrls) {
   // Might use a resource here that returns a JSON array
   var all = function(){
@@ -150,28 +349,12 @@ angular.module('starter.services', ['LocalStorageModule'])
     });
   }
 
-  // get: function(existingOfferId) {
-  //   // Simple index lookup
-  //   return existingOffers[existingOfferId];
-  // }
-
   return {
     all: all
   };
 })
 
 .factory('Requests', function($http, localStorageService, $location, ServerUrls) {
-  // Might use a resource here that returns a JSON array
-  // GET Request with route
-
-  // Some fake testing data
-  // var requests = [
-  //   { id: 0, name: 'Scruff McGruff', party: '5', time: '15'},
-  //   { id: 1, name: 'G.I. Joe', party: '2', time: '30' },
-  //   { id: 2, name: 'Miss Frizzle', party: '3', time: '15' },
-  //   { id: 3, name: 'Ash Ketchum', party: '6', time: '45' }
-  // ];
-
   var all = function(){
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');

@@ -3,11 +3,17 @@
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionic/keyboard/IonicKeyboard.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/BuildConfig.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/HelloCordova.class \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/Manifest$permission.class \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/Manifest.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/R$attr.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/R$drawable.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/R$string.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/R$xml.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/ionicframework/starter/R.class \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/plugin/gcm/CordovaGCMBroadcastReceiver.class \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/plugin/gcm/GCMIntentService.class \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/plugin/gcm/PushHandlerActivity.class \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/com/plugin/gcm/PushPlugin.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/org/apache/cordova/device/Device.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/org/apache/cordova/inappbrowser/InAppBrowser$1.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/org/apache/cordova/inappbrowser/InAppBrowser$2.class \
@@ -24,3 +30,5 @@
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/org/apache/cordova/inappbrowser/InAppBrowserDialog.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/classes/org/apache/cordova/inappbrowser/InAppChromeClient.class \
 /Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/dexedLibs/classes-f2266dba9cb80452521e36faa97b5a1f.jar \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/dexedLibs/gcm-405ae88c40312d1c15976b21c4429260.jar \
+/Users/jeffgho/hackreactor/pronto/client/platforms/android/ant-build/dexedLibs/android-support-v13-ea31097712ae1c424d02b1c7e4b1fdfd.jar \
