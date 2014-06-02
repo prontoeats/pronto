@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		1463D8C36E34455695D578BA /* AppDelegate+notification.m in Sources */ = {isa = PBXBuildFile; fileRef = B8064096AC494FFF9EBA7A38 /* AppDelegate+notification.m */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
@@ -543,7 +542,7 @@
 					"\"$(BUILT_PRODUCTS_DIR)/libCordova.a\"",
 					"-ObjC",
 				);
-				PRODUCT_NAME = HelloCordova;
+				PRODUCT_NAME = "HelloCordova";
 				PROVISIONING_PROFILE = "208C8AFE-36F5-4E99-80CF-BB6515854A12";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -576,7 +575,7 @@
 					"\"$(BUILT_PRODUCTS_DIR)/libCordova.a\"",
 					"-ObjC",
 				);
-				PRODUCT_NAME = HelloCordova;
+				PRODUCT_NAME = "HelloCordova";
 				PROVISIONING_PROFILE = "208C8AFE-36F5-4E99-80CF-BB6515854A12";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

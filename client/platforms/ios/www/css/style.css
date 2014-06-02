@@ -18,3 +18,24 @@
 .user-new {
   font-size: 10px;
 }
+
+.rest-name{
+  font-size: 20px;
+  font-weight: bold;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.rest-address{
+  font-size: 12px;
+  font-style: italic;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.rest-offer{
+  font-size: 14px;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.icon-custom{
+  color : #4a87ee;
+}

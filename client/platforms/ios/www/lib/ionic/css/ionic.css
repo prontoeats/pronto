@@ -3090,7 +3090,7 @@ a.subdued {
     position: relative; }
 
 .tab-item.disabled, .tab-item[disabled] {
-  opacity: 0.4;
+  opacity: 0.1;
   cursor: default;
   pointer-events: none; }
 

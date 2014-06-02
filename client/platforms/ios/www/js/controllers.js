@@ -60,14 +60,17 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-.controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls) {
+.controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls, $ionicLoading) {
+  $scope.show = true;
+  
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
   var loginWindow;
   $scope.login = function () {
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-
+    $scope.show = false;
+    
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;
       var code = /\?code=(.+)$/.exec(url);
@@ -75,10 +78,19 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
       if (error){
         loginWindow.close();
-        $state.transitionTo('login.user');
+        reload();
       }
 
       if (code) {
+
+        $ionicLoading.show({
+          content: 'Loading',
+          animation: 'fade-in',
+          showBackdrop: true,
+          maxWidth: 200,
+          showDelay: 0
+        });
+
         loginWindow.close();
         $http ({
           method: 'POST',
@@ -89,19 +101,27 @@ angular.module('starter.controllers', ['LocalStorageModule'])
         }).success(function(data, status){
           if (data.signup){
             localStorageService.set('token', data.accessToken);
+            $ionicLoading.hide();
             $state.transitionTo('signup.signup');
           }else{
             localStorageService.set('token', data.accessToken);
             localStorageService.set('restaurantId', data.businessId);
             localStorageService.set('user', false);
-            // loginWindow.close();
+            $ionicLoading.hide();
             $state.transitionTo('rest.requests');
           }
         }).error(function(data, status){
           loginWindow.close();
-          $state.transitionTo('login.restaurant');
+          reload();
         });
       }
+    });
+  };
+  var reload = function(){
+    $state.transitionTo($state.current, $stateParams, {
+      reload: true,
+      inherit: false,
+      notify: true
     });
   };
 })
@@ -392,6 +412,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     .success(function(data,status){
       console.log('got accepted offer back');
       $scope.acceptedOffers = data;
+      console.log ('accepted offer: ', data);
     })
     .error(function(data, status){
       console.log('existing offer error');
