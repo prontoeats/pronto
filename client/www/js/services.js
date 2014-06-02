@@ -19,7 +19,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log('registering device type: ' + device.platform);
 
     var tokenHandler;
-    var successHandler;
+    // var successHandler;
 
     if(type === 'user'){
       tokenHandler = userTokenHandler;
@@ -30,10 +30,10 @@ angular.module('starter.services', ['LocalStorageModule'])
       window.prontoApp.onNotificationGCM = window.prontoApp.businessOnNotificationGCM
     }
 
-    // console.log('types --------');
-    // console.log('successHandler', typeof successHandler);
-    // console.log('errorHandler', typeof errorHandler);
-    // console.log('window push', typeof window.prontoApp.onNotificationGCM);
+    console.log('types --------');
+    console.log('successHandler', typeof successHandler);
+    console.log('errorHandler', typeof errorHandler);
+    console.log('window push', typeof window.prontoApp.onNotificationGCM);
 
 
     try{
@@ -83,7 +83,7 @@ angular.module('starter.services', ['LocalStorageModule'])
 
     if (e.event === "registered"){
       if (e.regid.length > 0 ){
-        console.log('android register id: ', regid);
+        console.log('android register id: ', e.regid);
 
         var accessToken = localStorageService.get('token');
         var userId = localStorageService.get('userId')
