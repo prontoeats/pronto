@@ -10,6 +10,7 @@ var authen = require('./authenHelpers.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
 var misc = require('./miscHelpers.js');
+var push = require('./pushHelpers.js')
 
 
 exports.sendBusIndex = function(req, res){
@@ -39,23 +40,16 @@ exports.login = function(req, res){
     return login.getUserInfo(access_token);
   })
   .then( function (data) {
-    console.log('getUserInfo then');
     data = JSON.parse(data[1]);
-    console.dir(data);
     email = data.emails[0]['value'];
     firstName = data.name.givenName;
     lastName = data.name.familyName;
     return Business.promFindOne({email: email});
   })
   .then( function (data) {
-    console.log('****');
-    console.dir(data);
     if (data === null) {
       res.send(201, {accessToken: access_token, signup: true});
     } else {
-      console.log('data in else statement');
-      console.dir(data);
-      console.log(access_token);
       // update token information (access & refresh) in database
       Business.promFindOneAndUpdate(
         {email: email},
@@ -74,8 +68,6 @@ exports.login = function(req, res){
 exports.signup = function (req, res) {
 
   // receive token and use to call Google to retrieve email/first/last
-  console.log('BODY: ',req.body);
-
   var businessInfo = req.body;
   var accessToken = businessInfo.accessToken;
 
@@ -92,12 +84,10 @@ exports.signup = function (req, res) {
         throw err;
       }
       // with other information received, save to database
-      console.log('new business saved to database');
       res.send(201, {accessToken: accessToken, businessId: data._id});
     })
   })
   .catch( function (e) {
-    console.log('error looking up user information with google');
     res.send(400, "OMG could not find that token in google");
     throw e;
   });
@@ -106,26 +96,9 @@ exports.signup = function (req, res) {
 exports.showRequests = function (req, res) {
   // TODO: remove default; require authentication (on app-config.js)
 
-  console.log('got to showRequests');
-  console.log('req.url:', req.url);
   var queryString = qs.parse(url.parse(req.url).query);
-  console.log('queryString:', queryString);
 
   var oid = mongoose.Types.ObjectId(queryString.businessId);
-
-
-//KEEP THIS FOR TESTING
-    // UserRequest.promFindOneAndUpdate(
-    //   {requestId: 95, 'results.businessId': oid},
-    //   {$set: {'results.$.status': 'Pending'}},
-    //   {new: true}
-    // )
-
-    // UserRequest.promFindOneAndUpdate(
-    //   {requestId: 97, 'results.businessId': oid},
-    //   {$set: {'results.$.status': 'Pending'}},
-    //   {new: true}
-    // )
 
   UserRequest.promFind({'results.businessId': oid})
   .then(function(data){
@@ -137,7 +110,6 @@ exports.showRequests = function (req, res) {
 
 exports.declineRequests = function(req,res){
 
-  console.log('got to decline requests')
   var data = req.body;
 
   var businessId = mongoose.Types.ObjectId(data.businessId);
@@ -152,7 +124,6 @@ exports.declineRequests = function(req,res){
     {new: true}
   )
   .then(function(data){
-    console.log('Successful Reject Update: ', data);
     res.send(201);
   })
 };
@@ -180,7 +151,11 @@ exports.acceptRequests = function(req,res){
     {new: true}
   )
   .then(function(data){
-    console.log('Successful Accepted Update: ', data);
+
+    if (data.pushNotification.apn.length){
+      push.sendApnMessage(data.pushNotification.apn, 'You have a new offer!', {view: 'user.active'});
+    }
+
     res.send(201);
   })
   .then(function () {
@@ -201,10 +176,7 @@ exports.acceptRequests = function(req,res){
 
 exports.showOffered = function (req, res) {
 
-  console.log('got to showOffered');
-  console.log('req.url:', req.url);
   var queryString = qs.parse(url.parse(req.url).query);
-  console.log('queryString:', queryString);
 
   var oid = mongoose.Types.ObjectId(queryString.businessId);
 
@@ -217,10 +189,7 @@ exports.showOffered = function (req, res) {
 
 exports.showAccepted = function (req, res) {
 
-  console.log('got to showAccepted');
-  console.log('req.url:', req.url);
   var queryString = qs.parse(url.parse(req.url).query);
-  console.log('queryString:', queryString);
 
   var oid = mongoose.Types.ObjectId(queryString.businessId);
 
@@ -230,3 +199,56 @@ exports.showAccepted = function (req, res) {
     res.send(200, results);
   })
 }
+
+exports.registerToken = function (req, res){
+
+  var businessId = mongoose.Types.ObjectId(req.body.businessId);
+
+  var query = {_id: businessId};
+
+  //if true, then the code is a apn token. 
+  //if false, then the code is a gcm registration id
+  var apn; 
+
+  if (req.body.type === 'apn'){
+    apn = true;
+    query['pushNotification.apn'] = {$in: [req.body.code]};
+
+  } else if (req.body.type === 'gcm'){
+    apn = false;
+    query['pushNotification.gcm'] = {$in: [req.body.code]};
+
+  } else {
+    res.send(400, 'You must supply a type (apn/gcm)');
+    return;
+  }
+
+
+  Business.promFindOne(query)
+  .then(function(data){
+
+
+    if (data){
+      res.send(200);
+    } else {
+      var updateQuery
+      if (apn){
+        updateQuery = {$push: {'pushNotification.apn': req.body.code}};
+      } else {
+        updateQuery = {$push: {'pushNotification.gcm': req.body.code}};
+      }
+      return Business.promFindOneAndUpdate({_id: businessId}, updateQuery);
+    }
+  })
+  .then(function(data){
+    res.send(201);
+  })
+  .catch(function(error){
+    res.send(404);
+  })
+}
+
+
+
+
+

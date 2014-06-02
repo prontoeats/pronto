@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>6F2D935C-64F7-432C-ADB1-4C94A30C4219</string>
+	<string>B1123435-C340-4735-92EC-0FD747A5E741</string>
 	<key>IDESourceControlProjectName</key>
 	<string>HelloCordova</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>2BE607F3-677E-4A9A-890C-8AB3FBE0A043</key>
-		<string>https://github.com/JoeDou/pronto.git</string>
+		<key>58152853-ACAA-4631-897D-7C771323C50F</key>
+		<string>https://github.com/jimmytsao/pronto.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>client/platforms/ios/HelloCordova.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>2BE607F3-677E-4A9A-890C-8AB3FBE0A043</key>
+		<key>58152853-ACAA-4631-897D-7C771323C50F</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/JoeDou/pronto.git</string>
+	<string>https://github.com/jimmytsao/pronto.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>2BE607F3-677E-4A9A-890C-8AB3FBE0A043</string>
+	<string>58152853-ACAA-4631-897D-7C771323C50F</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>2BE607F3-677E-4A9A-890C-8AB3FBE0A043</string>
+			<string>58152853-ACAA-4631-897D-7C771323C50F</string>
 			<key>IDESourceControlWCCName</key>
 			<string>pronto</string>
 		</dict>

@@ -13,6 +13,7 @@ var requestSchema = mongoose.Schema({
   country:        {type: String, default: 'US'},
   requestStatus:  {type: String, default: 'Active'},
   results:        {type: mongoose.Schema.Types.Mixed},
+  pushNotification: {type: mongoose.Schema.Types.Mixed},
   location:       {type: Array, index: '2dsphere'},
   createdAt:      {type: Date, default: Date.now},
   updatedAt:      {type: Date, default: Date.now}
@@ -25,7 +26,6 @@ requestSchema.pre('save', function (next) {
     Counter.getCounter('requests').bind(this)
 
       .then(function (data) {
-        console.log('data.counter:', data.counter);
         this.requestId = data.counter;
         next();
       })

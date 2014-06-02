@@ -46,10 +46,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
 
 
-    var onDeviceReady = PushNotification.onDeviceReady;
 
     console.log('before listener');
-    document.addEventListener('deviceready', onDeviceReady, true);
+    // var onDeviceReady = PushNotification.onDeviceReady;
+    // document.addEventListener('deviceready', onDeviceReady, true);
 
   });
 })

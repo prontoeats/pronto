@@ -9,6 +9,7 @@ var userSchema = mongoose.Schema({
   accessToken:  {type: String, required: true},
   firstName:    {type: String, required: true},
   lastName:     {type: String, required: true},
+  pushNotification: {type: mongoose.Schema.Types.Mixed, default: {apn: [],gcm:[]}},
   // phoneNumber:  {type: Number},
   createdAt:    {type: Date, default: Date.now}
 });

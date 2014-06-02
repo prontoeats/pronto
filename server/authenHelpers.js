@@ -38,7 +38,6 @@ exports.logout = function(req,res){
 
 exports.authenticateUserToken = function (req, res, next) {
   // search if id === _id in user table
-  console.log('Req Body: ', req.body);
   User.promFindOne({_id: req.body.userId})
   .then( function (data) {
     // no record
