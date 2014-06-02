@@ -154,7 +154,14 @@ exports.request = function(req, res) {
     //send out push notifications
     var pushBody = 'You have a new request.'
     var payload = {view: 'rest.requests'};
-    push.sendApnMessage(apn, pushBody, payload);
+
+    if(apn.length){
+      push.sendApnMessage(apn, pushBody, payload);
+    }
+
+    if(gcm.length){
+      push.sendGcmMessage(gcm, pushBody);
+    }
     res.send(201);
 
     console.log('COMPLETED USER POST REQUEST');
@@ -210,6 +217,11 @@ exports.acceptOffer = function(req, res) {
     if(data.results[0].pushNotification.apn.length){
       push.sendApnMessage(data.results[0].pushNotification.apn, 'Your offer has been acceped!', {view: 'rest.accepted'});
     }
+
+    if(data.results[0].pushNotification.gcm.length){
+      push.sendGcmMessage(data.results[0].pushNotification.gcm, 'Your offer has been acceped!');
+    }
+
   })
 };
 
