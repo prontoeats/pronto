@@ -199,14 +199,17 @@ exports.acceptOffer = function(req, res) {
   )
   .then(function (data) {
     res.send(201);
-    return UserRequest.promUpdate({
-      'requestId': req.body.requestId,
-      'results.status': 'Offered'},
-      {$set: {
-        'results.status': 'Rejected',
-        'results.updatedAt': new Date()}},
-      {new: true}
-    )
+
+    //TODO: DEBUG
+    
+    // return UserRequest.promUpdate({
+    //   'requestId': req.body.requestId,
+    //   'results.status': 'Offered'},
+    //   {$set: {
+    //     'results.status': 'Rejected',
+    //     'results.updatedAt': new Date()}},
+    //   {new: true}
+    // )
   })
   // set outstanding offers for this request (status: offered) to rejected
   .then(function(){
