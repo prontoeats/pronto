@@ -21,9 +21,7 @@ exports.getGoogleToken = function (code) {
   prom.request(reqObj)
     // google sends a token back (success callback)
     .then( function (data) {
-      console.log('getGoogleToken then');
       data = JSON.parse(data[1]);
-      console.dir(data);
       resolve(data.access_token);
     });
   });

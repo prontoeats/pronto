@@ -46,20 +46,15 @@ exports.login = function(req, res){
     return login.getUserInfo(access_token);
   })
   .then( function (data) {
-    console.log('getUserInfo then');
     data = JSON.parse(data[1]);
-    console.dir(data);
     email = data.emails[0]['value'];
     firstName = data.name.givenName;
     lastName = data.name.familyName;
     return User.promFindOne({email: email});
   })
   .then( function (data) {
-    console.log('****');
-    console.dir(data);
     if (data === null) {
       // create new user account in database
-      console.log('access_token:', access_token);
       new User({
         email: email,
         firstName: firstName,
@@ -71,13 +66,9 @@ exports.login = function(req, res){
           console.log(err);
           exports.sendAuthFail(res);
         }
-        console.log('save data: ',data);
         res.send(201, {accessToken: data.accessToken, userId: data._id});
       })
     } else {
-      console.log('data in else statement');
-      console.dir(data);
-      console.log(access_token);
       // update token information (access & refresh) in database
       User.promFindOneAndUpdate(
         {email: email},
@@ -95,7 +86,6 @@ exports.login = function(req, res){
 
 exports.request = function(req, res) {
 
-  console.log('received data: ',req.body);
   var apn;  //apple tokens to push to
   var gcm;  //google registration ids to push to
   var requestObj = req.body; // make sure Joe sends id back as "userId"
@@ -116,8 +106,15 @@ exports.request = function(req, res) {
     return request.promSave();
   })
 
-  //create new promise to continue chain
   .then(function(){
+    var userId = mongoose.Types.ObjectId(requestObj.userId);
+    return User.promFindOne({_id: userId});
+  })
+
+  .then(function(data){
+    request.pushNotification = data.pushNotification;
+  
+    //create new promise to continue chain
     return new blue (function (resolve, reject) {
       resolve([requestObj.location, requestObj.radius]);
     })
@@ -131,7 +128,6 @@ exports.request = function(req, res) {
 
   //store the data as a parameter on the request Obj and save
   .then(function(data){
-    console.log('storing results property');
 
     apn = data[1];
     gcm = data[2];
@@ -142,7 +138,6 @@ exports.request = function(req, res) {
   })
   .then(function (data) {
     // data should be an array of success values [request, numberAffected]
-    console.log('data:', data);
     // convert a request still in 'active' state to 'expired' after 10 mins
     setTimeout(function () {
       UserRequest.promFindOneAndUpdate(
@@ -157,11 +152,9 @@ exports.request = function(req, res) {
   })
   .then(function(){
     //send out push notifications
-    console.log('apn to push to: ', apn);
     var pushBody = 'You have a new request.'
     var payload = {view: 'rest.requests'};
     push.sendApnMessage(apn, pushBody, payload);
-    console.log('requestObj: ', requestObj)
     res.send(201);
 
     console.log('COMPLETED USER POST REQUEST');
@@ -170,10 +163,8 @@ exports.request = function(req, res) {
 
 exports.sendRequestInfo = function(req, res) {
 
-  console.log('got to send requestInfo');
   var queryString = qs.parse(url.parse(req.url).query);
 
-  console.log('querystring: ',queryString);
   UserRequest.promFind(
     {userId: queryString.userId},
     null,
@@ -181,7 +172,6 @@ exports.sendRequestInfo = function(req, res) {
   .then(function(data){
     // console.log('DATA: ', data);
 
-    console.log('MONGO REQUEST DATA: ', data);
     res.send(200, data[0]);
   })
 };
@@ -201,22 +191,26 @@ exports.acceptOffer = function(req, res) {
     {new: true}
   )
   .then(function (data) {
-    console.log('Updated offer status to accepted: ', data);
     res.send(201);
+    return UserRequest.promUpdate({
+      'requestId': req.body.requestId,
+      'results.status': 'Offered'},
+      {$set: {
+        'results.status': 'Rejected',
+        'results.updatedAt': new Date()}},
+      {new: true}
+    )
   })
   // set outstanding offers for this request (status: offered) to rejected
-  .then(function () {
-    UserRequest.promUpdate(
-    {
-      'requestId': req.body.requestId,
-      'results.status': 'Offered'
-    },
-    {$set: {
-      'results.status': 'Rejected',
-      'results.updatedAt': new Date()
-    }},
-    {new: true}
-  )})
+  .then(function(){
+    return UserRequest.promFindOne({requestId: req.body.requestId, 'results.businessId': businessId}, 
+      {'results.pushNotification':1})
+  })
+  .then(function(data){
+    if(data.results[0].pushNotification.apn.length){
+      push.sendApnMessage(data.results[0].pushNotification.apn, 'Your offer has been acceped!', {view: 'rest.accepted'});
+    }
+  })
 };
 
 exports.rejectOffer = function(req, res) {
@@ -232,7 +226,6 @@ exports.rejectOffer = function(req, res) {
     {new: true}
   )
   .then(function (data) {
-    console.log('Updated offer status to rejected: ', data);
     res.send(201);
   })
 };
@@ -247,7 +240,6 @@ exports.cancelRequest = function(req, res) {
     {new: true}
   )
   .then(function (data) {
-    console.log('Updated request to be rejected: ', data);
     res.send(201);
   })
 };
@@ -259,13 +251,12 @@ exports.checkLastRequestStatus = function(req, res) {
     {sort: {createdAt: -1}}
   )
   .then(function (data) {
-    console.log('Last request for this user: ', data);
-    console.log('requestStatus of last request:', data.requestStatus);
     res.send(201);
   })
 };
 
 exports.registerToken = function (req, res){
+
 
   var userId = mongoose.Types.ObjectId(req.body.userId);
 
@@ -287,7 +278,6 @@ exports.registerToken = function (req, res){
     res.send(400, 'You must supply a type (apn/gcm)');
     return;
   }
-
   User.promFindOne(query)
   .then(function(data){
     if (data){

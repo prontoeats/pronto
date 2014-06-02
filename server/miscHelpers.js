@@ -11,9 +11,6 @@ exports.parseNearbyData = function (array) {
   // var phoneNums = [];
 
   for (var i = 0; i < array.length; i++) {
-
-    console.log('business array: ', array);
-
     bus = {};
     bus.businessId = array[i]._id;
     bus.phoneNumber = array[i].phoneNumber;
@@ -27,8 +24,6 @@ exports.parseNearbyData = function (array) {
     bus.updatedAt = new Date();
 
     bus.pushNotification = array[i].pushNotification;
-
-    console.log('apn', apn, array[i].pushNotification.apn);
 
     if (array[i].pushNotification.apn.length){
       apn = apn.concat(array[i].pushNotification.apn);

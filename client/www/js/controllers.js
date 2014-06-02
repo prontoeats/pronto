@@ -140,8 +140,10 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 //---------------User Controllers---------------
-.controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService, ServerUrls) {
+.controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService, ServerUrls, PushNotification) {
   //requestObj will be sent to server after hitting submit
+
+  PushNotification.onDeviceReady('user');
 
   $scope.tabA = 1;
   $scope.tabB = 1;
@@ -307,7 +309,10 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------Restaurant Controllers
 
-.controller('RequestsCtrl', function($scope, $rootScope, $interval, Requests) {
+.controller('RequestsCtrl', function($scope, $rootScope, $interval, Requests, PushNotification) {
+
+  PushNotification.onDeviceReady('business');
+
 
   $scope.updateData = function () {
     console.log('calling update data');

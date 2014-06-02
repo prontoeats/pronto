@@ -6,7 +6,6 @@ var url = require('url');
 
 exports.sendApnMessage = function(array, body, payload){
 
-    console.log('Got to send APN Message');
     var callback = function(errNum, notification){
         console.log('APN Connection error is :', errNum);
         console.log('APN Note: ', notification);
@@ -26,7 +25,6 @@ exports.sendApnMessage = function(array, body, payload){
     var apnConnection = new apn.Connection(options);
 
     for (var i = 0; i<array.length; i++){
-        console.log('apn to push to in send APN message', array[i]);
         var device = new apn.Device(array[i]);
         var message = new apn.Notification();
 
