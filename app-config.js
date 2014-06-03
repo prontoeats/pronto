@@ -1,4 +1,3 @@
-
 var express = require('express');
 var dbConnect = require('./db/db-config.js');
 var userHandler = require('./server/userHandler.js');
@@ -21,13 +20,11 @@ app.configure(function() {
   app.use(express.session());
 });
 
-//Public user routes
-app.get('/', userHandler.sendIndex);
+// public user routes
 app.post('/login/user', userHandler.login);
 app.get('/logout', authen.logout);
 
-//Public business routes
-app.get('/business', busHandler.sendBusIndex);
+// public business routes
 app.post('/login/business', busHandler.login);
 app.post('/signup/business', busHandler.signup);
 

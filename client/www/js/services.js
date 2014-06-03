@@ -2,8 +2,8 @@ angular.module('starter.services', ['LocalStorageModule'])
 
 .factory('ServerUrls', function(){
   return {
-    url: 'http://10.8.32.232:3000'
-    // url: 'http://localhost:3000'
+    // url: 'http://10.8.32.232:3000'
+    url: 'http://10.8.28.241:3000'
     // url: 'http://prontoeats.azurewebsites.net'
   };
 })
@@ -278,7 +278,7 @@ angular.module('starter.services', ['LocalStorageModule'])
       postUrl = ServerUrls.url+'/login/user';
     } else {
       errorState = 'login.rest';
-      postUrl = ServerUrls.url+'/login/business';      
+      postUrl = ServerUrls.url+'/login/business';
     }
 
     $state.transitionTo('login.transition');
@@ -323,7 +323,7 @@ angular.module('starter.services', ['LocalStorageModule'])
             $state.transitionTo('user.new');
           } else {
             localStorageService.set('token', data.accessToken);
-            
+
             if (data.signup){
               $ionicLoading.hide();
               $state.transitionTo('signup.signup');
@@ -332,7 +332,7 @@ angular.module('starter.services', ['LocalStorageModule'])
               localStorageService.set('user', false);
               $ionicLoading.hide();
               $state.transitionTo('rest.requests');
-            }     
+            }
           }
         }).error(function(data, status){
           loginWindow.close();
