@@ -1,25 +1,26 @@
 var mongoose = require('mongoose');
 var blue = require('bluebird');
-var prom = require('../server/promisified.js');
 var mapApi = require('../server/mapsApiHelpers.js')
 var Counter = require('./counter.js').Counter;
 
 var businessSchema = mongoose.Schema({
-  // businessId:   {type: Number, unique: true},
-  email:        {type: String, required: true, index: {unique: true}},
-  businessName: {type: String, required: true},
-  address:      {type: String, required: true},
-  city:         {type: String, required: true},
-  state:        {type: String, required: true},
-  country:      {type: String, required: true, default: 'US'},
-  zipCode:      {type: Number, required: true},
-  firstName:    {type: String, required: true},
-  lastName:     {type: String, required: true},
-  phoneNumber:  {type: Number, required: true},
-  accessToken:  {type: String, required: true},
-  pushNotification: {type: mongoose.Schema.Types.Mixed, default: {apn: [],gcm:[]}},
-  location:     {type: Array, index: '2dsphere'},
-  createdAt:    {type: Date, default: Date.now}
+  email:            {type: String, required: true, index: {unique: true}},
+  businessName:     {type: String, required: true},
+  address:          {type: String, required: true},
+  city:             {type: String, required: true},
+  state:            {type: String, required: true},
+  country:          {type: String, required: true, default: 'US'},
+  zipCode:          {type: Number, required: true},
+  firstName:        {type: String, required: true},
+  lastName:         {type: String, required: true},
+  phoneNumber:      {type: Number, required: true},
+  accessToken:      {type: String, required: true},
+  pushNotification: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {apn: [], gcm:[]}
+  },
+  location:         {type: Array, index: '2dsphere'},
+  createdAt:        {type: Date, default: Date.now}
 });
 
 businessSchema.pre('save', function (next) {
@@ -44,8 +45,6 @@ businessSchema.pre('save', function (next) {
 
 var Business = mongoose.model('Business', businessSchema);
 
-// converting model functions to promisified functions
-// Business.promFind = blue.promisify(Business.find);
 Business.promFindOne = blue.promisify(Business.findOne);
 Business.promFindOneAndUpdate = blue.promisify(Business.findOneAndUpdate);
 Business.promAggregate = blue.promisify(Business.aggregate);
