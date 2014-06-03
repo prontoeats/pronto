@@ -45,10 +45,10 @@ var userOrBusiness = function (req) {
 exports.checkToken = function (req, res, next) {
 
   console.log('checkToken');
-  var path = userOrBusiness(req);
-  var id = path[0];
-  var type = path[1];
-  var accessToken = path[2];
+  var info = userOrBusiness(req);
+  var id = info[0];
+  var type = info[1];
+  var accessToken = info[2];
 
   type.promFindOne({_id: id})
   .then( function (data) {
@@ -68,9 +68,9 @@ exports.checkToken = function (req, res, next) {
 exports.registerPushToken = function (req, res){
 
   console.log('registerPushToken');
-  var path = userOrBusiness(req);
-  var id = path[0];
-  var type = path[1];
+  var info = userOrBusiness(req);
+  var id = info[0];
+  var type = info[1];
 
   var apn;
   var query = {_id: id};
