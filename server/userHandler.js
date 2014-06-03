@@ -17,7 +17,6 @@ exports.sendAuthFail = function (res){
 
 exports.login = function(req, res){
 
-  // receive POST request with 'code'
   var code = req.body.code;
   var access_token;
   var email;
@@ -38,7 +37,7 @@ exports.login = function(req, res){
   })
   .then( function (data) {
     if (data === null) {
-      // create new user account in database
+
       new User({
         email: email,
         firstName: firstName,
@@ -53,7 +52,7 @@ exports.login = function(req, res){
         res.send(201, {accessToken: data.accessToken, userId: data._id});
       })
     } else {
-      // update token information (access & refresh) in database
+
       User.promFindOneAndUpdate(
         {email: email},
         {$set: {accessToken: access_token}},
@@ -116,29 +115,24 @@ exports.request = function(req, res) {
 
     request = new UserRequest(requestObj);
 
-    //promisifying the save function to enable chaining
     request.promSave = blue.promisify(request.save);
     return request.promSave();
   })
 
   .then(function(){
-    //format messages and information to send out via push notifications
+
     var pushBody = 'You have a new request!'
     var payload = {state: 'rest.requests'};
 
-    //if there are apn tokens to push to, push the message to them
     if(apn.length){
       push.sendApnMessage(apn, pushBody, payload);
     }
 
-    //if there are gcm registration IDs to push to, push the message to them
     if(gcm.length){
       push.sendGcmMessage(gcm, pushBody, 'rest.requests');
     }
 
-    //send successful response back to user
     res.send(201);
-    console.log('COMPLETED USER POST REQUEST');
   })
 
   .catch(function(err){
@@ -158,8 +152,6 @@ exports.sendRequestInfo = function(req, res) {
     null,
     {limit:1,sort: {createdAt:-1}})
   .then(function(data){
-    // console.log('DATA: ', data);
-
     res.send(200, data[0]);
   })
 };
@@ -181,10 +173,9 @@ exports.acceptOffer = function(req, res) {
   .then(function (data) {
     res.send(201);
 
+    // reject all other outstanding offers when accepting an offer
     UserRequest.promFindOne({requestId: req.body.requestId})
-
     .then(function(data){
-
       var tempResults = data.results;
        for (var i = 0; i < tempResults.length; i += 1) {
          if (tempResults[i].status === 'Offered') {
@@ -201,9 +192,12 @@ exports.acceptOffer = function(req, res) {
        );
     });
   })
-  // set outstanding offers for this request (status: offered) to rejected
   .then(function(){
-    return UserRequest.promFindOne({requestId: req.body.requestId, 'results.businessId': businessId},
+    return UserRequest.promFindOne(
+      {
+        requestId: req.body.requestId,
+        'results.businessId': businessId
+      },
       {'results.pushNotification':1, 'results.businessId':1});
   })
   .then(function(data){
@@ -218,11 +212,17 @@ exports.acceptOffer = function(req, res) {
     }
 
     if(pushNotification.apn.length){
-      push.sendApnMessage(pushNotification.apn, 'Your offer has been accepted!', {state: 'rest.acceptedOffers'});
+      push.sendApnMessage(
+        pushNotification.apn,
+        'Your offer has been accepted!', {state: 'rest.acceptedOffers'}
+      );
     }
 
     if(pushNotification.gcm.length){
-      push.sendGcmMessage(pushNotification.gcm, 'Your offer has been accepted!', 'rest.acceptedOffers');
+      push.sendGcmMessage(
+        pushNotification.gcm,
+        'Your offer has been accepted!', 'rest.acceptedOffers'
+      );
     }
 
   })
