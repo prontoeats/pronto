@@ -5,24 +5,14 @@ var Business = require('../db/business.js').Business;
 var UserRequest = require('../db/userRequest.js').UserRequest;
 var mapApi = require('./mapsApiHelpers.js');
 var prom = require('./promisified.js');
-var authen = require('./authenHelpers.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
 var misc = require('./miscHelpers.js');
 var push = require('./pushHelpers.js')
 
-
-exports.sendBusIndex = function(req, res){
-  res.sendfile('./views/busIndex.html');
-};
-
 exports.businessSendAuthFail = function (res){
   res.send(404, 'failed authentication!');
 }
-
-exports.dashboard = function(req, res){
-  res.sendfile('./views/busDashboard.html');
-};
 
 exports.login = function(req, res){
 
