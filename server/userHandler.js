@@ -142,7 +142,7 @@ exports.request = function(req, res) {
   })
 
   .then(function () {
-    var secondsDiff =
+    var msDiff =
       requestObj.targetDateTime.getTime() - new Date().getTime();
 
     // if request is still outstanding (i.e., active) at targetDateTime
@@ -156,7 +156,7 @@ exports.request = function(req, res) {
         }},
         {new: true}
       )
-    }, 1000 * secondsDiff);
+    }, msDiff);
   })
 
 };
@@ -166,10 +166,14 @@ exports.sendRequestInfo = function(req, res) {
   var queryString = qs.parse(url.parse(req.url).query);
 
   UserRequest.promFind(
-    {userId: queryString.userId},
+    {
+      userId: queryString.userId,
+      targetDateTime: {$gt: new Date() - (1000 * 60 * 60)}
+    },
     null,
     {limit:1,sort: {createdAt:-1}})
   .then(function(data){
+    data = data || [{}];
     res.send(200, data[0]);
   })
 };
