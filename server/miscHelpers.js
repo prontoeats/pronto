@@ -1,7 +1,9 @@
 
 var blue = require('bluebird');
 var mongoose = require('mongoose');
+var request = require('request');
 
+exports.request = blue.promisify(request);
 
 exports.parseNearbyData = function (array) {
   var allBus = [];

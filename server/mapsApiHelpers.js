@@ -1,5 +1,6 @@
 var request = require('request');
-var prom = require('./promisified.js');
+var misc = require('./miscHelpers.js');
+var request = require('request');
 var blue = require('bluebird');
 try {
   var config = require('../config.js');
@@ -42,7 +43,7 @@ exports.getGeo = function(obj){
   }
 
   //bluebird will put both the response and body objects in an array and pass to next function
-  return prom.request(reqObj);
+  return misc.request(reqObj);
 };
 
 //array is passed in from google with response and body JSON objects
