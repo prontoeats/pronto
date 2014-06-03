@@ -24,7 +24,7 @@ exports.getGoogleToken = function (code) {
       resolve(data.access_token);
     });
   });
-}
+};
 
 exports.getUserInfo = function (token) {
 
@@ -35,4 +35,4 @@ exports.getUserInfo = function (token) {
   };
 
   return misc.request(getObj)
-}
+};
