@@ -41,14 +41,14 @@ exports.sendApnMessage = function(array, body, payload){
 exports.sendGcmMessage = function(array, message){
 
 
-  console.log('got to send Gcm Message', array, message);
+  // console.log('got to send Gcm Message', array, message);
 
   var message = new gcm.Message();
-   
+
   //API Server Key
   var sender = new gcm.Sender('AIzaSyBoZh3lZwR1j-XU_mwjP-GMSqPcYQ-JRpY');
   var registrationIds = array;
-   
+
   // Value the payload data to send...
   message.addData('message', message);
   message.addData('title','Pronto' );
@@ -57,11 +57,11 @@ exports.sendGcmMessage = function(array, message){
   //message.collapseKey = 'demo';
   //message.delayWhileIdle = true; //Default is false
   message.timeToLive = 3000;// Duration in seconds to hold in GCM and retry before timing out. Default 4 weeks (2,419,200 seconds) if not specified.
-      
+
   /**
    * Parameters: message-literal, registrationIds-array, No. of retries, callback-function
    */
   sender.send(message, registrationIds, 4, function (result) {
-      console.log('gcm send result:', result);
+      // console.log('gcm send result:', result);
   });
 }

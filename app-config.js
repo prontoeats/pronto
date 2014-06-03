@@ -18,27 +18,28 @@ app.configure(function() {
   app.use(allowCrossDomain);
 });
 
-// public user routes
+// public routes
 app.post('/login/user', userHandler.login);
-app.get('/logout', authen.logout);
-
-// public business routes
 app.post('/login/business', busHandler.login);
 app.post('/signup/business', busHandler.signup);
 
 // private user routes
-app.get('/requests', userHandler.sendRequestInfo);
-app.post('/token', authen.registerToken);
-app.post('/request', authen.authenticateUserToken, userHandler.request);
-app.post('/requests/accept', userHandler.acceptOffer);
-app.post('/requests/reject', userHandler.rejectOffer);
+app.get('/requests', authen.checkToken, userHandler.sendRequestInfo);
+app.post('/token', authen.registerPushToken);
+app.post('/request', authen.checkToken, userHandler.request);
+app.post('/requests/accept', authen.checkToken, userHandler.acceptOffer);
+app.post('/requests/reject', authen.checkToken, userHandler.rejectOffer);
 
 // private business routes
-app.get('/business/requests', busHandler.showRequests);
-app.get('/business/offered', busHandler.showOffered);
-app.get('/business/accepted', busHandler.showAccepted);
-app.post('/business/token', authen.registerToken);
-app.post('/business/requests/accept', busHandler.acceptRequests);
-app.post('/business/requests/decline', busHandler.declineRequests);
+app.get('/business/requests', authen.checkToken, busHandler.showRequests);
+app.get('/business/offered', authen.checkToken, busHandler.showOffered);
+app.get('/business/accepted', authen.checkToken, busHandler.showAccepted);
+app.post('/business/token', authen.registerPushToken);
+app.post('/business/requests/accept', authen.checkToken, busHandler.acceptRequests);
+app.post('/business/requests/decline', authen.checkToken, busHandler.declineRequests);
+
+app.all('*', function (req, res) {
+  res.send(404);
+});
 
 module.exports = app;

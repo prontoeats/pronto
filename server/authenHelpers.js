@@ -1,55 +1,80 @@
 var url = require('url');
+var qs = require('querystring');
 var mongoose = require('mongoose');
 var User = require('../db/user.js').User;
 var Business = require('../db/business.js').Business;
 
-exports.logout = function(req,res){
-  req.session.destroy();
-  console.log('Logging out');
-  res.redirect('/');
+var userOrBusiness = function (req) {
+
+  var id;
+  var type;
+  var path = url.parse(req.url);
+  var queryString;
+  var accessToken;
+
+  if (req.method === 'GET') {
+
+    queryString = qs.parse(path.query);
+    accessToken = queryString.accessToken;
+
+    if (path.pathname.slice(0, 10) === '/business/') {
+      id = mongoose.Types.ObjectId(queryString.businessId);
+      type = Business;
+    } else {
+      id = mongoose.Types.ObjectId(queryString.userId);
+      type = User;
+    }
+
+  } else if (req.method === 'POST') {
+
+    accessToken = req.body.accessToken;
+
+    if (path.pathname.slice(0, 10) === '/business/') {
+      id = mongoose.Types.ObjectId(req.body.businessId);
+      type = Business;
+
+    } else {
+      id = mongoose.Types.ObjectId(req.body.userId);
+      type = User;
+    }
+  }
+
+  return [id, type, accessToken];
 };
 
-exports.authenticateUserToken = function (req, res, next) {
-  // search if id === _id in user table
-  User.promFindOne({_id: req.body.userId})
+exports.checkToken = function (req, res, next) {
+
+  console.log('checkToken');
+  var path = userOrBusiness(req);
+  var id = path[0];
+  var type = path[1];
+  var accessToken = path[2];
+
+  type.promFindOne({_id: id})
   .then( function (data) {
-    // no record
     if (data === null) {
-      console.log('no user by that id found');
       res.send(400);
-    // record exists
     } else {
-      // check if token matches for found user
-      if (data.accessToken === req.body.accessToken) {
-        console.log('user found, token matches user...proceed');
+      if (data.accessToken === accessToken) {
         next();
       } else {
-        console.log('Token in DB: ', data.accessToken);
-        console.log('user found, but token does not match that user');
         res.send(400);
       }
     }
   })
+
 };
 
-exports.registerToken = function (req, res){
+exports.registerPushToken = function (req, res){
+
+  console.log('registerPushToken');
+  var path = userOrBusiness(req);
+  var id = path[0];
+  var type = path[1];
 
   var apn;
-  var id;
-  var type;
-  var query;
+  var query = {_id: id};
   var updateQuery;
-
-  var path = url.parse(req.url);
-
-  if (path.pathname === '/business/token') {
-    id = mongoose.Types.ObjectId(req.body.businessId);
-    type = Business;
-  } else {
-    id = mongoose.Types.ObjectId(req.body.userId);
-    type = User;
-  }
-  query = {_id: id};
 
   if (req.body.type === 'apn'){
     apn = true;
