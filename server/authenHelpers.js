@@ -1,60 +1,111 @@
+var url = require('url');
+var qs = require('querystring');
+var mongoose = require('mongoose');
 var User = require('../db/user.js').User;
+var Business = require('../db/business.js').Business;
 
-exports.userCreateSession = function (req){
-  req.session.userEmail = req.body.email;
-  req.session.userId = req.body.userId;
-};
+var userOrBusiness = function (req) {
 
-exports.userAuthenticate = function(req, res, next){
-  if (req.session.userEmail){
-    console.log('User authenticated');
-    next();
-  } else {
-    console.log('User *NOT* authenticated');
-    res.redirect('/');
-  }
-};
+  var id;
+  var type;
+  var path = url.parse(req.url);
+  var queryString;
+  var accessToken;
 
-exports.busCreateSession = function (req){
-  req.session.busEmail = req.body.email;
-  req.session.businessId = req.body.businessId;
-};
+  if (req.method === 'GET') {
 
-exports.busAuthenticate = function(req, res, next){
-  if (req.session.busEmail){
-    console.log('Business authenticated');
-    next();
-  } else {
-    console.log('Business *NOT* authenticated');
-    res.redirect('/');
-  }
-};
+    queryString = qs.parse(path.query);
+    accessToken = queryString.accessToken;
 
-exports.logout = function(req,res){
-  req.session.destroy();
-  console.log('Logging out');
-  res.redirect('/');
-};
-
-exports.authenticateUserToken = function (req, res, next) {
-  // search if id === _id in user table
-  User.promFindOne({_id: req.body.userId})
-  .then( function (data) {
-    // no record
-    if (data === null) {
-      console.log('no user by that id found');
-      res.send(400);
-    // record exists
+    if (path.pathname.slice(0, 10) === '/business/') {
+      id = mongoose.Types.ObjectId(queryString.businessId);
+      type = Business;
     } else {
-      // check if token matches for found user
-      if (data.accessToken === req.body.accessToken) {
-        console.log('user found, token matches user...proceed');
+      id = mongoose.Types.ObjectId(queryString.userId);
+      type = User;
+    }
+
+  } else if (req.method === 'POST') {
+
+    accessToken = req.body.accessToken;
+
+    if (path.pathname.slice(0, 10) === '/business/') {
+      id = mongoose.Types.ObjectId(req.body.businessId);
+      type = Business;
+
+    } else {
+      id = mongoose.Types.ObjectId(req.body.userId);
+      type = User;
+    }
+  }
+
+  return [id, type, accessToken];
+};
+
+exports.checkToken = function (req, res, next) {
+
+  console.log('checkToken');
+  var info = userOrBusiness(req);
+  var id = info[0];
+  var type = info[1];
+  var accessToken = info[2];
+
+  type.promFindOne({_id: id})
+  .then( function (data) {
+    if (data === null) {
+      res.send(400);
+    } else {
+      if (data.accessToken === accessToken) {
         next();
       } else {
-        console.log('Token in DB: ', data.accessToken);
-        console.log('user found, but token does not match that user');
         res.send(400);
       }
     }
   })
+
 };
+
+exports.registerPushToken = function (req, res){
+
+  console.log('registerPushToken');
+  var info = userOrBusiness(req);
+  var id = info[0];
+  var type = info[1];
+
+  var apn;
+  var query = {_id: id};
+  var updateQuery;
+
+  if (req.body.type === 'apn'){
+    apn = true;
+    query['pushNotification.apn'] = {$in: [req.body.code]};
+
+  } else if (req.body.type === 'gcm'){
+    apn = false;
+    query['pushNotification.gcm'] = {$in: [req.body.code]};
+
+  } else {
+    res.send(400, 'You must supply a type (apn/gcm)');
+    return;
+  }
+
+  type.promFindOne(query)
+  .then(function(data){
+    if (data){
+      res.send(200);
+    } else {
+      if (apn){
+        updateQuery = {$push: {'pushNotification.apn': req.body.code}};
+      } else {
+        updateQuery = {$push: {'pushNotification.gcm': req.body.code}};
+      }
+      return type.promFindOneAndUpdate({_id: id}, updateQuery);
+    }
+  })
+  .then(function(data){
+    res.send(201);
+  })
+  .catch(function(error){
+    res.send(404);
+  })
+}

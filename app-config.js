@@ -1,4 +1,3 @@
-
 var express = require('express');
 var dbConnect = require('./db/db-config.js');
 var userHandler = require('./server/userHandler.js');
@@ -9,7 +8,7 @@ var app = express();
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET,POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 }
@@ -17,34 +16,30 @@ var allowCrossDomain = function(req, res, next) {
 app.configure(function() {
   app.use(express.bodyParser());
   app.use(allowCrossDomain);
-  app.use(express.cookieParser('shhhh, very secret'));
-  app.use(express.session());
 });
 
-//Public user routes
-app.get('/', userHandler.sendIndex);
+// public routes
 app.post('/login/user', userHandler.login);
-app.get('/logout', authen.logout);
-
-//Public business routes
-app.get('/business', busHandler.sendBusIndex);
 app.post('/login/business', busHandler.login);
 app.post('/signup/business', busHandler.signup);
 
 // private user routes
-app.get('/requests', userHandler.sendRequestInfo);
-app.post('/requests/accept', userHandler.acceptOffer);
-app.post('/requests/reject', userHandler.rejectOffer);
-app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
-app.post('/request', authen.authenticateUserToken, userHandler.request);
-app.post('/token', userHandler.registerToken);
+app.get('/requests', authen.checkToken, userHandler.sendRequestInfo);
+app.post('/token', authen.registerPushToken);
+app.post('/request', authen.checkToken, userHandler.request);
+app.post('/requests/accept', authen.checkToken, userHandler.acceptOffer);
+app.post('/requests/reject', authen.checkToken, userHandler.rejectOffer);
 
 // private business routes
-app.get('/business/requests', busHandler.showRequests);
-app.post('/business/requests/decline', busHandler.declineRequests);
-app.post('/business/requests/accept', busHandler.acceptRequests);
-app.get('/business/offered', busHandler.showOffered);
-app.get('/business/accepted', busHandler.showAccepted);
-app.post('/business/token', busHandler.registerToken);
+app.get('/business/requests', authen.checkToken, busHandler.showRequests);
+app.get('/business/offered', authen.checkToken, busHandler.showOffered);
+app.get('/business/accepted', authen.checkToken, busHandler.showAccepted);
+app.post('/business/token', authen.registerPushToken);
+app.post('/business/requests/accept', authen.checkToken, busHandler.acceptRequests);
+app.post('/business/requests/decline', authen.checkToken, busHandler.declineRequests);
+
+app.all('*', function (req, res) {
+  res.send(404);
+});
 
 module.exports = app;

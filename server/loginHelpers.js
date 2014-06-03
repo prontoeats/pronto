@@ -1,5 +1,5 @@
 var constants = require('./constants.js');
-var prom = require('./promisified.js');
+var misc = require('./miscHelpers.js');
 var blue = require('bluebird');
 
 exports.getGoogleToken = function (code) {
@@ -18,23 +18,21 @@ exports.getGoogleToken = function (code) {
     }
   };
 
-  prom.request(reqObj)
-    // google sends a token back (success callback)
+  misc.request(reqObj)
     .then( function (data) {
       data = JSON.parse(data[1]);
       resolve(data.access_token);
     });
   });
-}
+};
 
 exports.getUserInfo = function (token) {
 
-  // send token to a different google url to get user information
   var getObj = {
     method: 'GET',
     url: constants.Google.people_uri,
     headers: {'Authorization': 'Bearer ' + token}
   };
 
-  return prom.request(getObj)
-}
+  return misc.request(getObj)
+};
