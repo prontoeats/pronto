@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var blue = require('bluebird');
 var mapApi = require('../server/mapsApiHelpers.js')
-var Counter = require('./counter.js').Counter;
 
 var businessSchema = mongoose.Schema({
   email:            {type: String, required: true, index: {unique: true}},
