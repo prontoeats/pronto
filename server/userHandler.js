@@ -1,7 +1,6 @@
 var url = require('url');
 var qs = require('querystring');
 var User = require('../db/user.js').User;
-var prom = require('./promisified.js');
 var mapApi = require('./mapsApiHelpers.js');
 var blue = require('bluebird');
 var Business = require('../db/business.js').Business;

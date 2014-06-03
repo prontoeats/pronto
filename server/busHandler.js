@@ -4,7 +4,6 @@ var qs = require('querystring');
 var Business = require('../db/business.js').Business;
 var UserRequest = require('../db/userRequest.js').UserRequest;
 var mapApi = require('./mapsApiHelpers.js');
-var prom = require('./promisified.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
 var misc = require('./miscHelpers.js');
