@@ -327,10 +327,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   //   var ref = window.open('http://www.yelp.com/biz/kusina-ni-tess-san-francisco', '_blank');
   // }
   $scope.logout = function(){
-    console.log('user logout');
-    localStorageService.set('token', null);
-    localStorageService.set('userId', null);
-    localStorageService.set('user', null);
+    window.alert('user logout'+localStorageService.get('token'));
+
+    localStorageService.clearAll()
+    window.alert('remove token'+localStorageService.get('token'));
+
     $state.go('login.user');
   }
 })
@@ -449,9 +450,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('RestSettingsCtrl', function($scope, $state, localStorageService) {
   $scope.logout = function(){
-    localStorageService.set('token', null);
-    localStorageService.set('restaurantId', null);
-    localStorageService.set('user', null);
+    localStorageService.clearAll();
     $state.go('login.user');
   }
 });
