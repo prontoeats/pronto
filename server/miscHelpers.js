@@ -22,6 +22,7 @@ exports.parseNearbyData = function (array) {
     bus.city = array[i].city;
     bus.state = array[i].state;
     bus.updatedAt = new Date();
+    bus.yelpId = array[i].yelpId;
 
     bus.pushNotification = array[i].pushNotification;
     console.log('push notifications', bus.pushNotification);
