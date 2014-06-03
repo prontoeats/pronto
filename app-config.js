@@ -16,8 +16,6 @@ var allowCrossDomain = function(req, res, next) {
 
 app.configure(function() {
   app.use(express.bodyParser());
-  app.use('/bower_components', express.static(__dirname + '/bower_components'));
-  app.use(express.static(__dirname + '/public'));
   app.use(allowCrossDomain);
   app.use(express.cookieParser('shhhh, very secret'));
   app.use(express.session());
