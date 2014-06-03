@@ -8,7 +8,7 @@
     </ion-refresher>
     <ion-list>
 <!--       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap" href="#/rest/existingOffer/{{existingOffer.id}}"> -->
-      <ion-item ng-repeat="existingOffer in existingOffers | orderBy:'updatedAt'" type="item-text-wrap">
+      <ion-item ng-repeat="existingOffer in existingOffers | filter: {requestStatus: 'Active'} | orderBy:'updatedAt'" type="item-text-wrap">
       <div class='col'>
         <div>Party of {{existingOffer.groupSize}} at {{existingOffer.targetDateTime | date:'shortTime'}}</div>
         <div>Offer: {{existingOffer.results[0].replies}}</div>
