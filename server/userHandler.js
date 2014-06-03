@@ -7,9 +7,7 @@ var mapApi = require('./mapsApiHelpers.js');
 var blue = require('bluebird');
 var Business = require('../db/business.js').Business;
 var misc = require('./miscHelpers.js');
-var twilio = require('./twilioApiHelpers.js');
 var UserRequest = require('../db/userRequest.js').UserRequest;
-var Counter = require('../db/counter.js').Counter;
 var constants = require('./constants.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
@@ -86,13 +84,13 @@ exports.login = function(req, res){
 
 exports.request = function(req, res) {
 
-  //APN tokens and GCM registration IDs to send push notifications to 
+  //APN tokens and GCM registration IDs to send push notifications to
   //later in this function
   var apn;
   var gcm;
 
-  //Object that will be used to create a new User Request 
-  var requestObj = req.body; 
+  //Object that will be used to create a new User Request
+  var requestObj = req.body;
 
   //Convert requested minutes to time and save to requestObj
   var dateTime = new Date();
@@ -109,7 +107,7 @@ exports.request = function(req, res) {
   })
   .then(function(data){
     requestObj.pushNotification = data.pushNotification;
-  
+
     //create new promise to continue chain
     return new blue (function (resolve, reject) {
       resolve([requestObj.location, requestObj.radius]);
@@ -200,7 +198,7 @@ exports.acceptOffer = function(req, res) {
     UserRequest.promFindOne({requestId: req.body.requestId})
 
     .then(function(data){
-      
+
       var tempResults = data.results;
        for (var i = 0; i < tempResults.length; i += 1) {
          if (tempResults[i].status === 'Offered') {
@@ -219,7 +217,7 @@ exports.acceptOffer = function(req, res) {
   })
   // set outstanding offers for this request (status: offered) to rejected
   .then(function(){
-    return UserRequest.promFindOne({requestId: req.body.requestId, 'results.businessId': businessId}, 
+    return UserRequest.promFindOne({requestId: req.body.requestId, 'results.businessId': businessId},
       {'results.pushNotification':1});
   })
   .then(function(data){
@@ -283,9 +281,9 @@ exports.registerToken = function (req, res){
 
   var query = {_id: userId};
 
-  //if true, then the code is a apn token. 
+  //if true, then the code is a apn token.
   //if false, then the code is a gcm registration id
-  var apn; 
+  var apn;
 
   if (req.body.type === 'apn'){
     apn = true;
