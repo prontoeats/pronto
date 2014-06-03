@@ -98,6 +98,7 @@ exports.signup = function (req, res) {
       console.log('return data', data);
       if (error){
         console.log('yelp search errer');
+        businessInfo.yelpId = 'No_yelp';
       } else{
         businessInfo.yelpId = data.businesses[0].id;
         new Business(businessInfo).save(function (err, data) {
@@ -173,22 +174,33 @@ exports.acceptRequests = function(req,res){
   Business.promFindOne({_id: businessId})
   .then(function(data){
     console.log(data);
-    return new blue (function(resolve, reject){
-      yelp.business(data.yelpId, function(error, data){
-        if (error){
-          reject(error);
-        }else{
-          resolve(data);
-        }
+    if(data.yelpId === 'No_yelp'){
+      return new blue (function(resolve, reject){
+        resolve();
+      })
+    } else {
+      return new blue (function(resolve, reject){
+        yelp.business(data.yelpId, function(error, data){
+          if (error){
+            console.log('Yelp ID cannot be found on yelp');
+            resolve()
+
+          }else{
+            resolve(data);
+          }
+        });
       });
-    });
+    }
   })
-  .then(function(data) {
-    console.log('business return data:', data)
-    yelpData.stars = data.rating;
-    yelpData.review = data.review_count;
-    yelpData.url = data.mobile_url;
-    console.log('yelp data:', yelpData);
+  .then(function(queryData) {
+
+    if (queryData){    
+      console.log('business return data:', queryData)
+      yelpData.stars = queryData.rating;
+      yelpData.review = queryData.review_count;
+      yelpData.url = queryData.mobile_url;
+      console.log('yelp data:', yelpData);
+    }
 
     return UserRequest.promFindOneAndUpdate(
       {requestId: data.requestId, 'results.businessId': businessId},
