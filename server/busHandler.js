@@ -107,21 +107,6 @@ exports.signup = function (req, res) {
   });
 };
 
-exports.showRequests = function (req, res) {
-  // TODO: remove default; require authentication (on app-config.js)
-
-  var queryString = qs.parse(url.parse(req.url).query);
-
-  var oid = mongoose.Types.ObjectId(queryString.businessId);
-
-  UserRequest.promFind({'results.businessId': oid})
-  .then(function(data){
-    var results = misc.parseBusinessOpenRequests(data, oid, 'Pending');
-    res.send(200, results);
-  })
-
-}
-
 exports.declineRequests = function(req,res){
 
   var data = req.body;
@@ -154,8 +139,6 @@ exports.acceptRequests = function(req,res){
     url: ''
   };
 
-  // TODO: earlier of ten minutes from now and request targetDateTime
-  // (need to look up requests targetDateTime)
   var dateTime = new Date();
   dateTime.setMinutes(dateTime.getMinutes() + 10);
 
@@ -239,28 +222,31 @@ exports.acceptRequests = function(req,res){
   });
 };
 
-exports.showOffered = function (req, res) {
+var filterRequests = function (req, res, filter) {
 
   var queryString = qs.parse(url.parse(req.url).query);
-
   var oid = mongoose.Types.ObjectId(queryString.businessId);
 
-  UserRequest.promFind({'results.businessId': oid})
+  return UserRequest.promFind({
+    requestStatus: {$ne: 'Expired'},
+    'results.businessId': oid
+  })
   .then(function(data){
-    var results = misc.parseBusinessOpenRequests(data, oid, 'Offered');
+    var results = misc.parseBusinessOpenRequests(data, oid, filter);
     res.send(200, results);
   })
-}
+
+};
+
+exports.showPending = function (req, res) {
+  filterRequests(req, res, 'Pending');
+};
+
+exports.showOffered = function (req, res) {
+  filterRequests(req, res, 'Offered');
+};
 
 exports.showAccepted = function (req, res) {
+  filterRequests(req, res, 'Accepted');
+};
 
-  var queryString = qs.parse(url.parse(req.url).query);
-
-  var oid = mongoose.Types.ObjectId(queryString.businessId);
-
-  UserRequest.promFind({'results.businessId': oid})
-  .then(function(data){
-    var results = misc.parseBusinessOpenRequests(data, oid, 'Accepted');
-    res.send(200, results);
-  })
-}
