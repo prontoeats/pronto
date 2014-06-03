@@ -38,7 +38,7 @@ exports.sendApnMessage = function(array, body, payload){
   }
 };
 
-exports.sendGcmMessage = function(array, message){
+exports.sendGcmMessage = function(array, message, state){
 
 
   console.log('got to send Gcm Message', array, message);
@@ -52,6 +52,7 @@ exports.sendGcmMessage = function(array, message){
   // Value the payload data to send...
   message.addData('message', message);
   message.addData('title','Pronto' );
+  message.addData('state', state);
   // message.addData('msgcnt','3'); // Shows up in the notification in the status bar
   // message.addData('soundname','beep.wav'); //Sound to play upon notification receipt - put in the www folder in app
   //message.collapseKey = 'demo';

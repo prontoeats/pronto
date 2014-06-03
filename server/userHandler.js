@@ -138,7 +138,7 @@ exports.request = function(req, res) {
   .then(function(){
     //format messages and information to send out via push notifications
     var pushBody = 'You have a new request!'
-    var payload = {view: 'rest.requests'};
+    var payload = {state: 'rest.requests'};
 
     //if there are apn tokens to push to, push the message to them
     if(apn.length){
@@ -147,7 +147,7 @@ exports.request = function(req, res) {
 
     //if there are gcm registration IDs to push to, push the message to them
     if(gcm.length){
-      push.sendGcmMessage(gcm, pushBody);
+      push.sendGcmMessage(gcm, pushBody, 'rest.requests');
     }
 
     //send successful response back to user
@@ -218,15 +218,25 @@ exports.acceptOffer = function(req, res) {
   // set outstanding offers for this request (status: offered) to rejected
   .then(function(){
     return UserRequest.promFindOne({requestId: req.body.requestId, 'results.businessId': businessId},
-      {'results.pushNotification':1});
+      {'results.pushNotification':1, 'results.businessId':1});
   })
   .then(function(data){
-    if(data.results[0].pushNotification.apn.length){
-      push.sendApnMessage(data.results[0].pushNotification.apn, 'Your offer has been acceped!', {view: 'rest.accepted'});
+
+    var results = data.results;
+    var pushNotification;
+
+    for (var i = 0; i<results.length; i++){
+      if(results[i].businessId+'' === businessId+''){
+        pushNotification = results[i].pushNotification;
+      }
     }
 
-    if(data.results[0].pushNotification.gcm.length){
-      push.sendGcmMessage(data.results[0].pushNotification.gcm, 'Your offer has been acceped!');
+    if(pushNotification.apn.length){
+      push.sendApnMessage(pushNotification.apn, 'Your offer has been accepted!', {state: 'rest.acceptedOffers'});
+    }
+
+    if(pushNotification.gcm.length){
+      push.sendGcmMessage(pushNotification.gcm, 'Your offer has been accepted!', 'rest.acceptedOffers');
     }
 
   })
