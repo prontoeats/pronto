@@ -3,7 +3,6 @@ var blue = require('bluebird');
 var mapApi = require('../server/mapsApiHelpers.js')
 
 var businessSchema = mongoose.Schema({
-  // businessId:   {type: Number, unique: true},
   email:        {type: String, required: true, index: {unique: true}},
   businessName: {type: String, required: true},
   address:      {type: String, required: true},
@@ -16,7 +15,10 @@ var businessSchema = mongoose.Schema({
   phoneNumber:  {type: Number, required: true},
   accessToken:  {type: String, required: true},
   yelpId:       {type: String, required: true},
-  pushNotification: {type: mongoose.Schema.Types.Mixed, default: {apn: [],gcm:[]}},
+  pushNotification: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {apn: [],gcm:[]}
+  },
   location:     {type: Array, index: '2dsphere'},
   createdAt:    {type: Date, default: Date.now}
 });
