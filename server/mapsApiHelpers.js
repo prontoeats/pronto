@@ -1,5 +1,6 @@
 var request = require('request');
-var prom = require('./promisified.js');
+var misc = require('./miscHelpers.js');
+var request = require('request');
 var blue = require('bluebird');
 try {
   var config = require('../config.js');
@@ -14,12 +15,11 @@ exports.parseAddress = function(obj){
   var parsedAddress = [];
 
   if (obj.city) {
-    //parse the response body object and format the address (for businesses)
     parsedAddress = parsedAddress.concat(obj.address.split(" "),',');
     parsedAddress = parsedAddress.concat(obj.city.split(" "),',');
     parsedAddress = parsedAddress.concat(obj.state.split(" "));
   } else {
-    parsedAddress = obj.location.split(' '); // for user requests
+    parsedAddress = obj.location.split(' ');
   }
 
   return parsedAddress.join('+');
@@ -29,20 +29,17 @@ exports.getGeo = function(obj){
 
   var parsedAddress = exports.parseAddress(obj);
 
-  //format the request url
   var googleUrl = 'https://maps.googleapis.com/maps/api/geocode/json?';
   var sensor = 'sensor=false';
   var key = 'key=' + (process.env.GEOCODEKEY || config.GEOCODEKEY);
   var fullUrl = googleUrl+'address='+parsedAddress+'&'+sensor+'&'+key;
 
-  //assemble to request options object
   var reqObj = {
     method: 'GET',
     url: fullUrl
   }
 
-  //bluebird will put both the response and body objects in an array and pass to next function
-  return prom.request(reqObj);
+  return misc.request(reqObj);
 };
 
 //array is passed in from google with response and body JSON objects
@@ -73,8 +70,6 @@ exports.convertUserRequestLocation = function(requestObj){
         resolve();
       });
     }
-})
+  })
 
-
-
-}
+};

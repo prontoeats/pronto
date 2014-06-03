@@ -1,7 +1,9 @@
 
 var blue = require('bluebird');
 var mongoose = require('mongoose');
+var request = require('request');
 
+exports.request = blue.promisify(request);
 
 exports.parseNearbyData = function (array) {
   var allBus = [];
@@ -25,13 +27,13 @@ exports.parseNearbyData = function (array) {
     bus.yelpId = array[i].yelpId;
 
     bus.pushNotification = array[i].pushNotification;
-    console.log('push notifications', bus.pushNotification);
+    // console.log('push notifications', bus.pushNotification);
 
     if (bus.pushNotification.apn.length){
       apn = apn.concat(bus.pushNotification.apn);
     }
 
-    console.log('pushnotification gcm: ', bus.pushNotification.gcm);
+    // console.log('pushnotification gcm: ', bus.pushNotification.gcm);
     if (bus.pushNotification.gcm.length){
       gcm = gcm.concat(bus.pushNotification.gcm);
     }

@@ -4,8 +4,6 @@ var qs = require('querystring');
 var Business = require('../db/business.js').Business;
 var UserRequest = require('../db/userRequest.js').UserRequest;
 var mapApi = require('./mapsApiHelpers.js');
-var prom = require('./promisified.js');
-var authen = require('./authenHelpers.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
 var misc = require('./miscHelpers.js');
@@ -19,19 +17,9 @@ var yelp = require("yelp").createClient({
   token_secret: "GhyNIB8-tuJNcXahz_h4nICI7ng"
 });
 
-// var promYelp = blue.promisify(yelp.business);
-
-exports.sendBusIndex = function(req, res){
-  res.sendfile('./views/busIndex.html');
-};
-
 exports.businessSendAuthFail = function (res){
   res.send(404, 'failed authentication!');
 }
-
-exports.dashboard = function(req, res){
-  res.sendfile('./views/busDashboard.html');
-};
 
 exports.login = function(req, res){
 
@@ -194,7 +182,7 @@ exports.acceptRequests = function(req,res){
   })
   .then(function(queryData) {
 
-    if (queryData){    
+    if (queryData){
       console.log('business return data:', queryData)
       yelpData.stars = queryData.rating;
       yelpData.review = queryData.review_count;
@@ -276,56 +264,3 @@ exports.showAccepted = function (req, res) {
     res.send(200, results);
   })
 }
-
-exports.registerToken = function (req, res){
-
-  var businessId = mongoose.Types.ObjectId(req.body.businessId);
-
-  var query = {_id: businessId};
-
-  //if true, then the code is a apn token.
-  //if false, then the code is a gcm registration id
-  var apn;
-
-  if (req.body.type === 'apn'){
-    apn = true;
-    query['pushNotification.apn'] = {$in: [req.body.code]};
-
-  } else if (req.body.type === 'gcm'){
-    apn = false;
-    query['pushNotification.gcm'] = {$in: [req.body.code]};
-
-  } else {
-    res.send(400, 'You must supply a type (apn/gcm)');
-    return;
-  }
-
-
-  Business.promFindOne(query)
-  .then(function(data){
-
-
-    if (data){
-      res.send(200);
-    } else {
-      var updateQuery
-      if (apn){
-        updateQuery = {$push: {'pushNotification.apn': req.body.code}};
-      } else {
-        updateQuery = {$push: {'pushNotification.gcm': req.body.code}};
-      }
-      return Business.promFindOneAndUpdate({_id: businessId}, updateQuery);
-    }
-  })
-  .then(function(data){
-    res.send(201);
-  })
-  .catch(function(error){
-    res.send(404);
-  })
-}
-
-
-
-
-
