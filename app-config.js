@@ -28,7 +28,7 @@ app.post('/signup/business', busHandler.signup);
 
 // private user routes
 app.get('/requests', userHandler.sendRequestInfo);
-app.post('/token', userHandler.registerToken);
+app.post('/token', authen.registerToken);
 app.post('/request', authen.authenticateUserToken, userHandler.request);
 app.post('/requests/accept', userHandler.acceptOffer);
 app.post('/requests/reject', userHandler.rejectOffer);
@@ -37,8 +37,8 @@ app.post('/requests/reject', userHandler.rejectOffer);
 app.get('/business/requests', busHandler.showRequests);
 app.get('/business/offered', busHandler.showOffered);
 app.get('/business/accepted', busHandler.showAccepted);
+app.post('/business/token', authen.registerToken);
 app.post('/business/requests/accept', busHandler.acceptRequests);
 app.post('/business/requests/decline', busHandler.declineRequests);
-app.post('/business/token', busHandler.registerToken);
 
 module.exports = app;
