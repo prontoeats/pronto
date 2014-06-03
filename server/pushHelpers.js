@@ -1,9 +1,12 @@
-
 var gcm = require('node-gcm');
-var http = require('http');
 var apn = require('apn');
-var url = require('url');
-
+try {
+  var config = require('../config.js');
+}
+catch (e) {
+  console.log('did not load config file');
+  console.log(e);
+}
 
 exports.sendApnMessage = function(array, body, payload){
 
@@ -13,10 +16,11 @@ exports.sendApnMessage = function(array, body, payload){
   };
 
   var options = {
-      gateway: 'gateway.sandbox.push.apple.com', // this URL is different for Apple's Production Servers and changes when you go to production
+      // TODO: update gateway to Apple's Production Servers for production
+      gateway: 'gateway.sandbox.push.apple.com',
       errorCallback: callback,
       cert: './server/ProntoPush.pem',
-      key:  './server/ProntoPushKey.pem',
+      key: './server/ProntoPushKey.pem',
       passphrase: 'prontopush',
       port: 2195,
       enhanced: true,
@@ -29,10 +33,10 @@ exports.sendApnMessage = function(array, body, payload){
       var device = new apn.Device(array[i]);
       var message = new apn.Notification();
 
-      message.sound = 'notification-beep.wav';
-      message.alert = {body: body};
+      message.sound   = 'notification-beep.wav';
+      message.alert   = {body: body};
       message.payload = payload;
-      message.device = device;
+      message.device  = device;
 
       apnConnection.sendNotification(message);
   }
@@ -40,28 +44,15 @@ exports.sendApnMessage = function(array, body, payload){
 
 exports.sendGcmMessage = function(array, message){
 
-
-  // console.log('got to send Gcm Message', array, message);
-
-  var message = new gcm.Message();
-
-  //API Server Key
-  var sender = new gcm.Sender('AIzaSyBoZh3lZwR1j-XU_mwjP-GMSqPcYQ-JRpY');
+  message = new gcm.Message();
+  var sender = new gcm.Sender(process.env.GCM_KEY || config.GCM_KEY);
   var registrationIds = array;
 
-  // Value the payload data to send...
   message.addData('message', message);
   message.addData('title','Pronto' );
-  // message.addData('msgcnt','3'); // Shows up in the notification in the status bar
-  // message.addData('soundname','beep.wav'); //Sound to play upon notification receipt - put in the www folder in app
-  //message.collapseKey = 'demo';
-  //message.delayWhileIdle = true; //Default is false
-  message.timeToLive = 3000;// Duration in seconds to hold in GCM and retry before timing out. Default 4 weeks (2,419,200 seconds) if not specified.
+  message.timeToLive = 3000;
 
-  /**
-   * Parameters: message-literal, registrationIds-array, No. of retries, callback-function
-   */
   sender.send(message, registrationIds, 4, function (result) {
-      // console.log('gcm send result:', result);
+      console.log('gcm send result:', result);
   });
 }
