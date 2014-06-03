@@ -263,6 +263,96 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
+.factory('LoginRequest', function($http, $state, $stateParams, $window, Google, localStorageService, ServerUrls, $ionicLoading) {
+  // Might use a resource here that returns a JSON array
+  var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
+    '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
+
+  var loginWindow;
+
+  var login = function (type) {
+    var errorState = '';
+    var postUrl = '';
+    if (type === 'user'){
+      errorState = 'login.user';
+      postUrl = ServerUrls.url+'/login/user';
+    } else {
+      errorState = 'login.rest';
+      postUrl = ServerUrls.url+'/login/business';      
+    }
+
+    $state.transitionTo('login.transition');
+    loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
+
+    loginWindow.addEventListener('loadstart', function(e) {
+      var url = e.url;
+      var code = /\?code=(.+)$/.exec(url);
+      var error = /\?error=(.+)$/.exec(url);
+
+      if (error){
+        loginWindow.close();
+        $state.transitionTo(errorState, $stateParams, {
+          reload: true,
+          inherit: false,
+          notify: true
+        });
+      }
+
+      if (code) {
+        $ionicLoading.show({
+          content: 'Loading',
+          animation: 'fade-in',
+          showBackdrop: true,
+          maxWidth: 200,
+          showDelay: 0
+        });
+
+        loginWindow.close();
+        $http ({
+          method: 'POST',
+          url: postUrl,
+          data: {
+            code: code[1]
+          }
+        }).success(function(data, status){
+          if (type === 'user'){
+            localStorageService.set('token', data.accessToken);
+            localStorageService.set('userId', data.userId);
+            localStorageService.set('user', true);
+            $ionicLoading.hide();
+            $state.transitionTo('user.new');
+          } else {
+            localStorageService.set('token', data.accessToken);
+            
+            if (data.signup){
+              $ionicLoading.hide();
+              $state.transitionTo('signup.signup');
+            }else{
+              localStorageService.set('restaurantId', data.businessId);
+              localStorageService.set('user', false);
+              $ionicLoading.hide();
+              $state.transitionTo('rest.requests');
+            }     
+          }
+        }).error(function(data, status){
+          loginWindow.close();
+          $ionicLoading.hide();
+          $state.transitionTo(errorState, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+          });
+        });
+      }
+    });
+  };
+
+  return {
+    login: login
+  };
+})
+
+
 .factory('UserActiveRequest', function($http, localStorageService,ServerUrls){
    var all = function(){
      var userId = localStorageService.get('userId');

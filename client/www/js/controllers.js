@@ -2,128 +2,141 @@
 angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------------Login Controllers---------------
-.controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $stateParams, $http, ServerUrls, $ionicLoading) {
-  $scope.show = true;
 
-  var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
-    '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
+// .controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $stateParams, $http, ServerUrls, $ionicLoading) {
+//   $scope.show = true;
 
-  var loginWindow;
-  $scope.login = function () {
-    loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-    $scope.show = false;
+//   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
+//     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
-    loginWindow.addEventListener('loadstart', function(e) {
-      var url = e.url;
-      var code = /\?code=(.+)$/.exec(url);
-      var error = /\?error=(.+)$/.exec(url);
-      // if (error){
-      //   loginWindow.close();
-      //   reload();
-      // }
+//   var loginWindow;
+//   $scope.login = function () {
+//     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
+//     $scope.show = false;
 
-      if (code) {
-        $ionicLoading.show({
-          content: 'Loading',
-          animation: 'fade-in',
-          showBackdrop: true,
-          maxWidth: 200,
-          showDelay: 0
-        });
+//     loginWindow.addEventListener('loadstart', function(e) {
+//       var url = e.url;
+//       var code = /\?code=(.+)$/.exec(url);
+//       var error = /\?error=(.+)$/.exec(url);
+//       // if (error){
+//       //   loginWindow.close();
+//       //   reload();
+//       // }
 
-        loginWindow.close();
-        $http ({
-          method: 'POST',
-          url: ServerUrls.url+'/login/user',
-          data: {
-            code: code[1]
-          }
-        }).success(function(data, status){
-          localStorageService.set('token', data.accessToken);
-          localStorageService.set('userId', data.userId);
-          localStorageService.set('user', true);
-          $ionicLoading.hide();
-          $state.transitionTo('user.new');
-        }).error(function(data, status){
-          loginWindow.close();
-          reload();
-        });
-      }
-    });
-  };
-  var reload = function(){
-    $state.transitionTo($state.current, $stateParams, {
-      reload: true,
-      inherit: false,
-      notify: true
-    });
-  }
+//       if (code) {
+//         $ionicLoading.show({
+//           content: 'Loading',
+//           animation: 'fade-in',
+//           showBackdrop: true,
+//           maxWidth: 200,
+//           showDelay: 0
+//         });
+
+//         loginWindow.close();
+//         $http ({
+//           method: 'POST',
+//           url: ServerUrls.url+'/login/user',
+//           data: {
+//             code: code[1]
+//           }
+//         }).success(function(data, status){
+//           localStorageService.set('token', data.accessToken);
+//           localStorageService.set('userId', data.userId);
+//           localStorageService.set('user', true);
+//           $ionicLoading.hide();
+//           $state.transitionTo('user.new');
+//         }).error(function(data, status){
+//           loginWindow.close();
+//           reload();
+//         });
+//       }
+//     });
+//   };
+//   var reload = function(){
+//     var data = JSON.stringify($state.current);
+//     window.alert(data);
+//     $state.transitionTo($state.current, $stateParams, {
+//       reload: true,
+//       inherit: false,
+//       notify: true
+//     });
+//   }
+// })
+
+// .controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls, $ionicLoading) {
+  
+//   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
+//     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
+
+//   var loginWindow;
+//   $scope.login = function () {
+//     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
+    
+//     loginWindow.addEventListener('loadstart', function(e) {
+//       var url = e.url;
+//       var code = /\?code=(.+)$/.exec(url);
+//       var error = /\?error=(.+)$/.exec(url);
+
+//       if (error){
+//         loginWindow.close();
+//         reload();
+//       }
+
+//       if (code) {
+
+//         $ionicLoading.show({
+//           content: 'Loading',
+//           animation: 'fade-in',
+//           showBackdrop: true,
+//           maxWidth: 200,
+//           showDelay: 0
+//         });
+
+//         loginWindow.close();
+//         $http ({
+//           method: 'POST',
+//           url: ServerUrls.url+'/login/business',
+//           data: {
+//             code: code[1]
+//           }
+//         }).success(function(data, status){
+//           if (data.signup){
+//             localStorageService.set('token', data.accessToken);
+//             $ionicLoading.hide();
+//             $state.transitionTo('signup.signup');
+//           }else{
+//             localStorageService.set('token', data.accessToken);
+//             localStorageService.set('restaurantId', data.businessId);
+//             localStorageService.set('user', false);
+//             $ionicLoading.hide();
+//             $state.transitionTo('rest.requests');
+//           }
+//         }).error(function(data, status){
+//           loginWindow.close();
+//           reload();
+//         });
+//       }
+//     });
+//   };
+//   var reload = function(){
+//     $state.transitionTo($state.current, $stateParams, {
+//       reload: true,
+//       inherit: false,
+//       notify: true
+//     });
+//   };
+// })
+
+.controller('LoginUserCtrl', function($scope, LoginRequest) {
+  $scope.login = LoginRequest.login;
 })
 
-.controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls, $ionicLoading) {
-  $scope.show = true;
-  
-  var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
-    '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
+.controller('LoginRestCtrl', function($scope, LoginRequest) {
+  $scope.login = LoginRequest.login;
+})
 
-  var loginWindow;
-  $scope.login = function () {
-    loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-    $scope.show = false;
-    
-    loginWindow.addEventListener('loadstart', function(e) {
-      var url = e.url;
-      var code = /\?code=(.+)$/.exec(url);
-      var error = /\?error=(.+)$/.exec(url);
 
-      if (error){
-        loginWindow.close();
-        reload();
-      }
-
-      if (code) {
-
-        $ionicLoading.show({
-          content: 'Loading',
-          animation: 'fade-in',
-          showBackdrop: true,
-          maxWidth: 200,
-          showDelay: 0
-        });
-
-        loginWindow.close();
-        $http ({
-          method: 'POST',
-          url: ServerUrls.url+'/login/business',
-          data: {
-            code: code[1]
-          }
-        }).success(function(data, status){
-          if (data.signup){
-            localStorageService.set('token', data.accessToken);
-            $ionicLoading.hide();
-            $state.transitionTo('signup.signup');
-          }else{
-            localStorageService.set('token', data.accessToken);
-            localStorageService.set('restaurantId', data.businessId);
-            localStorageService.set('user', false);
-            $ionicLoading.hide();
-            $state.transitionTo('rest.requests');
-          }
-        }).error(function(data, status){
-          loginWindow.close();
-          reload();
-        });
-      }
-    });
-  };
-  var reload = function(){
-    $state.transitionTo($state.current, $stateParams, {
-      reload: true,
-      inherit: false,
-      notify: true
-    });
-  };
+.controller('LoginTransitionCtrl', function($scope) {
 })
 
 //---------------Signup Controllers---------------
