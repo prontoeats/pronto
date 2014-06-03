@@ -37,10 +37,10 @@ app.post('/token', userHandler.registerToken);
 
 // private business routes
 app.get('/business/requests', busHandler.showRequests);
-app.post('/business/requests/decline', busHandler.declineRequests);
-app.post('/business/requests/accept', busHandler.acceptRequests);
 app.get('/business/offered', busHandler.showOffered);
 app.get('/business/accepted', busHandler.showAccepted);
+app.post('/business/requests/accept', busHandler.acceptRequests);
+app.post('/business/requests/decline', busHandler.declineRequests);
 app.post('/business/token', busHandler.registerToken);
 
 module.exports = app;
