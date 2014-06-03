@@ -16,8 +16,6 @@ var allowCrossDomain = function(req, res, next) {
 app.configure(function() {
   app.use(express.bodyParser());
   app.use(allowCrossDomain);
-  app.use(express.cookieParser('shhhh, very secret'));
-  app.use(express.session());
 });
 
 // public user routes
