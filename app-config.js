@@ -30,10 +30,10 @@ app.post('/signup/business', busHandler.signup);
 
 // private user routes
 app.get('/requests', userHandler.sendRequestInfo);
+app.post('/token', userHandler.registerToken);
+app.post('/request', authen.authenticateUserToken, userHandler.request);
 app.post('/requests/accept', userHandler.acceptOffer);
 app.post('/requests/reject', userHandler.rejectOffer);
-app.post('/request', authen.authenticateUserToken, userHandler.request);
-app.post('/token', userHandler.registerToken);
 
 // private business routes
 app.get('/business/requests', busHandler.showRequests);
