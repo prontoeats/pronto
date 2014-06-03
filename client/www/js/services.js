@@ -89,7 +89,7 @@ angular.module('starter.services', ['LocalStorageModule'])
         var userId = localStorageService.get('userId')
 
         console.log('access token: ', accessToken);
-        console.log('businessId: ', userId);
+        console.log('userId: ', userId);
 
         var httpObj = {
           method: 'POST',
@@ -197,7 +197,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     var userId = localStorageService.get('userId')
 
     console.log('access token: ', accessToken);
-    console.log('businessId: ', userId);
+    console.log('userId: ', userId);
 
     var httpObj = {
       method: 'POST',
