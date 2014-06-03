@@ -141,6 +141,24 @@ exports.request = function(req, res) {
     console.log(error);
   })
 
+  .then(function () {
+    var secondsDiff =
+      requestObj.targetDateTime.getTime() - new Date().getTime();
+
+    // if request is still outstanding (i.e., active) at targetDateTime
+    // convert status to "expired"
+    setTimeout(function () {
+      UserRequest.promFindOneAndUpdate(
+        {requestId: data.requestId, requestStatus: 'Active'},
+        {$set: {
+          'requestStatus': 'Expired',
+          'updatedAt': new Date()
+        }},
+        {new: true}
+      )
+    }, 1000 * secondsDiff);
+  })
+
 };
 
 exports.sendRequestInfo = function(req, res) {
