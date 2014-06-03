@@ -32,7 +32,6 @@ app.post('/signup/business', busHandler.signup);
 app.get('/requests', userHandler.sendRequestInfo);
 app.post('/requests/accept', userHandler.acceptOffer);
 app.post('/requests/reject', userHandler.rejectOffer);
-app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
 app.post('/request', authen.authenticateUserToken, userHandler.request);
 app.post('/token', userHandler.registerToken);
 
