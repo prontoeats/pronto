@@ -2,7 +2,6 @@ var url = require('url');
 var qs = require('querystring');
 var User = require('../db/user.js').User;
 var prom = require('./promisified.js');
-var authen = require('./authenHelpers.js');
 var mapApi = require('./mapsApiHelpers.js');
 var blue = require('bluebird');
 var Business = require('../db/business.js').Business;
@@ -13,20 +12,8 @@ var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
 var push = require('./pushHelpers.js');
 
-exports.sendIndex = function (req, res){
-  res.sendfile('./views/index.html');
-};
-
-exports.sendAbout = function(req, res){
-  res.sendfile('./public/html/about.html');
-}
-
 exports.sendAuthFail = function (res){
   res.send(404, 'failed authentication!');
-};
-
-exports.dashboard = function(req, res){
-  res.sendfile('./public/html/userDash.html');
 };
 
 exports.login = function(req, res){
