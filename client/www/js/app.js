@@ -96,6 +96,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
 
+    .state('login.transition', {
+      url: '/transition',
+      views: {
+        'login-transition': {
+          templateUrl: 'templates/login-transition.html',
+          controller: 'LoginTransitionCtrl'
+        }
+      }
+    })
+
 // ------------Signup States-----------------
     .state('signup', {
       url: '/signup',

@@ -28,10 +28,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     // localStorageService.set('user', 'false');
     // $state.transitionTo('rest.requests');
 
-    localStorageService.set('token', 'ya29.KQCA_F3XfDcaURoAAADa9zaMesu2janbVejDoOEYJ8PXwQ2TxhosBW4313iuFA');
-    localStorageService.set('userId', '538bea45c4dfa1902bb66e70');
-    localStorageService.set('user', 'true');
-    $state.transitionTo('user.new');
+    // localStorageService.set('token', 'ya29.KQCA_F3XfDcaURoAAADa9zaMesu2janbVejDoOEYJ8PXwQ2TxhosBW4313iuFA');
+    // localStorageService.set('userId', '538bea45c4dfa1902bb66e70');
+    // localStorageService.set('user', 'true');
+    // $state.transitionTo('user.new');
 
     var token = localStorageService.get('token');
 
@@ -92,6 +92,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         'login-user': {
           templateUrl: 'templates/login-user.html',
           controller: 'LoginUserCtrl'
+        }
+      }
+    })
+
+    .state('login.transition', {
+      url: '/transition',
+      views: {
+        'login-transition': {
+          templateUrl: 'templates/login-transition.html',
+          controller: 'LoginTransitionCtrl'
         }
       }
     })
