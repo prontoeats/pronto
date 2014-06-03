@@ -250,7 +250,8 @@ exports.cancelRequest = function(req, res) {
   UserRequest.promFindOneAndUpdate(
     {requestId: req.body.requestId},
     {$set: {
-      'requestStatus': 'Canceled'
+      'requestStatus': 'Canceled',
+      'results.$.updatedAt': new Date()
     }},
     {new: true}
   )
