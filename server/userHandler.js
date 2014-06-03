@@ -266,6 +266,6 @@ exports.checkLastRequestStatus = function(req, res) {
     {sort: {createdAt: -1}}
   )
   .then(function (data) {
-    res.send(201);
+    res.send(201, data.requestStatus);
   })
 };
