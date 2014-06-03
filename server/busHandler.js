@@ -9,8 +9,17 @@ var authen = require('./authenHelpers.js');
 var login = require('./loginHelpers.js');
 var mongoose = require('mongoose');
 var misc = require('./miscHelpers.js');
-var push = require('./pushHelpers.js')
+var push = require('./pushHelpers.js');
+var blue = require('bluebird');
 
+var yelp = require("yelp").createClient({
+  consumer_key: "SzQdSvtMTjV2G8zH-gzjKA",
+  consumer_secret: "Npu_t0hsqBBmshtLJaL9NfRY_0Y",
+  token: "B4EcDSSwlFUHkfYulefhH4QSVTwWarWS",
+  token_secret: "GhyNIB8-tuJNcXahz_h4nICI7ng"
+});
+
+// var promYelp = blue.promisify(yelp.business);
 
 exports.sendBusIndex = function(req, res){
   res.sendfile('./views/busIndex.html');
@@ -76,15 +85,33 @@ exports.signup = function (req, res) {
     businessInfo.email = data.emails[0]['value'];
     businessInfo.firstName = data.name.givenName;
     businessInfo.lastName = data.name.familyName;
-    new Business(businessInfo).save(function (err, data) {
-      if (err) {
-        console.log('problem saving new business');
-        res.send(400, "OMG could not save");
-        throw err;
+    console.log(businessInfo);
+    console.log(businessInfo.address +', '+businessInfo.zipCode);
+
+    var searchObj = {
+      term: businessInfo.businessName,
+      location: businessInfo.address +', '+businessInfo.zipCode,
+      limit: 1
+    };
+    // What if can't find restauarnt in yelp???
+    yelp.search(searchObj, function(error, data) {
+      console.log('return data', data);
+      if (error){
+        console.log('yelp search errer');
+        businessInfo.yelpId = 'No_yelp';
+      } else{
+        businessInfo.yelpId = data.businesses[0].id;
+        new Business(businessInfo).save(function (err, data) {
+          if (err) {
+            console.log('problem saving new business');
+            res.send(400, "OMG could not save");
+            throw err;
+          }
+          // with other information received, save to database
+          res.send(201, {accessToken: accessToken, businessId: data._id});
+        })
       }
-      // with other information received, save to database
-      res.send(201, {accessToken: accessToken, businessId: data._id});
-    })
+    });
   })
   .catch( function (e) {
     res.send(400, "OMG could not find that token in google");
@@ -133,40 +160,82 @@ exports.acceptRequests = function(req,res){
 
   var businessId = mongoose.Types.ObjectId(data.businessId);
 
+  var yelpData = {
+    stars: 0,
+    review: 0,
+    url: ''
+  };
 
   // TODO: earlier of ten minutes from now and request targetDateTime
   // (need to look up requests targetDateTime)
   var dateTime = new Date();
   dateTime.setMinutes(dateTime.getMinutes() + 10);
 
-  UserRequest.promFindOneAndUpdate(
-    {requestId: data.requestId, 'results.businessId': businessId},
-    {$set: {
-      'results.$.status': 'Offered',
-      'results.$.updatedAt': new Date(),
-      'results.$.replies': data.offer,
-      'results.$.expirationDateTime': dateTime
-    }},
-    {new: true}
-  )
+  Business.promFindOne({_id: businessId})
   .then(function(data){
+    console.log(data);
+    if(data.yelpId === 'No_yelp'){
+      return new blue (function(resolve, reject){
+        resolve();
+      })
+    } else {
+      return new blue (function(resolve, reject){
+        yelp.business(data.yelpId, function(error, data){
+          if (error){
+            console.log('Yelp ID cannot be found on yelp');
+            resolve()
+
+          }else{
+            resolve(data);
+          }
+        });
+      });
+    }
+  })
+  .then(function(queryData) {
+
+    if (queryData){    
+      console.log('business return data:', queryData)
+      yelpData.stars = queryData.rating;
+      yelpData.review = queryData.review_count;
+      yelpData.url = queryData.mobile_url;
+      console.log('yelp data:', yelpData);
+    }
+
+    return UserRequest.promFindOneAndUpdate(
+      {requestId: data.requestId, 'results.businessId': businessId},
+      {$set: {
+        'results.$.status': 'Offered',
+        'results.$.updatedAt': new Date(),
+        'results.$.replies': data.offer,
+        'results.$.expirationDateTime': dateTime,
+        'results.$.yelpStars': yelpData.stars,
+        'results.$.yelpReviews': yelpData.review,
+        'results.$.yelpUrl': yelpData.url,
+      }},
+      {new: true}
+    )
+  })
+  .then(function(data){
+    console.log('push promise');
 
     console.log('data in accept requests: ', data.pushNotification);
     console.log('type: ', typeof data.pushNotification);
 
 
     if (data.pushNotification.apn.length){
-      push.sendApnMessage(data.pushNotification.apn, 'You have a new offer!', {view: 'user.active'});
+      push.sendApnMessage(data.pushNotification.apn, 'You have a new offer!', {state: 'user.active'});
     }
 
     if (data.pushNotification.gcm.length){
-      push.sendGcmMessage(data.pushNotification.gcm, 'You have a new offer!');
+      push.sendGcmMessage(data.pushNotification.gcm, 'You have a new offer!', 'user.active');
 
     }
 
     res.send(201);
   })
   .then(function () {
+    console.log('set Time out');
     // if offer is still outstanding (status: offered) after ten minutes
     // convert status to "expired"
     setTimeout(function () {

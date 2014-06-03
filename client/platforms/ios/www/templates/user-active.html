@@ -24,7 +24,7 @@
   </ion-refresher>
   <ion-list can-swipe="true">
     <ion-item ng-repeat="offer in offers | filter: {status: filterOn} | orderBy:'updatedAt'" >
-      <div class = 'rest-name'>{{offer.businessName}}</div>
+      <div class = 'rest-name'>{{offer.businessName}} {{offer.yelpStars}}</div>
       <div class = 'rest-address'>{{offer.address}} ({{offer.distance | number:2}} mi away)</div>
       <div class = 'rest-offer'>Offer: {{offer.replies}}</div>
       <div class = 'rest-offer'>Expire<span am-time-ago="offer.expirationDateTime"></span></div>

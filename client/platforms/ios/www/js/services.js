@@ -8,7 +8,7 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
-.factory('PushNotification', function($state, $http, ServerUrls, localStorageService){
+.factory('PushNotification', function($state, $http, ServerUrls, localStorageService, $window){
   var pushNotification;
 
   var onDeviceReady = function(type){
@@ -194,7 +194,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     console.log('token: ', result);
 
     var accessToken = localStorageService.get('token');
-    var userId = localStorageService.get('userId')
+    var userId = localStorageService.get('userId');
 
     console.log('access token: ', accessToken);
     console.log('businessId: ', userId);
@@ -277,13 +277,12 @@ angular.module('starter.services', ['LocalStorageModule'])
       errorState = 'login.user';
       postUrl = ServerUrls.url+'/login/user';
     } else {
-      errorState = 'login.rest';
+      errorState = 'login.restaurant';
       postUrl = ServerUrls.url+'/login/business';      
     }
 
     $state.transitionTo('login.transition');
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;
       var code = /\?code=(.+)$/.exec(url);

@@ -3,23 +3,22 @@ var blue = require('bluebird');
 var mapApi = require('../server/mapsApiHelpers.js')
 
 var businessSchema = mongoose.Schema({
-  email:            {type: String, required: true, index: {unique: true}},
-  businessName:     {type: String, required: true},
-  address:          {type: String, required: true},
-  city:             {type: String, required: true},
-  state:            {type: String, required: true},
-  country:          {type: String, required: true, default: 'US'},
-  zipCode:          {type: Number, required: true},
-  firstName:        {type: String, required: true},
-  lastName:         {type: String, required: true},
-  phoneNumber:      {type: Number, required: true},
-  accessToken:      {type: String, required: true},
-  pushNotification: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {apn: [], gcm:[]}
-  },
-  location:         {type: Array, index: '2dsphere'},
-  createdAt:        {type: Date, default: Date.now}
+  // businessId:   {type: Number, unique: true},
+  email:        {type: String, required: true, index: {unique: true}},
+  businessName: {type: String, required: true},
+  address:      {type: String, required: true},
+  city:         {type: String, required: true},
+  state:        {type: String, required: true},
+  country:      {type: String, required: true, default: 'US'},
+  zipCode:      {type: Number, required: true},
+  firstName:    {type: String, required: true},
+  lastName:     {type: String, required: true},
+  phoneNumber:  {type: Number, required: true},
+  accessToken:  {type: String, required: true},
+  yelpId:       {type: String, required: true},
+  pushNotification: {type: mongoose.Schema.Types.Mixed, default: {apn: [],gcm:[]}},
+  location:     {type: Array, index: '2dsphere'},
+  createdAt:    {type: Date, default: Date.now}
 });
 
 businessSchema.pre('save', function (next) {
