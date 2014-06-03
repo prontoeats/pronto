@@ -3,7 +3,6 @@ var url = require('url');
 var qs = require('querystring');
 var Business = require('../db/business.js').Business;
 var UserRequest = require('../db/userRequest.js').UserRequest;
-var Offer = require('../db/offers.js').Offer;
 var mapApi = require('./mapsApiHelpers.js');
 var prom = require('./promisified.js');
 var authen = require('./authenHelpers.js');
@@ -215,9 +214,9 @@ exports.registerToken = function (req, res){
 
   var query = {_id: businessId};
 
-  //if true, then the code is a apn token. 
+  //if true, then the code is a apn token.
   //if false, then the code is a gcm registration id
-  var apn; 
+  var apn;
 
   if (req.body.type === 'apn'){
     apn = true;

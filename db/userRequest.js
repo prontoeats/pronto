@@ -3,20 +3,20 @@ var blue = require('bluebird');
 var Counter = require('./counter.js').Counter;
 
 var requestSchema = mongoose.Schema({
-  requestId:      {type: Number, unique: true},
-  userId:         {type: String, required: true},
-  targetDateTime: {type: Date, required: true},
-  mins:           {type: Number, required: true},
-  groupSize:      {type: Number, required: true},
-  radius:         {type: Number, required: true},
-  address:        {type: String},
-  country:        {type: String, default: 'US'},
-  requestStatus:  {type: String, default: 'Active'},
-  results:        {type: mongoose.Schema.Types.Mixed},
+  requestId:        {type: Number, unique: true},
+  userId:           {type: String, required: true},
+  targetDateTime:   {type: Date, required: true},
+  mins:             {type: Number, required: true},
+  groupSize:        {type: Number, required: true},
+  radius:           {type: Number, required: true},
+  address:          {type: String},
+  country:          {type: String, default: 'US'},
+  requestStatus:    {type: String, default: 'Active'},
+  results:          {type: mongoose.Schema.Types.Mixed},
   pushNotification: {type: mongoose.Schema.Types.Mixed},
-  location:       {type: Array, index: '2dsphere'},
-  createdAt:      {type: Date, default: Date.now},
-  updatedAt:      {type: Date, default: Date.now}
+  location:         {type: Array, index: '2dsphere'},
+  createdAt:        {type: Date, default: Date.now},
+  updatedAt:        {type: Date, default: Date.now}
 });
 
 requestSchema.pre('save', function (next) {
@@ -44,7 +44,6 @@ requestSchema.pre('save', function (next) {
 var UserRequest = mongoose.model('Request', requestSchema);
 
 UserRequest.promFindOneAndUpdate = blue.promisify(UserRequest.findOneAndUpdate);
-UserRequest.promUpdate = blue.promisify(UserRequest.update);
 UserRequest.promFindOne = blue.promisify(UserRequest.findOne);
 UserRequest.promFind = blue.promisify(UserRequest.find);
 
