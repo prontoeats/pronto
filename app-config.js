@@ -1,25 +1,20 @@
 
 var express = require('express');
-var twiml = require('./server/twiml.js')
 var dbConnect = require('./db/db-config.js');
 var userHandler = require('./server/userHandler.js');
 var busHandler = require('./server/busHandler.js');
 var authen = require('./server/authenHelpers.js');
+
 var app = express();
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
-
     next();
 }
 
-// view engine setup
 app.configure(function() {
-  // app.set('views', __dirname + '/views');
-  // app.set('view engine', 'ejs');
-  // app.use(partials());
   app.use(express.bodyParser());
   app.use('/bower_components', express.static(__dirname + '/bower_components'));
   app.use(express.static(__dirname + '/public'));
