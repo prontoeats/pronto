@@ -248,9 +248,10 @@ var filterRequests = function (req, res, filter) {
 
   var queryString = qs.parse(url.parse(req.url).query);
   var oid = mongoose.Types.ObjectId(queryString.businessId);
+  console.log('ObjectId(businessId):', oid);
 
   return UserRequest.promFind({
-    requestStatus: {$ne: ['Expired', 'Canceled']},
+    requestStatus: {$nin: ['Expired', 'Canceled']},
     'results.businessId': oid
   })
   .then(function(data){
