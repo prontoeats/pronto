@@ -3,130 +3,6 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------------Login Controllers---------------
 
-// .controller('LoginUserCtrl', function($scope, Google, $window, $document, localStorageService, $state, $stateParams, $http, ServerUrls, $ionicLoading) {
-//   $scope.show = true;
-
-//   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
-//     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
-
-//   var loginWindow;
-//   $scope.login = function () {
-//     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-//     $scope.show = false;
-
-//     loginWindow.addEventListener('loadstart', function(e) {
-//       var url = e.url;
-//       var code = /\?code=(.+)$/.exec(url);
-//       var error = /\?error=(.+)$/.exec(url);
-//       // if (error){
-//       //   loginWindow.close();
-//       //   reload();
-//       // }
-
-//       if (code) {
-//         $ionicLoading.show({
-//           content: 'Loading',
-//           animation: 'fade-in',
-//           showBackdrop: true,
-//           maxWidth: 200,
-//           showDelay: 0
-//         });
-
-//         loginWindow.close();
-//         $http ({
-//           method: 'POST',
-//           url: ServerUrls.url+'/login/user',
-//           data: {
-//             code: code[1]
-//           }
-//         }).success(function(data, status){
-//           localStorageService.set('token', data.accessToken);
-//           localStorageService.set('userId', data.userId);
-//           localStorageService.set('user', true);
-//           $ionicLoading.hide();
-//           $state.transitionTo('user.new');
-//         }).error(function(data, status){
-//           loginWindow.close();
-//           reload();
-//         });
-//       }
-//     });
-//   };
-//   var reload = function(){
-//     var data = JSON.stringify($state.current);
-//     window.alert(data);
-//     $state.transitionTo($state.current, $stateParams, {
-//       reload: true,
-//       inherit: false,
-//       notify: true
-//     });
-//   }
-// })
-
-// .controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls, $ionicLoading) {
-  
-//   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
-//     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
-
-//   var loginWindow;
-//   $scope.login = function () {
-//     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-    
-//     loginWindow.addEventListener('loadstart', function(e) {
-//       var url = e.url;
-//       var code = /\?code=(.+)$/.exec(url);
-//       var error = /\?error=(.+)$/.exec(url);
-
-//       if (error){
-//         loginWindow.close();
-//         reload();
-//       }
-
-//       if (code) {
-
-//         $ionicLoading.show({
-//           content: 'Loading',
-//           animation: 'fade-in',
-//           showBackdrop: true,
-//           maxWidth: 200,
-//           showDelay: 0
-//         });
-
-//         loginWindow.close();
-//         $http ({
-//           method: 'POST',
-//           url: ServerUrls.url+'/login/business',
-//           data: {
-//             code: code[1]
-//           }
-//         }).success(function(data, status){
-//           if (data.signup){
-//             localStorageService.set('token', data.accessToken);
-//             $ionicLoading.hide();
-//             $state.transitionTo('signup.signup');
-//           }else{
-//             localStorageService.set('token', data.accessToken);
-//             localStorageService.set('restaurantId', data.businessId);
-//             localStorageService.set('user', false);
-//             $ionicLoading.hide();
-//             $state.transitionTo('rest.requests');
-//           }
-//         }).error(function(data, status){
-//           loginWindow.close();
-//           reload();
-//         });
-//       }
-//     });
-//   };
-//   var reload = function(){
-//     $state.transitionTo($state.current, $stateParams, {
-//       reload: true,
-//       inherit: false,
-//       notify: true
-//     });
-//   };
-// })
-
 .controller('LoginUserCtrl', function($scope, LoginRequest) {
   $scope.login = LoginRequest.login;
 })
@@ -134,7 +10,6 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('LoginRestCtrl', function($scope, LoginRequest) {
   $scope.login = LoginRequest.login;
 })
-
 
 .controller('LoginTransitionCtrl', function($scope) {
 })
@@ -176,7 +51,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService, ServerUrls, PushNotification) {
   //requestObj will be sent to server after hitting submit
 
-  PushNotification.onDeviceReady('user');
+  //PushNotification.onDeviceReady('user');
 
   $scope.tabA = 1;
   $scope.tabB = 1;
@@ -262,7 +137,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-.controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $interval, UserActiveRequest) {
+.controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $interval, CalculateStars, UserActiveRequest) {
   console.log('active state');
   $scope.updateData = function () {
     UserActiveRequest.all()
@@ -314,6 +189,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     console.log('got to scopeaccept ', $scope.response.requestId, businessId);
   };
 
+  $scope.calculateStars = CalculateStars.calculateStars;
+
+  $scope.go = function(url){
+    if (url !== undefined){    
+      loginWindow = window.open(url, '_blank', 'location=yes,toolbar=yes');
+    }
+  };
+
   $scope.updateData();
   // stopUpdate = $interval(updateData, 1000 * 3);
 
@@ -327,11 +210,10 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   //   var ref = window.open('http://www.yelp.com/biz/kusina-ni-tess-san-francisco', '_blank');
   // }
   $scope.logout = function(){
-    window.alert('user logout'+localStorageService.get('token'));
-
     localStorageService.clearAll()
-    window.alert('remove token'+localStorageService.get('token'));
-
+    localStorageService.remove('token');
+    localStorageService.remove('userId');
+    localStorageService.remove('user');
     $state.go('login.user');
   }
 })
@@ -437,20 +319,15 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     });
   };
   $scope.updateData();
-  // stopUpdate = $interval(updateData, 1000 * 3);
 
-  // $rootScope.$on('$stateChangeStart', function() {
-  //   $interval.cancel(stopUpdate);
-  // });
-})
-
-.controller('AcceptedOfferDetailCtrl', function($scope, $stateParams, AcceptedOffers) {
-  $scope.acceptedOffer = AcceptedOffers.get($stateParams.acceptedOfferId);
 })
 
 .controller('RestSettingsCtrl', function($scope, $state, localStorageService) {
   $scope.logout = function(){
     localStorageService.clearAll();
+    localStorageService.remove('token');
+    localStorageService.remove('restaurantId');
+    localStorageService.remove('user');
     $state.go('login.user');
   }
 });

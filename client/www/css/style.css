@@ -20,7 +20,7 @@
 }
 
 .rest-name{
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   font-family:Arial,Helvetica,sans-serif;
 }
@@ -38,4 +38,63 @@
 
 .icon-custom{
   color : #4a87ee;
+}
+
+.center{
+  padding: 5px;
+  border: none;
+  text-align: center;
+}
+
+.center{
+  padding: 5px;
+  border: none;
+  text-align: center;
+}
+
+.rating {
+  height: 14px;
+  width: 82px;
+  float: right;
+  background-image: url('../img/stars_map.png');
+}
+
+.stars_0 {
+    background-position: -3px -3px;
+}
+
+.stars_1 {
+    background-position: -3px -21px;
+}
+
+.stars_1_half {
+    background-position: -3px -39px;
+}
+
+.stars_2 {
+    background-position: -3px -57px;
+}
+
+.stars_2_half {
+    background-position: -3px -75px;
+}
+
+.stars_3 {
+    background-position: -3px -93px;
+}
+
+.stars_3_half {
+    background-position: -3px -111px;
+}
+
+.stars_4 {
+    background-position: -3px -129px;
+}
+
+.stars_4_half {
+    background-position: -3px -147px;
+}
+
+.stars_5 {
+    background-position: -3px -165px;
 }
