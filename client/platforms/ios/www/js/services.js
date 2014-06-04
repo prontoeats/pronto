@@ -4,8 +4,8 @@ angular.module('starter.services', ['LocalStorageModule'])
   return {
     // url: 'http://10.8.32.232:3000'
     // url: 'http://localhost:3000'
-    // url: 'http://10.8.28.241:3000'
-    url: 'http://prontoeats.azurewebsites.net'
+    url: 'http://10.8.28.241:3000'
+    // url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
@@ -262,6 +262,35 @@ angular.module('starter.services', ['LocalStorageModule'])
   return {
     onDeviceReady: onDeviceReady
   };
+})
+
+.factory('checkAuthentication', function($http, localStorageService, ServerUrls){
+  var check = function(type){
+    var path = '';
+    var data = {};
+    if (type === 'user'){
+      path = '/validate/';
+      data = {
+        accessToken: localStorageService.get('token'),
+        userId: localStorageService.get('userId')
+      };
+    } else{
+      path = '/business/validate/';
+      data = {
+        accessToken: localStorageService.get('token'),
+        businessId: localStorageService.get('restauarantId')
+      };
+    }
+
+    return $http({
+        method: POST,
+        url: ServerUrls + path,
+        data: data
+      });
+  }
+  return{
+    check:check
+  }
 })
 
 .factory('LoginRequest', function($http, $state, $stateParams, $window, Google, localStorageService, ServerUrls, $ionicLoading) {
