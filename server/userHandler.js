@@ -118,6 +118,23 @@ exports.request = function(req, res) {
     request.promSave = blue.promisify(request.save);
     return request.promSave();
   })
+  .then(function (data) {
+    var msDiff =
+      requestObj.targetDateTime.getTime() - new Date().getTime();
+
+    // if request is still outstanding (i.e., active) at targetDateTime
+    // convert status to "expired"
+    setTimeout(function () {
+      UserRequest.promFindOneAndUpdate(
+        {requestId: data[0].requestId, requestStatus: 'Active'},
+        {$set: {
+          'requestStatus': 'Expired',
+          'updatedAt': new Date()
+        }},
+        {new: true}
+      )
+    }, msDiff);
+  })
 
   .then(function(){
 
@@ -141,23 +158,6 @@ exports.request = function(req, res) {
     console.log(error);
   })
 
-  .then(function () {
-    var msDiff =
-      requestObj.targetDateTime.getTime() - new Date().getTime();
-
-    // if request is still outstanding (i.e., active) at targetDateTime
-    // convert status to "expired"
-    setTimeout(function () {
-      UserRequest.promFindOneAndUpdate(
-        {requestId: data.requestId, requestStatus: 'Active'},
-        {$set: {
-          'requestStatus': 'Expired',
-          'updatedAt': new Date()
-        }},
-        {new: true}
-      )
-    }, msDiff);
-  })
 
 };
 
