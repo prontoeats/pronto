@@ -12,7 +12,7 @@
         </div>
     </ion-list>
   <div class="item item-divider rest-name">
-    New Offers
+    {{ filterOn === 'Offered' && 'New Offers' || 'Accepted Offer'}}
   </div>
   <ion-refresher
     pulling-text="Pull to refresh..."
@@ -50,7 +50,6 @@
 
   <div class="list card" ng-repeat="offer in offers | filter: {status: filterOn} | orderBy:'updatedAt'" ng-hide = "filterOn === 'Offered'">
     <div class="item item-body rest-details">
-      <div class = 'rest-name'>Accepted</div>
       <div class = 'rest-name'>{{offer.businessName}} </div>
       <div ng-show="{{offer.yelpReviews}} > 0">
         <span ng-class= "calculateStars(offer.yelpStars)"></span>
@@ -59,8 +58,8 @@
       <div class = 'rest-address'>{{offer.address}} ({{offer.distance | number:2}} mi away)</div>
       <div class = 'rest-offer'>Offer: {{offer.replies}}</div>
     </div>
-    <div class="item tabs tabs-secondary tabs-icon-left">
-      <a class="tab-item" ng-click="go(offer.yelpUrl)" ng-show="{{offer.yelpReviews}} > 0">
+    <div class="item tabs tabs-secondary tabs-icon-left" ng-show="{{offer.yelpReviews}} > 0">
+      <a class="tab-item" ng-click="go(offer.yelpUrl)">
         <i class="icon ion-social-hackernews-outline"></i>
         Yelp
       </a>
