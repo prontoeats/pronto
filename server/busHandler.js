@@ -10,11 +10,19 @@ var misc = require('./miscHelpers.js');
 var push = require('./pushHelpers.js');
 var blue = require('bluebird');
 
+try {
+  var config = require('../config.js');
+}
+catch (e) {
+  console.log('did not load config file');
+  console.log(e);
+}
+
 var yelp = require("yelp").createClient({
-  consumer_key: "SzQdSvtMTjV2G8zH-gzjKA",
-  consumer_secret: "Npu_t0hsqBBmshtLJaL9NfRY_0Y",
-  token: "B4EcDSSwlFUHkfYulefhH4QSVTwWarWS",
-  token_secret: "GhyNIB8-tuJNcXahz_h4nICI7ng"
+  consumer_key:     process.env.YELP_KEY || config.YELP_KEY,
+  consumer_secret:  process.env.YELP_SECRET || config.YELP_SECRET,
+  token:            process.env.YELP_TOKEN || config.YELP_TOKEN,
+  token_secret:     process.env.YELP_TSECRET || config.YELP_TSECRET
 });
 
 exports.businessSendAuthFail = function (res){
@@ -52,7 +60,11 @@ exports.login = function(req, res){
         {$set: {accessToken: access_token}},
         {new: true}
       ).then( function (data) {
-        res.send(201, {accessToken: data.accessToken, businessId: data._id, signup: false});
+        res.send(201, {
+          accessToken: data.accessToken,
+          businessId: data._id,
+          signup: false
+        });
       });
     }
   })
@@ -92,7 +104,7 @@ exports.signup = function (req, res) {
         new Business(businessInfo).save(function (err, data) {
           if (err) {
             console.log('problem saving new business');
-            res.send(400, "OMG could not save");
+            res.send(400);
             throw err;
           }
           // with other information received, save to database
@@ -102,25 +114,10 @@ exports.signup = function (req, res) {
     });
   })
   .catch( function (e) {
-    res.send(400, "OMG could not find that token in google");
+    res.send(400);
     throw e;
   });
 };
-
-exports.showRequests = function (req, res) {
-  // TODO: remove default; require authentication (on app-config.js)
-
-  var queryString = qs.parse(url.parse(req.url).query);
-
-  var oid = mongoose.Types.ObjectId(queryString.businessId);
-
-  UserRequest.promFind({'results.businessId': oid})
-  .then(function(data){
-    var results = misc.parseBusinessOpenRequests(data, oid, 'Pending');
-    res.send(200, results);
-  })
-
-}
 
 exports.declineRequests = function(req,res){
 
@@ -154,8 +151,6 @@ exports.acceptRequests = function(req,res){
     url: ''
   };
 
-  // TODO: earlier of ten minutes from now and request targetDateTime
-  // (need to look up requests targetDateTime)
   var dateTime = new Date();
   dateTime.setMinutes(dateTime.getMinutes() + 10);
 
@@ -212,11 +207,17 @@ exports.acceptRequests = function(req,res){
 
 
     if (data.pushNotification.apn.length){
-      push.sendApnMessage(data.pushNotification.apn, 'You have a new offer!', {state: 'user.active'});
+      push.sendApnMessage(
+        data.pushNotification.apn,
+        'You have a new offer!', {state: 'user.active'}
+      );
     }
 
     if (data.pushNotification.gcm.length){
-      push.sendGcmMessage(data.pushNotification.gcm, 'You have a new offer!', 'user.active');
+      push.sendGcmMessage(
+        data.pushNotification.gcm,
+        'You have a new offer!', 'user.active'
+      );
 
     }
 
@@ -228,7 +229,11 @@ exports.acceptRequests = function(req,res){
     // convert status to "expired"
     setTimeout(function () {
       UserRequest.promFindOneAndUpdate(
-        {requestId: data.requestId, 'results.businessId': businessId, 'results.status': 'Active'},
+        {
+          requestId: data.requestId,
+          'results.businessId': businessId,
+          'results.status': 'Active'
+        },
         {$set: {
           'results.$.status': 'Expired',
           'results.$.updatedAt': new Date()
@@ -239,28 +244,32 @@ exports.acceptRequests = function(req,res){
   });
 };
 
-exports.showOffered = function (req, res) {
+var filterRequests = function (req, res, filter) {
 
   var queryString = qs.parse(url.parse(req.url).query);
-
   var oid = mongoose.Types.ObjectId(queryString.businessId);
+  console.log('ObjectId(businessId):', oid);
 
-  UserRequest.promFind({'results.businessId': oid})
+  return UserRequest.promFind({
+    requestStatus: {$nin: ['Expired', 'Canceled']},
+    'results.businessId': oid
+  })
   .then(function(data){
-    var results = misc.parseBusinessOpenRequests(data, oid, 'Offered');
+    var results = misc.parseBusinessOpenRequests(data, oid, filter);
     res.send(200, results);
   })
-}
+
+};
+
+exports.showPending = function (req, res) {
+  filterRequests(req, res, 'Pending');
+};
+
+exports.showOffered = function (req, res) {
+  filterRequests(req, res, 'Offered');
+};
 
 exports.showAccepted = function (req, res) {
+  filterRequests(req, res, 'Accepted');
+};
 
-  var queryString = qs.parse(url.parse(req.url).query);
-
-  var oid = mongoose.Types.ObjectId(queryString.businessId);
-
-  UserRequest.promFind({'results.businessId': oid})
-  .then(function(data){
-    var results = misc.parseBusinessOpenRequests(data, oid, 'Accepted');
-    res.send(200, results);
-  })
-}

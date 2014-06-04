@@ -31,7 +31,7 @@ app.post('/requests/accept', authen.checkToken, userHandler.acceptOffer);
 app.post('/requests/reject', authen.checkToken, userHandler.rejectOffer);
 
 // private business routes
-app.get('/business/requests', authen.checkToken, busHandler.showRequests);
+app.get('/business/requests', authen.checkToken, busHandler.showPending);
 app.get('/business/offered', authen.checkToken, busHandler.showOffered);
 app.get('/business/accepted', authen.checkToken, busHandler.showAccepted);
 app.post('/business/token', authen.registerPushToken);
