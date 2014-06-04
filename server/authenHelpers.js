@@ -65,6 +65,10 @@ exports.checkToken = function (req, res, next) {
 
 };
 
+exports.isValidated = function (req, res) {
+  res.send(200);
+};
+
 exports.registerPushToken = function (req, res){
 
   console.log('registerPushToken');
