@@ -136,7 +136,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-.controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $interval, CalculateStars, UserActiveRequest) {
+.controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $interval, CalculateStars, UserActiveRequest) {
   console.log('active state');
   $scope.updateData = function () {
     UserActiveRequest.all()
@@ -191,7 +191,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   $scope.calculateStars = CalculateStars.calculateStars;
 
   $scope.go = function(url){
-    if (url !== undefined){    
+    if (url !== undefined){
       loginWindow = window.open(url, '_blank', 'location=yes,toolbar=yes');
     }
   };
@@ -202,6 +202,27 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   // $rootScope.$on('$stateChangeStart', function() {
   //   $interval.cancel(stopUpdate);
   // });
+
+  $scope.isExpired = function (expirationTime) {
+    var expireTimeUnix = Date.parse(expirationTime)/1000;
+    var currentTimeUnix = $scope.currentTime.unix();
+    return expireTimeUnix < currentTimeUnix;
+  }
+
+  var refreshPromise;
+
+  var refreshTime = function () {
+    console.log('inside refreshTime');
+    $scope.currentTime = moment();
+    $scope.isExpired();
+    refreshPromise = $timeout(refreshTime, 1000);
+  }
+  refreshTime();
+
+  $rootScope.$on('$stateChangeStart', function() {
+    $timeout.cancel(refreshPromise);
+  });
+
 })
 
 .controller('SettingsCtrl', function($scope, $state, localStorageService) {
