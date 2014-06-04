@@ -1,7 +1,7 @@
 <ion-view title="Pronto">
   <ion-content class="has-header has-padding">
     <ion-list>
-        <div class="item item-text-wrap center">
+        <div class="center" ng-hide = "hideRequest">
           <div class = 'rest-name'>Request Summary</div>
           <div class = 'rest-address'>
             {{response.radius}} miles from {{response.address}}
@@ -9,6 +9,9 @@
           <div class = 'rest-address'>
             Group of {{response.groupSize}} in {{response.mins}} mins
           </div>
+        </div>
+        <div class="center" ng-hide = "!hideRequest">
+          <div class>Please Submit A Request</div>
         </div>
     </ion-list>
   <div class="item item-divider rest-name">
@@ -64,25 +67,6 @@
       </a>
     </div>
   </div>
-
-
-<!--   <ion-list can-swipe="true">
-    <ion-item ng-repeat="offer in offers | filter: {status: filterOn} | orderBy:'updatedAt'" >
-      <div class = 'rest-name'>{{offer.businessName}} </div>
-      <span ng-class= "calculateStars(offer.yelpStars)"></span>
-      <div >reviews: {{offer.yelpReviews}}</div>
-
-      <div class = 'rest-address'>{{offer.address}} ({{offer.distance | number:2}} mi away)</div>
-      <div class = 'rest-offer'>Offer: {{offer.replies}}</div>
-      <div class = 'rest-offer'>Expire<span am-time-ago="offer.expirationDateTime"></span></div>
-      <ion-option-button class="button-assertive" ng-click="reject(offer.businessId)">
-        Decline
-      </ion-option-button>
-      <ion-option-button class="button-balanced" ng-click="accept(offer.businessId)">
-        Accept
-      </ion-option-button>
-    </ion-item>
-  </ion-list> -->
 
   </ion-content>
 </ion-view>

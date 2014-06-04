@@ -264,6 +264,35 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
+.factory('checkAuthentication', function($http, localStorageService, ServerUrls){
+  var check = function(type){
+    var path = '';
+    var data = {};
+    if (type === 'user'){
+      path = '/validate/';
+      data = {
+        accessToken: localStorageService.get('token'),
+        userId: localStorageService.get('userId')
+      };
+    } else{
+      path = '/business/validate/';
+      data = {
+        accessToken: localStorageService.get('token'),
+        businessId: localStorageService.get('restauarantId')
+      };
+    }
+
+    return $http({
+        method: POST,
+        url: ServerUrls + path,
+        data: data
+      });
+  }
+  return{
+    check:check
+  }
+})
+
 .factory('LoginRequest', function($http, $state, $stateParams, $window, Google, localStorageService, ServerUrls, $ionicLoading) {
   // Might use a resource here that returns a JSON array
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +

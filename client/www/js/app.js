@@ -8,7 +8,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'angularMoment'])
 
-.run(function($ionicPlatform, $state, localStorageService, PushNotification) {
+.run(function($ionicPlatform, $state, checkAuthentication, localStorageService, PushNotification) {
 // .run(function($ionicPlatform) {
 
   $ionicPlatform.ready(function() {
@@ -38,13 +38,23 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       $state.transitionTo('login.user');
     }else{
       if (localStorageService.get('user') === 'true'){
-        $state.transitionTo('user.new');
+        checkAuthentication.check('user')
+        .success(function(data, status){        
+          $state.transitionTo('user.new');
+        })
+        .error(function(data, status){
+          $state.transitionTo('login.user');
+        })
       }else{
-        $state.transitionTo('rest.requests');
+        checkAuthentication.check('user')
+        .success(function(data, status){        
+          $state.transitionTo('rest.requests');
+        })
+        .error(function(data, status){
+          $state.transitionTo('login.user');
+        })
       }
     }
-
-
 
     console.log('before listener');
     // var onDeviceReady = PushNotification.onDeviceReady;

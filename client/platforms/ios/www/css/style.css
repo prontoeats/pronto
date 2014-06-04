@@ -46,6 +46,12 @@
   text-align: center;
 }
 
+.center{
+  padding: 5px;
+  border: none;
+  text-align: center;
+}
+
 .rating {
   height: 14px;
   width: 82px;

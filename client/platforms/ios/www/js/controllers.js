@@ -2,7 +2,6 @@
 angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------------Login Controllers---------------
-
 .controller('LoginUserCtrl', function($scope, LoginRequest) {
   $scope.login = LoginRequest.login;
 })
@@ -139,10 +138,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $interval, CalculateStars, UserActiveRequest) {
   console.log('active state');
+  $scope.hideRequest = false;
   $scope.updateData = function () {
     UserActiveRequest.all()
       .success(function(data, status){
         console.log('got active requests back', data);
+        if (data === ''){
+          $scope.hideRequest = true;
+        }
         $scope.response = data;
         $scope.offers = data.results;
 
@@ -211,6 +214,9 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   // }
   $scope.logout = function(){
     localStorageService.clearAll()
+    localStorageService.remove('token');
+    localStorageService.remove('userId');
+    localStorageService.remove('user');
     $state.go('login.user');
   }
 })
@@ -278,6 +284,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     .success(function(data,status){
       console.log('got existing offer back');
       $scope.existingOffers = data;
+      console.log ('existing offer: ', data);
     })
     .error(function(data, status){
       console.log('existing offer error');
@@ -322,6 +329,9 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('RestSettingsCtrl', function($scope, $state, localStorageService) {
   $scope.logout = function(){
     localStorageService.clearAll();
+    localStorageService.remove('token');
+    localStorageService.remove('restaurantId');
+    localStorageService.remove('user');
     $state.go('login.user');
   }
 });

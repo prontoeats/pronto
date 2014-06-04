@@ -138,10 +138,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $interval, CalculateStars, UserActiveRequest) {
   console.log('active state');
+  $scope.hideRequest = false;
   $scope.updateData = function () {
     UserActiveRequest.all()
       .success(function(data, status){
         console.log('got active requests back', data);
+        if (data === ''){
+          $scope.hideRequest = true;
+        }
         $scope.response = data;
         $scope.offers = data.results;
 
