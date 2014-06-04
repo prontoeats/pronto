@@ -64,14 +64,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 // })
 
 // .controller('LoginRestCtrl', function($scope, Google, $window, $document, localStorageService, $state, $http, ServerUrls, $ionicLoading) {
-  
+
 //   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
 //     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
 //   var loginWindow;
 //   $scope.login = function () {
 //     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
-    
+
 //     loginWindow.addEventListener('loadstart', function(e) {
 //       var url = e.url;
 //       var code = /\?code=(.+)$/.exec(url);
@@ -399,6 +399,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     .success(function(data,status){
       console.log('got existing offer back');
       $scope.existingOffers = data;
+      console.log ('existing offer: ', data);
     })
     .error(function(data, status){
       console.log('existing offer error');
