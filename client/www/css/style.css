@@ -19,21 +19,43 @@
   font-size: 10px;
 }
 
-.rest-name{
-  font-size: 16px;
+.request-summary-title {
+  font-size: 15px;
   font-weight: bold;
-  font-family:Arial,Helvetica,sans-serif;
+  line-height: 1.3em;
 }
 
-.rest-address{
+.request-summary-detail {
   font-size: 12px;
-  font-style: italic;
+  line-height: 1.3em;
+}
+
+.rest-details {
+  color: black;
+  line-height: 1.4em;
+  font-size: 12px;
   font-family:Arial,Helvetica,sans-serif;
+  vertical-align: middle;
+}
+
+.rest-name{
+  line-height: 1.5em;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.rest-reviews {
+  padding-left: 10px;
+}
+
+.rest-expire{
+  font-weight: 500;
+  color: rgb(84,84,84);
 }
 
 .rest-offer{
-  font-size: 14px;
-  font-family:Arial,Helvetica,sans-serif;
+  /*font-size: 14px;*/
+  font-weight: bold;
 }
 
 .icon-custom{
@@ -46,16 +68,10 @@
   text-align: center;
 }
 
-.center{
-  padding: 5px;
-  border: none;
-  text-align: center;
-}
-
 .rating {
   height: 14px;
   width: 82px;
-  float: right;
+  float: left;
   background-image: url('../img/stars_map.png');
 }
 
@@ -97,4 +113,26 @@
 
 .stars_5 {
     background-position: -3px -165px;
+}
+
+.item-body {
+  padding: 5px 10px 5px 10px;
+}
+
+.yelp-icon {
+  width: 25px;
+  height: auto;
+  vertical-align: middle;
+}
+
+a.tab-item{
+  vertical-align: middle;
+}
+
+.tab-item{
+  font-weight: 500;
+}
+
+.card {
+  margin: 15px 10px;
 }

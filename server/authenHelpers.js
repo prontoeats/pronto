@@ -106,6 +106,6 @@ exports.registerPushToken = function (req, res){
     res.send(201);
   })
   .catch(function(error){
-    res.send(404);
+    res.send(404, 'bad registerPushToken');
   })
 }

@@ -173,7 +173,6 @@ exports.sendRequestInfo = function(req, res) {
     null,
     {limit:1,sort: {createdAt:-1}})
   .then(function(data){
-    data = data || [{}];
     res.send(200, data[0]);
   })
 };

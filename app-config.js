@@ -8,7 +8,7 @@ var app = express();
 
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,POST');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 }
@@ -39,7 +39,7 @@ app.post('/business/requests/accept', authen.checkToken, busHandler.acceptReques
 app.post('/business/requests/decline', authen.checkToken, busHandler.declineRequests);
 
 app.all('*', function (req, res) {
-  res.send(404);
+  res.send(404, 'bad route');
 });
 
 module.exports = app;
