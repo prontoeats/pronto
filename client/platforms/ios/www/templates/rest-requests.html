@@ -8,7 +8,7 @@
       refreshing-icon="ion-loading-c">
     </ion-refresher>
     <ion-list can-swipe  = 'true'>
-      <ion-item ng-repeat="request in requests | filter: {requestStatus: 'Active'} | orderBy:'updatedAt'" type="item-text-wrap">
+      <ion-item ng-repeat="request in requests | orderBy:'updatedAt'" type="item-text-wrap">
       <div class='col'>
         <!-- <span>ID: {{request.requestId}}</span> -->
         <div>Party of {{request.groupSize}} at

@@ -4,8 +4,8 @@ angular.module('starter.services', ['LocalStorageModule'])
   return {
     // url: 'http://10.8.32.232:3000'
     // url: 'http://localhost:3000'
-    url: 'http://10.8.28.241:3000'
-    // url: 'http://prontoeats.azurewebsites.net'
+    // url: 'http://10.8.28.241:3000'
+    url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
@@ -283,7 +283,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
 
     $state.transitionTo('login.transition');
-    loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
+    loginWindow = window.open(url, '_blank', 'location=no,toolbar=no');
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;
       var code = /\?code=(.+)$/.exec(url);
@@ -522,5 +522,36 @@ angular.module('starter.services', ['LocalStorageModule'])
 
   return {
     all: all
+  };
+})
+
+.factory('CalculateStars', function() {
+
+  var calculateStars = function(value){
+    if(value < 1){
+      return 'rating stars_0';
+    }else if (value <1.5){
+      return 'rating stars_1';
+    }else if (value <2){
+      return 'rating stars_1_half';
+    }else if(value<2.5){
+      return 'rating stars_2';
+    }else if(value<3){
+      return 'rating stars_2_half';
+    }else if (value <3.5){
+      return 'rating stars_3';
+    }else if(value<4){
+      return 'rating stars_3_half';
+    }else if(value<4.5){
+      return 'rating stars_4';
+    }else if(value<5){
+      return 'rating stars_4_half';
+    }else{
+      return 'rating stars_5';
+    }
+  }
+
+  return {
+    calculateStars: calculateStars
   };
 })

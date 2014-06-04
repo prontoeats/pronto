@@ -1,6 +1,6 @@
 <ion-view title="Pronto">
   <ion-content class="has-header padding">
-    <div>From</div>
+    <div>Find near</div>
     <div>
       <label class="item item-input">
         <i class="icon ion-ios7-location"></i>
@@ -8,7 +8,7 @@
       </label>
     </div>
     <br/>
-    <div>Distance (Miles)</div>
+    <div>Search within (miles)</div>
     <div class="button-bar"> 
       <a class="button" ng-click='setDistance(0.5); tabA=1' ng-class='{"button-positive":tabA===1}'>0.5</a>
       <a class="button" ng-click='setDistance(1); tabA=2' ng-class='{"button-positive":tabA===2}'>1</a>
@@ -16,7 +16,7 @@
       <a class="button" ng-click='setDistance(20); tabA=4'ng-class='{"button-positive":tabA===4}'>20</a>
     </div>
     <br/>
-    <div>Time (Mins)</div>
+    <div>Eat in (mins)</div>
     <div class="button-bar">
       <a class="button" ng-click='setMins(15); tabB=1' ng-class='{"button-positive":tabB===1}'>15</a>
       <a class="button" ng-click='setMins(30); tabB=2' ng-class='{"button-positive":tabB===2}'>30</a>
@@ -32,7 +32,7 @@
     </div>
 
   <div class="row">
-      <button class="button button-positive col col-50 col-offset-25" ng-click='sendRequest()'>Submit</button>
+      <button class="button button-positive col col-50 col-offset-25" ng-click='sendRequest()'>Find Restaurants</button>
   </div>
   </ion-content>
 </ion-view>

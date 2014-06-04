@@ -28,13 +28,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     // localStorageService.set('user', 'false');
     // $state.transitionTo('rest.requests');
 
-    // localStorageService.set('token', 'ya29.KQCA_F3XfDcaURoAAADa9zaMesu2janbVejDoOEYJ8PXwQ2TxhosBW4313iuFA');
+    // localStorageService.set('token', 'ya29.KgA1nP12WentMRoAAADuyXnLFsuyOO-0qMfmp9mVM3hWo2KL-aCBXFWlwtP-2g');
     // localStorageService.set('userId', '538bea45c4dfa1902bb66e70');
     // localStorageService.set('user', 'true');
     // $state.transitionTo('user.new');
 
     var token = localStorageService.get('token');
-
     if(!token) {
       $state.transitionTo('login.user');
     }else{
@@ -166,16 +165,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         'user-settings': {
           templateUrl: 'templates/user-settings.html',
           controller: 'SettingsCtrl'
-        }
-      }
-    })
-
-    .state('user.friend-detail', {
-      url: '/friend/:friendId',
-      views: {
-        'user-friends': {
-          templateUrl: 'templates/friend-detail.html',
-          controller: 'FriendDetailCtrl'
         }
       }
     })
