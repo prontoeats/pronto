@@ -4,8 +4,8 @@ angular.module('starter.services', ['LocalStorageModule'])
   return {
     // url: 'http://10.8.32.232:3000'
     // url: 'http://localhost:3000'
-    url: 'http://10.8.28.241:3000'
-    // url: 'http://prontoeats.azurewebsites.net'
+    // url: 'http://10.8.28.241:3000'
+    url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
