@@ -16,6 +16,7 @@ var allowCrossDomain = function(req, res, next) {
 app.configure(function() {
   app.use(express.bodyParser());
   app.use(allowCrossDomain);
+  app.use('/', express.static(__dirname + '/public'));
 });
 
 // public routes
