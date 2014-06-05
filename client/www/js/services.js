@@ -4,8 +4,8 @@ angular.module('starter.services', ['LocalStorageModule'])
   return {
     // url: 'http://10.8.32.232:3000'
     // url: 'http://localhost:3000'
-    url: 'http://10.8.28.241:3000'
-    // url: 'http://prontoeats.azurewebsites.net'
+    // url: 'http://10.8.28.241:3000'
+    url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
@@ -312,7 +312,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
 
     $state.transitionTo('login.transition');
-    loginWindow = window.open(url, '_blank', 'location=no,toolbar=no');
+    loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;
       var code = /\?code=(.+)$/.exec(url);
