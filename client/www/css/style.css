@@ -8,16 +8,42 @@
 .login {
   border: none;
   text-align: center;
+  font-size: 40px;
+  font-style: italic;
+  color: #FF0000;
+  background-color: #EBEBEB;
+}
+
+.login-page {
+  background-color: #EBEBEB;
+}
+
+.hr-logo{
+  height:auto;
+  width: 26px;
 }
 
 .logo {
   margin-top: 100px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
-.login img {
+.business-signin {
+  font-size: 15px;
+  color: grey;
+  margin-top: 12px;
+}
+.google-signin {
+  margin-top:20px;
   width: 200px;
   height: auto;
+}
+
+.fork-knife-logo {
+  height:auto;
+  width: 100px;
+  margin-bottom: 30px;
+  margin-top: 60px;
 }
 
 .user-new {
