@@ -28,8 +28,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     // localStorageService.set('user', 'false');
     // $state.transitionTo('rest.requests');
 
-    // localStorageService.set('token', 'ya29.KgA1nP12WentMRoAAADuyXnLFsuyOO-0qMfmp9mVM3hWo2KL-aCBXFWlwtP-2g');
-    // localStorageService.set('userId', '538bea45c4dfa1902bb66e70');
+    // localStorageService.set('token', 'ya29.KgBCUm3D8PPCsR8AAACrFYuivyt6n_5fUiCHwwBPUcPICAKAdHGeE6ScUuQ9qA');
+    // localStorageService.set('userId', '538e0c1e5d432438de062825');
     // localStorageService.set('user', 'true');
     // $state.transitionTo('user.new');
 
@@ -39,19 +39,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }else{
       if (localStorageService.get('user') === 'true'){
         checkAuthentication.check('user')
-        .success(function(data, status){        
+        .success(function(data, status){
           $state.transitionTo('user.new');
         })
         .error(function(data, status){
           $state.transitionTo('login.user');
         })
       }else{
-        checkAuthentication.check('user')
-        .success(function(data, status){        
+        checkAuthentication.check('restaurant')
+        .success(function(data, status){
           $state.transitionTo('rest.requests');
         })
         .error(function(data, status){
-          $state.transitionTo('login.user');
+          $state.transitionTo('login.restaurant');
         })
       }
     }
