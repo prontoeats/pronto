@@ -89,6 +89,12 @@
   font-weight: bold;
 }
 
+.instruct{
+  font-size: 10px;
+  text-align: center;
+  color: #ef4e3a;
+}
+
 .icon-custom{
   color : #ef4e3a;
 }
