@@ -269,22 +269,22 @@ angular.module('starter.services', ['LocalStorageModule'])
     var path = '';
     var data = {};
     if (type === 'user'){
-      path = '/validate/';
+      path = '/validate';
       data = {
         accessToken: localStorageService.get('token'),
         userId: localStorageService.get('userId')
       };
     } else{
-      path = '/business/validate/';
+      path = '/business/validate';
       data = {
         accessToken: localStorageService.get('token'),
-        businessId: localStorageService.get('restauarantId')
+        businessId: localStorageService.get('restaurantId')
       };
     }
 
     return $http({
-        method: POST,
-        url: ServerUrls + path,
+        method: 'POST',
+        url: ServerUrls.url + path,
         data: data
       });
   }
