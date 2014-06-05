@@ -1,12 +1,12 @@
-<ion-view title="Pronto">
+<ion-view title="Offers">
   <ion-content class="has-header has-padding">
     <ion-list>
         <div class="center" ng-hide = "hideRequest">
-          <div class = 'rest-name'>Request Summary</div>
-          <div class = 'rest-address'>
+          <div class = 'request-summary-title'>Request Summary</div>
+          <div class = 'request-summary-detail'>
             {{response.radius}} miles from {{response.address}}
           </div>
-          <div class = 'rest-address'>
+          <div class = 'request-summary-detail'>
             Group of {{response.groupSize}} in {{response.mins}} mins
           </div>
         </div>
@@ -15,7 +15,7 @@
         </div>
     </ion-list>
   <div class="item item-divider rest-name">
-    New Offers
+    {{ filterOn === 'Offered' && 'New Offers' || 'Accepted Offer'}}
   </div>
   <ion-refresher
     pulling-text="Pull to refresh..."
@@ -24,23 +24,24 @@
     refreshing-icon="ion-loading-c">
   </ion-refresher>
 
-  <div class="list card" ng-repeat="offer in offers | filter: {status: filterOn} | orderBy:'updatedAt'" ng-hide = "filterOn === 'Accepted'">
-    <div class="item item-body">
+  <div class="list card" ng-repeat="offer in offers | filter: {status: filterOn} | orderBy:'updatedAt'" ng-hide = "filterOn === 'Accepted' || isExpired(offer.expirationDateTime)">
+    <div class="item item-body rest-details">
       <div class = 'rest-name'>{{offer.businessName}} </div>
-      <span ng-class= "calculateStars(offer.yelpStars)"></span>
-      <div >reviews: {{offer.yelpReviews}}</div>
+      <div ng-show="{{offer.yelpReviews}} > 0">
+        <span ng-class= "calculateStars(offer.yelpStars)"></span>
+        <span class="rest-reviews">{{offer.yelpReviews}} Reviews</span>
+      </div>
       <div class = 'rest-address'>{{offer.address}} ({{offer.distance | number:2}} mi away)</div>
+      <div class="rest-expire">Expire<span am-time-ago="offer.expirationDateTime"></span></div>
       <div class = 'rest-offer'>Offer: {{offer.replies}}</div>
-      <div class = 'rest-offer'>Expire<span am-time-ago="offer.expirationDateTime"></span></div>
     </div>
     <div class="item tabs tabs-secondary tabs-icon-left">
       <a class="tab-item" ng-click="accept(offer.businessId)">
         <i class="icon ion-ios7-checkmark-outline"></i>
         Accept
       </a>
-      <a class="tab-item" ng-click="go(offer.yelpUrl)">
-        <!-- <i class="icon ion-social-hackernews-outline"></i> -->
-        <img src="img/yelp-icon.png">
+      <a class="tab-item" ng-click="go(offer.yelpUrl)" ng-show="{{offer.yelpReviews}} > 0">
+        <img class="yelp-icon" src="img/yelp-icon.png">
         Yelp
       </a>
       <a class="tab-item" ng-click="reject(offer.businessId)">
@@ -50,17 +51,17 @@
     </div>
   </div>
 
-
   <div class="list card" ng-repeat="offer in offers | filter: {status: filterOn} | orderBy:'updatedAt'" ng-hide = "filterOn === 'Offered'">
-    <div class="item item-body">
-      <div class = 'rest-name'>Accepted</div>
+    <div class="item item-body rest-details">
       <div class = 'rest-name'>{{offer.businessName}} </div>
-      <span ng-class= "calculateStars(offer.yelpStars)"></span>
-      <div >reviews: {{offer.yelpReviews}}</div>
+      <div ng-show="{{offer.yelpReviews}} > 0">
+        <span ng-class= "calculateStars(offer.yelpStars)"></span>
+        <span class="rest-reviews">{{offer.yelpReviews}} Reviews</span>
+      </div>
       <div class = 'rest-address'>{{offer.address}} ({{offer.distance | number:2}} mi away)</div>
       <div class = 'rest-offer'>Offer: {{offer.replies}}</div>
     </div>
-    <div class="item tabs tabs-secondary tabs-icon-left">
+    <div class="item tabs tabs-secondary tabs-icon-left" ng-show="{{offer.yelpReviews}} > 0">
       <a class="tab-item" ng-click="go(offer.yelpUrl)">
         <i class="icon ion-social-hackernews-outline"></i>
         Yelp

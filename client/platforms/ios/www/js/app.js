@@ -23,16 +23,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     }
     console.log('in ,run.module');
 
-    // localStorageService.set('token', 'ya29.JAB0fsOcppJjux8AAACm0dqtoVFAHSWLBxJRNr9ZiGdTbAcDH3KdOxoPphWsPA');
-    // localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
-    // localStorageService.set('user', 'false');
-    // $state.transitionTo('rest.requests');
-
-    // localStorageService.set('token', 'ya29.KgA1nP12WentMRoAAADuyXnLFsuyOO-0qMfmp9mVM3hWo2KL-aCBXFWlwtP-2g');
-    // localStorageService.set('userId', '538bea45c4dfa1902bb66e70');
-    // localStorageService.set('user', 'true');
-    // $state.transitionTo('user.new');
-
     var token = localStorageService.get('token');
     if(!token) {
       $state.transitionTo('login.user');
