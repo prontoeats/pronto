@@ -7,16 +7,19 @@
       refreshing-text="Refreshing!"
       refreshing-icon="ion-loading-c">
     </ion-refresher>
+    <div class="item item-divider instruct">
+      &larr; &larr; Swipe left to accept or decline &larr; &larr;
+    </div>
     <ion-list can-swipe  = 'true'>
       <ion-item ng-repeat="request in requests | orderBy:'updatedAt'" type="item-text-wrap">
       <div class='col'>
         <!-- <span>ID: {{request.requestId}}</span> -->
         <div>Party of {{request.groupSize}} at
         {{request.targetDateTime | date:'shortTime'}}</div>
-        <ion-option-button class="button-assertive" ng-click="delete($index)">
+        <ion-option-button class="button-stable" ng-click="delete($index)">
           Decline
         </ion-option-button>
-        <ion-option-button class="button-balanced" ng-click="go(request)">
+        <ion-option-button class="button-assertive" ng-click="go(request)">
           Offer
         </ion-option-button>
       </div>
