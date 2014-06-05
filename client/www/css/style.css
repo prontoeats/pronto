@@ -6,13 +6,18 @@
 }
 
 .login {
-  background-color: transparent;
   border: none;
+  text-align: center;
+}
+
+.logo {
+  margin-top: 100px;
+  margin-bottom: 20px;
 }
 
 .login img {
-    width: 100%;
-    height: auto;
+  width: 200px;
+  height: auto;
 }
 
 .user-new {
