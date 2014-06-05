@@ -26,7 +26,7 @@ app.post('/signup/business', busHandler.signup);
 // private user routes
 app.get('/requests', authen.checkToken, userHandler.sendRequestInfo);
 app.post('/token', authen.registerPushToken);
-app.post('validate', authen.checkToken, authen.isValidated);
+app.post('/validate', authen.checkToken, authen.isValidated);
 app.post('/request', authen.checkToken, userHandler.request);
 app.post('/requests/accept', authen.checkToken, userHandler.acceptOffer);
 app.post('/requests/reject', authen.checkToken, userHandler.rejectOffer);
