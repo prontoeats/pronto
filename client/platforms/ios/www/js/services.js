@@ -312,7 +312,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
 
     $state.transitionTo('login.transition');
-    loginWindow = window.open(url, '_blank', 'location=no,toolbar=no');
+    loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;
       var code = /\?code=(.+)$/.exec(url);

@@ -62,10 +62,10 @@
   color : #ef4e3a;
 }
 
-.button-select{
-  color: white;
-  color
-  background-color: #A0A0A0;
+.center{
+  padding: 5px;
+  border: none;
+  text-align: center;
 }
 
 .rating {
