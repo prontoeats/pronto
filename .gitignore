@@ -32,3 +32,5 @@ node_modules
 azure.err
 iisnode.yml
 bower_components
+client/platforms
+client/plugins

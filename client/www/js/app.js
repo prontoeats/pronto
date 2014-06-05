@@ -9,7 +9,6 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'angularMoment'])
 
 .run(function($ionicPlatform, $state, checkAuthentication, localStorageService, PushNotification) {
-// .run(function($ionicPlatform) {
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -17,50 +16,50 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
+    
     if(window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    console.log('in ,run.module');
-
-    // localStorageService.set('token', 'ya29.JAB0fsOcppJjux8AAACm0dqtoVFAHSWLBxJRNr9ZiGdTbAcDH3KdOxoPphWsPA');
-    // localStorageService.set('restaurantId', '538641d7e7ada47bb6bb2f9b');
-    // localStorageService.set('user', 'false');
-    // $state.transitionTo('rest.requests');
-
-    // localStorageService.set('token', 'ya29.KgBCUm3D8PPCsR8AAACrFYuivyt6n_5fUiCHwwBPUcPICAKAdHGeE6ScUuQ9qA');
-    // localStorageService.set('userId', '538e0c1e5d432438de062825');
-    // localStorageService.set('user', 'true');
-    // $state.transitionTo('user.new');
-
-    var token = localStorageService.get('token');
-    if(!token) {
-      $state.transitionTo('login.user');
-    }else{
-      if (localStorageService.get('user') === 'true'){
-        checkAuthentication.check('user')
-        .success(function(data, status){
-          $state.transitionTo('user.new');
-        })
-        .error(function(data, status){
-          $state.transitionTo('login.user');
-        })
-      }else{
-        checkAuthentication.check('restaurant')
-        .success(function(data, status){
-          $state.transitionTo('rest.requests');
-        })
-        .error(function(data, status){
-          $state.transitionTo('login.restaurant');
-        })
-      }
-    }
-
-    console.log('before listener');
-    // var onDeviceReady = PushNotification.onDeviceReady;
-    // document.addEventListener('deviceready', onDeviceReady, true);
-
   });
+
+  var token = localStorageService.get('token');
+
+  console.log('after token get :',token);
+  if(!token) {
+    console.log('got into if loop - no token exists');
+    $state.transitionTo('login.user');
+  }else{
+    console.log('got into else loop - token exists');
+
+    if (localStorageService.get('user') === 'true'){
+      console.log('got into else loop - user is true');
+
+      checkAuthentication.check('user')
+      .success(function(data, status){
+        console.log('got into user else loop - in success callback');
+
+        $state.transitionTo('user.new');
+      })
+      .error(function(data, status){
+        console.log('got into user else loop - in fail callback');
+
+        $state.transitionTo('login.user');
+      })
+    }else{
+
+      console.log('got into rest else loop')
+      checkAuthentication.check('restaurant')
+      .success(function(data, status){
+        console.log('got into restaurant else loop - in success callback');
+        $state.transitionTo('rest.requests');
+      })
+      .error(function(data, status){
+        console.log('got into restaurant else loop - fail success callback');
+        $state.transitionTo('login.restaurant');
+      })
+    }
+  }
 })
 
 .constant('Google', {
