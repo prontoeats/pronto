@@ -657,6 +657,7 @@ a:after {
   width: 140px;
   padding-left: 5px;
   margin-bottom: 20px;
+  opacity: 0.3;
 }
 
 .github {
