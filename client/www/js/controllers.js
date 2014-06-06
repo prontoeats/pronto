@@ -234,7 +234,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   //   var ref = window.open('http://www.yelp.com/biz/kusina-ni-tess-san-francisco', '_blank');
   // }
   $scope.logout = function(){
-    localStorageService.clearAll()
+    //localStorageService.clearAll()
     localStorageService.remove('token');
     localStorageService.remove('userId');
     localStorageService.remove('user');
@@ -349,7 +349,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('RestSettingsCtrl', function($scope, $state, localStorageService) {
   $scope.logout = function(){
-    localStorageService.clearAll();
+    //localStorageService.clearAll();
     localStorageService.remove('token');
     localStorageService.remove('restaurantId');
     localStorageService.remove('user');
