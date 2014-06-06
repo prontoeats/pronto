@@ -21,45 +21,45 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    var token = localStorageService.get('token');
+
+    console.log('after token get :',token);
+    if(!token) {
+      console.log('got into if loop - no token exists');
+      $state.transitionTo('login.user');
+    }else{
+      console.log('got into else loop - token exists');
+
+      if (localStorageService.get('user') === 'true'){
+        console.log('got into else loop - user is true');
+
+        checkAuthentication.check('user')
+        .success(function(data, status){
+          console.log('got into user else loop - in success callback');
+
+          $state.transitionTo('user.new');
+        })
+        .error(function(data, status){
+          console.log('got into user else loop - in fail callback');
+
+          $state.transitionTo('login.user');
+        })
+      }else{
+
+        console.log('got into rest else loop')
+        checkAuthentication.check('restaurant')
+        .success(function(data, status){
+          console.log('got into restaurant else loop - in success callback');
+          $state.transitionTo('rest.requests');
+        })
+        .error(function(data, status){
+          console.log('got into restaurant else loop - fail success callback');
+          $state.transitionTo('login.restaurant');
+        })
+      }
+    }
   });
 
-  var token = localStorageService.get('token');
-
-  console.log('after token get :',token);
-  if(!token) {
-    console.log('got into if loop - no token exists');
-    $state.transitionTo('login.user');
-  }else{
-    console.log('got into else loop - token exists');
-
-    if (localStorageService.get('user') === 'true'){
-      console.log('got into else loop - user is true');
-
-      checkAuthentication.check('user')
-      .success(function(data, status){
-        console.log('got into user else loop - in success callback');
-
-        $state.transitionTo('user.new');
-      })
-      .error(function(data, status){
-        console.log('got into user else loop - in fail callback');
-
-        $state.transitionTo('login.user');
-      })
-    }else{
-
-      console.log('got into rest else loop')
-      checkAuthentication.check('restaurant')
-      .success(function(data, status){
-        console.log('got into restaurant else loop - in success callback');
-        $state.transitionTo('rest.requests');
-      })
-      .error(function(data, status){
-        console.log('got into restaurant else loop - fail success callback');
-        $state.transitionTo('login.restaurant');
-      })
-    }
-  }
 })
 
 .constant('Google', {
@@ -154,6 +154,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         'user-active': {
           templateUrl: 'templates/user-active.html',
           controller: 'ActiveCtrl'
+        }
+      },
+      resolve: {
+        activeOffers: function(serverUrls, $http, localStorageService){
+          var userId = localStorageService.get('userId');
+          var accessToken = localStorageService.get('token');
+          var url = ServerUrls.url+'/requests?userId='+userId+'&accessToken='+accessToken;
+          return $http({
+            method: 'GET',
+            url: url
+          });
         }
       }
     })
@@ -256,7 +267,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login/user');
+  $urlRouterProvider.otherwise('/login/transition');
 
 });
 
