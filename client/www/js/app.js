@@ -26,7 +26,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     console.log('after token get :',token);
     if(!token) {
       console.log('got into if loop - no token exists');
-      $state.transitionTo('login.user');
+      $state.go('login.user');
     }else{
       console.log('got into else loop - token exists');
 
@@ -37,12 +37,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         .success(function(data, status){
           console.log('got into user else loop - in success callback');
 
-          $state.transitionTo('user.new');
+          $state.go('user.new');
         })
         .error(function(data, status){
           console.log('got into user else loop - in fail callback');
 
-          $state.transitionTo('login.user');
+          $state.go('login.user');
         })
       }else{
 
@@ -50,16 +50,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         checkAuthentication.check('restaurant')
         .success(function(data, status){
           console.log('got into restaurant else loop - in success callback');
-          $state.transitionTo('rest.requests');
+          $state.go('rest.requests');
         })
         .error(function(data, status){
           console.log('got into restaurant else loop - fail success callback');
-          $state.transitionTo('login.restaurant');
+          $state.go('login.restaurant');
         })
       }
     }
   });
-
 })
 
 .constant('Google', {
@@ -155,17 +154,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
           templateUrl: 'templates/user-active.html',
           controller: 'ActiveCtrl'
         }
-      },
-      resolve: {
-        activeOffers: function(serverUrls, $http, localStorageService){
-          var userId = localStorageService.get('userId');
-          var accessToken = localStorageService.get('token');
-          var url = ServerUrls.url+'/requests?userId='+userId+'&accessToken='+accessToken;
-          return $http({
-            method: 'GET',
-            url: url
-          });
-        }
       }
     })
 
@@ -225,16 +213,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         }
       }
     })
-
-    // .state('rest.existingOffer-detail', {
-    //   url: '/existingOffer/:existingOfferId',
-    //   views: {
-    //     'rest-existingOffers': {
-    //       templateUrl: 'templates/rest-existingOffer-detail.html',
-    //       controller: 'ExistingOfferDetailCtrl'
-    //     }
-    //   }
-    // })
 
     .state('rest.acceptedOffers', {
       url: '/acceptedOffers',
