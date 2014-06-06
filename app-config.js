@@ -1,45 +1,48 @@
-
 var express = require('express');
-var partials = require('express-partials');
+var dbConnect = require('./db/db-config.js');
 var userHandler = require('./server/userHandler.js');
 var busHandler = require('./server/busHandler.js');
-var dbConnect = require('./db/db-config.js');
-var app = express();
 var authen = require('./server/authenHelpers.js');
-var twiml = require('./server/twiml.js')
 
+var app = express();
 
-// view engine setup
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+}
+
 app.configure(function() {
-  // app.set('views', __dirname + '/views');
-  // app.set('view engine', 'ejs');
-  // app.use(partials());
   app.use(express.bodyParser());
-  app.use('/bower_components', express.static(__dirname + '/bower_components'));
+  app.use(allowCrossDomain);
   app.use(express.static(__dirname + '/public'));
-  app.use(express.cookieParser('shhhh, very secret'));
-  app.use(express.session());
 });
 
-//Public user routes
-app.get('/', userHandler.sendIndex);
-app.post('/login', userHandler.login);
-app.post('/signup', userHandler.signup);
-app.get('/logout', authen.logout);
-app.get('/about', userHandler.sendAbout);
+// public routes
+app.post('/login/user', userHandler.login);
+app.post('/login/business', busHandler.login);
+app.post('/signup/business', busHandler.signup);
 
-//Public business routes
-app.get('/business', busHandler.sendBusIndex);
-app.post('/business/login', busHandler.login);
-app.post('/business/signup', busHandler.signup);
+// private user routes
+app.get('/requests', authen.checkToken, userHandler.sendRequestInfo);
+app.post('/token', authen.registerPushToken);
+app.post('/validate', authen.checkToken, authen.isValidated);
+app.post('/request', authen.checkToken, userHandler.request);
+app.post('/requests/accept', authen.checkToken, userHandler.acceptOffer);
+app.post('/requests/reject', authen.checkToken, userHandler.rejectOffer);
 
-app.post('/twilio', twiml.processPost);
+// private business routes
+app.get('/business/requests', authen.checkToken, busHandler.showPending);
+app.get('/business/offered', authen.checkToken, busHandler.showOffered);
+app.get('/business/accepted', authen.checkToken, busHandler.showAccepted);
+app.post('/business/token', authen.registerPushToken);
+app.post('/business/validate', authen.checkToken, authen.isValidated);
+app.post('/business/requests/accept', authen.checkToken, busHandler.acceptRequests);
+app.post('/business/requests/decline', authen.checkToken, busHandler.declineRequests);
 
-//routes requiring authentication
-app.get('/requests', authen.userAuthenticate, userHandler.sendRequestInfo);
-app.post('/acceptOffer', authen.userAuthenticate, userHandler.acceptOffer);
-app.get('/dashboard', authen.userAuthenticate, userHandler.dashboard);
-app.post('/request', authen.userAuthenticate, userHandler.request);
-app.get('/business/dashboard', authen.busAuthenticate, busHandler.dashboard);
+app.all('*', function (req, res) {
+  res.send(404, 'bad route');
+});
 
 module.exports = app;

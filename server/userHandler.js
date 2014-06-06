@@ -1,213 +1,293 @@
-
+var url = require('url');
+var qs = require('querystring');
 var User = require('../db/user.js').User;
-var prom = require('./promisified.js');
-var authen = require('./authenHelpers.js');
 var mapApi = require('./mapsApiHelpers.js');
 var blue = require('bluebird');
 var Business = require('../db/business.js').Business;
 var misc = require('./miscHelpers.js');
-var twilio = require('./twilioApiHelpers.js');
 var UserRequest = require('../db/userRequest.js').UserRequest;
-var Counter = require('../db/counter.js').Counter;
-exports.sendIndex = function (req, res){
-  res.sendfile('./views/index.html');
-};
+var constants = require('./constants.js');
+var login = require('./loginHelpers.js');
+var mongoose = require('mongoose');
+var push = require('./pushHelpers.js');
 
-exports.sendAbout = function(req, res){
-  res.sendfile('./public/html/about.html');  
-}
 exports.sendAuthFail = function (res){
   res.send(404, 'failed authentication!');
 };
 
-exports.dashboard = function(req, res, next){
-  res.sendfile('./public/html/userDash.html');
-};
-
 exports.login = function(req, res){
 
-  //Find the account that matches the username
-  User.promFindOne({username: req.body.username})
-  .then(function(data){
+  var code = req.body.code;
+  var access_token;
+  var email;
+  var firstName;
+  var lastName;
 
-    //return a promise to continue the chain - promise will be resolved
-    //once bcrypt completes the comparison
-    return prom.bcryptCompare(req.body.password, data.password)
+  login.getGoogleToken(code)
+  .then( function (data) {
+    access_token = data;
+    return login.getUserInfo(access_token);
   })
-
-  //check the results of the comparison
-  .then(function(result){
-
-    //if the passwords match - direct to the user dashboard
-    if (result){
-      authen.userCreateSession(req);
-      res.redirect(302,'/dashboard');
-
-    //if the passwords don't match redirect
-    } else {
-      console.log('user password do not match')
-      exports.sendAuthFail(res);
-    }
+  .then( function (data) {
+    data = JSON.parse(data[1]);
+    email = data.emails[0]['value'];
+    firstName = data.name.givenName;
+    lastName = data.name.familyName;
+    return User.promFindOne({email: email});
   })
+  .then( function (data) {
+    if (data === null) {
 
-  //if the account does not already exist redirect
-  .catch(function(e){
-    console.log('user didnt find username');   
-    exports.sendAuthFail(res);
-  })
-};
-
-exports.signup = function(req, res){
-
-  console.log('got to user signup');
-  //check to see if user username exists in database
-  User.promFindOne({username: req.body.username})
-  .then(function(data){
-
-    //if the user username exists, redirect
-    if(data){
-      console.log('user username already exists')
-      exports.sendAuthFail(res);
-
-    //otherwise, save the user account into the database and redirect to user dashboard
-    } else {
-      new User(req.body).save(function(err){
-        if(err){
-          console.log('issue saving new user account');
-          exports.sendAuthFail(res);    
-        } else {
-          authen.userCreateSession(req);
-          res.redirect(302,'/dashboard');
+      new User({
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        accessToken: access_token
+      })
+      .save(function (err, data) {
+        if (err) {
+          console.log(err);
+          exports.sendAuthFail(res);
         }
+        res.send(201, {accessToken: data.accessToken, userId: data._id});
+      })
+    } else {
+
+      User.promFindOneAndUpdate(
+        {email: email},
+        {$set: {accessToken: access_token}},
+        {new: true}
+      ).then( function (data) {
+        res.send(201, {accessToken: data.accessToken, userId: data._id});
       });
     }
   })
-
-  //if there was an issue searching for the user, redirect
-  .catch(function(e){
-    console.log('signup fail: ', e);
-    exports.sendAuthFail(res);
+  .catch( function (data) {
+    console.log(data);
   });
 };
 
-exports.request = function(req,res){
+exports.request = function(req, res) {
 
-  //parse the request form data
-  var parsed = misc.parseRequestFormData(req.body);
-  var requestObj;
-  var numbers;
+  //APN tokens and GCM registration IDs to send push notifications to
+  //later in this function
+  var apn;
+  var gcm;
 
-  //get userId of requestor
-  User.promGetUserId(req.session.userUsername)
+  //Object that will be used to create a new User Request
+  var requestObj = req.body;
 
-  //update the parsed object info with the requestorId
-  .then(function(data){
-    parsed.requesterId = data._id; //NOTE: may have issues later since we saved the id as a string
+  //Convert requested minutes to time and save to requestObj
+  var dateTime = new Date();
+  dateTime.setMinutes(dateTime.getMinutes() + Number(requestObj.mins));
+  requestObj.targetDateTime = dateTime;
 
-    //start another promise to keep the chain going
-    return new blue(function(resolve, reject){
-      resolve(req.session.userUsername);
-    });
-  })
+  //Convert location information to latitude/longitude if needed
+  mapApi.convertUserRequestLocation(requestObj)
 
-  //get the next request counter number
-  .then(Counter.getRequestsCounter)
-
-  //update the parsed object info with the request counter
-  .then(function(data){
-    parsed.requestId = data.count;
-    requestObj = new UserRequest(parsed);
-
-    //promisifying the save function
-    requestObj.promSave = blue.promisify(requestObj.save);
-
-    return requestObj.promSave();
-  })
-
-  //create new promise to continue chain
+  //Look for userId in database to store push notification tokens/reg IDs
   .then(function(){
-    return new blue(function(resolve,reject){
-      resolve(parsed);
-    })
+    var userId = mongoose.Types.ObjectId(requestObj.userId);
+    return User.promFindOne({_id: userId});
   })
+  .then(function(data){
+    requestObj.pushNotification = data.pushNotification;
 
-  //get Long/Lat from google maps
-  .then(mapApi.getGeo)
-
-  //convert response to Long/Lat
-  .then(mapApi.parseGeoResult)
-
-  //add long/lat results to location parameter on obj and save
-  .then(function(result){
-    requestObj.location = result;
-
-    return requestObj.promSave();
-  })
-
-  //create new promise to continue chain
-  .then(function(){
-    return new blue (function(resolve, reject){
+    //create new promise to continue chain
+    return new blue (function (resolve, reject) {
       resolve([requestObj.location, requestObj.radius]);
     })
   })
 
-  //find businesses nearby the request location
+  //find businesses nearby the requested location
   .then(Business.promFindNearby)
 
   //parse and format the data
   .then(misc.parseNearbyData)
 
-  //store the data as a parameter on the request Obj and save
+  //store the query results data as a parameter on the request Obj and save
+  //store the apn/gcm numbers for pushing notifications later in the function
   .then(function(data){
-    requestObj.businesses = JSON.stringify(data[0]);
-    numbers = data[1];
-    return requestObj.promSave();
+
+    requestObj.results = data[0];
+    apn = data[1];
+    gcm = data[2];
+
+    request = new UserRequest(requestObj);
+
+    request.promSave = blue.promisify(request.save);
+    return request.promSave();
+  })
+  .then(function (data) {
+    var msDiff =
+      requestObj.targetDateTime.getTime() - new Date().getTime();
+
+    // if request is still outstanding (i.e., active) at targetDateTime
+    // convert status to "expired"
+    setTimeout(function () {
+      UserRequest.promFindOneAndUpdate(
+        {requestId: data[0].requestId, requestStatus: 'Active'},
+        {$set: {
+          'requestStatus': 'Expired',
+          'updatedAt': new Date()
+        }},
+        {new: true}
+      )
+    }, msDiff);
   })
 
-  //create new promise to continue chain
   .then(function(){
-    return new blue (function(resolve, reject){
-      resolve([numbers, requestObj]);
+
+    var pushBody = 'You have a new request!'
+    var payload = {state: 'rest.requests'};
+
+    if(apn.length){
+      push.sendApnMessage(apn, pushBody, payload);
+    }
+
+    if(gcm.length){
+      push.sendGcmMessage(gcm, pushBody, 'rest.requests');
+    }
+
+    res.send(201);
+  })
+
+  .catch(function(err){
+    var error = 'Error with user request submission: '+err;
+    res.send(400, error);
+    console.log(error);
+  })
+
+
+};
+
+exports.sendRequestInfo = function(req, res) {
+
+  var queryString = qs.parse(url.parse(req.url).query);
+
+  UserRequest.promFind(
+    {
+      userId: queryString.userId,
+      targetDateTime: {$gt: new Date() - (1000 * 60 * 60)}
+    },
+    null,
+    {limit:1,sort: {createdAt:-1}})
+  .then(function(data){
+    res.send(200, data[0]);
+  })
+};
+
+exports.acceptOffer = function(req, res) {
+
+  var businessId = mongoose.Types.ObjectId(req.body.businessId);
+
+  UserRequest.promFindOneAndUpdate(
+    {requestId: req.body.requestId, 'results.businessId': businessId},
+    {$set: {
+      'requestStatus': 'Accepted',
+      'results.$.status': 'Accepted',
+      'updatedAt': new Date(),
+      'results.$.updatedAt': new Date()
+    }},
+    {new: true}
+  )
+  .then(function (data) {
+    res.send(201);
+
+    // reject all other outstanding offers when accepting an offer
+    UserRequest.promFindOne({requestId: req.body.requestId})
+    .then(function(data){
+      var tempResults = data.results;
+       for (var i = 0; i < tempResults.length; i += 1) {
+         if (tempResults[i].status === 'Offered') {
+           tempResults[i].status = 'Rejected';
+           tempResults[i].updatedAt = new Date();
+         }
+       }
+       return UserRequest.promFindOneAndUpdate(
+         {requestId: req.body.requestId},
+         {$set: {
+           'results': tempResults
+         }},
+         {new: true}
+       );
     });
   })
+  .then(function(){
+    return UserRequest.promFindOne(
+      {
+        requestId: req.body.requestId,
+        'results.businessId': businessId
+      },
+      {'results.pushNotification':1, 'results.businessId':1});
+  })
+  .then(function(data){
 
-  //send text messages
-  .then(twilio.massTwilSend);
+    var results = data.results;
+    var pushNotification;
 
-  res.send(200); 
+    for (var i = 0; i<results.length; i++){
+      if(results[i].businessId+'' === businessId+''){
+        pushNotification = results[i].pushNotification;
+      }
+    }
+
+    if(pushNotification.apn.length){
+      push.sendApnMessage(
+        pushNotification.apn,
+        'Your offer has been accepted!', {state: 'rest.acceptedOffers'}
+      );
+    }
+
+    if(pushNotification.gcm.length){
+      push.sendGcmMessage(
+        pushNotification.gcm,
+        'Your offer has been accepted!', 'rest.acceptedOffers'
+      );
+    }
+
+  })
 };
 
-exports.sendRequestInfo = function(req,res){
+exports.rejectOffer = function(req, res) {
 
-  //get username from session info
-  var username = req.session.userUsername;
+  var businessId = mongoose.Types.ObjectId(req.body.businessId);
 
-  //get userID
-  User.promFindOne({username: username})
-  
-  //find records for that userId
-  .then(function(data){
-    return UserRequest.promFind({requesterId: data._id})
-  })
-
-  .then(function(data){
-
-    return new blue(function(resolve, reject){
-      resolve(misc.sendRequestInfoParser(data));
-    })
-  })
-  .then(function(data){
-    res.send(200, data);
+  UserRequest.promFindOneAndUpdate(
+    {requestId: req.body.requestId, 'results.businessId': businessId},
+    {$set: {
+      'results.$.status': 'Rejected',
+      'results.$.updatedAt': new Date()
+    }},
+    {new: true}
+  )
+  .then(function (data) {
+    res.send(201);
   })
 };
 
-exports.acceptOffer = function(req,res){
-  res.send(201);
+exports.cancelRequest = function(req, res) {
 
-  UserRequest.promFindOne({requestId: req.body.requestId})
-  .then(function(data){
-    var number = misc.acceptOfferProcessing(data.businesses, req.body.businessName);
+  UserRequest.promFindOneAndUpdate(
+    {requestId: req.body.requestId},
+    {$set: {
+      'requestStatus': 'Canceled',
+      'results.$.updatedAt': new Date()
+    }},
+    {new: true}
+  )
+  .then(function (data) {
+    res.send(201);
+  })
+};
 
-    twilio.sendConfirmation(number,data.requestId, data.groupSize, data.targetDateTime);
+exports.checkLastRequestStatus = function(req, res) {
+  UserRequest.promFindOne(
+    {userId: data._id},
+    null,
+    {sort: {createdAt: -1}}
+  )
+  .then(function (data) {
+    res.send(201, data.requestStatus);
   })
 };

@@ -1,52 +1,50 @@
-
 var mongoose = require('mongoose');
 var blue = require('bluebird');
-
+var Counter = require('./counter.js').Counter;
 
 var requestSchema = mongoose.Schema({
+  requestId:        {type: Number, unique: true},
+  userId:           {type: String, required: true},
+  targetDateTime:   {type: Date, required: true},
+  mins:             {type: Number, required: true},
+  groupSize:        {type: Number, required: true},
+  radius:           {type: Number, required: true},
+  address:          {type: String},
+  country:          {type: String, default: 'US'},
+  requestStatus:    {type: String, default: 'Active'},
+  results:          {type: mongoose.Schema.Types.Mixed},
+  pushNotification: {type: mongoose.Schema.Types.Mixed},
+  location:         {type: Array, index: '2dsphere'},
+  createdAt:        {type: Date, default: Date.now},
+  updatedAt:        {type: Date, default: Date.now}
+});
 
-  requestId: 
-    {type: Number,required: true},
-  requesterId: 
-    {type: mongoose.Schema.Types.Mixed,required: true},    
-  active: 
-    {type: Boolean},
-  targetDateTime: 
-    {type: Date,required: true},
-  groupSize:
-    {type: Number,required: true},
-  requestNotes:
-    {type: String},
-  address: 
-    {type: String,required: true},
-  city: 
-    {type: String,required: true},
-  state: 
-    {type: String,required: true},
-  radius: 
-    {type: Number,required: true},
-  createdAt: 
-    {type: Date,default: Date.now},
-  businesses: 
-    {type:String},
-  location:
-    {type: Array, index: '2dsphere'} //Store long, lat in Mongo -- Google gives it in lat, long
+requestSchema.pre('save', function (next) {
+
+  if (!this.requestId) {
+
+    Counter.getCounter('requests').bind(this)
+
+      .then(function (data) {
+        this.requestId = data.counter;
+        next();
+      })
+
+      .catch(function (err) {
+        console.log('error inside Counter.getCounter pre: ', err);
+        throw err;
+      });
+
+  } else {
+    next();
+  }
 
 });
 
-
-var UserRequest = mongoose.model('UserRequest', requestSchema);
+var UserRequest = mongoose.model('Request', requestSchema);
 
 UserRequest.promFindOneAndUpdate = blue.promisify(UserRequest.findOneAndUpdate);
 UserRequest.promFindOne = blue.promisify(UserRequest.findOne);
 UserRequest.promFind = blue.promisify(UserRequest.find);
 
 exports.UserRequest = UserRequest;
-
-
-
-
-
-
-
-

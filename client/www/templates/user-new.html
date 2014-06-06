@@ -1,0 +1,38 @@
+<ion-view title="New Request">
+  <ion-content class="has-header padding">
+    <div>Find near</div>
+    <div>
+      <label class="item item-input">
+        <i class="icon ion-ios7-location"></i>
+        <input type="text" ng-model="model.inputLocation" placeholder="Current Location">
+      </label>
+    </div>
+    <br/>
+    <div>Search within (miles)</div>
+    <div class="button-bar"> 
+      <a class="button" ng-click='setDistance(0.5); tabA=1' ng-class='{"button-assertive":tabA===1}'>0.5</a>
+      <a class="button" ng-click='setDistance(1); tabA=2' ng-class='{"button-assertive":tabA===2}'>1</a>
+      <a class="button" ng-click='setDistance(5); tabA=3' ng-class='{"button-assertive":tabA===3}'>5</a>
+      <a class="button" ng-click='setDistance(20); tabA=4'ng-class='{"button-assertive":tabA===4}'>20</a>
+    </div>
+    <br/>
+    <div>Eat in (mins)</div>
+    <div class="button-bar">
+      <a class="button" ng-click='setMins(15); tabB=1' ng-class='{"button-assertive":tabB===1}'>15</a>
+      <a class="button" ng-click='setMins(30); tabB=2' ng-class='{"button-assertive":tabB===2}'>30</a>
+      <a class="button" ng-click='setMins(45); tabB=3' ng-class='{"button-assertive":tabB===3}'>45</a>
+      <a class="button" ng-click='setMins(60); tabB=4' ng-class='{"button-assertive":tabB===4}'>60</a>
+    </div>
+    <br/>
+    <div class="col col-50 col-offset-25">
+      <label class="item item-input">
+        <span class="input-label">Group Size</span>
+        <input type="tel" ng-model='requestObj.groupSize' placeholder="1">
+      </label>
+    </div>
+
+  <div class="row">
+      <button class="button button-assertive col col-50 col-offset-25" ng-click='sendRequest()'>Find Restaurants</button>
+  </div>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,1 @@
+# angular local storage module
