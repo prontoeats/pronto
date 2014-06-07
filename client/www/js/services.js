@@ -311,7 +311,6 @@ angular.module('starter.services', ['LocalStorageModule'])
       postUrl = ServerUrls.url+'/login/business';
     }
 
-    $state.transitionTo('signup.transition');
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;

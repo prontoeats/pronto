@@ -176,9 +176,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $interval, CalculateStars, UserActiveRequest) {
   console.log('active state');
   $scope.hideRequest = false;
+  $scope.defaultHide = true;
   $scope.updateData = function () {
     UserActiveRequest.all()
       .success(function(data, status){
+        $scope.defaultHide = false;
         console.log('got active requests back', data);
         if (data === ''){
           $scope.hideRequest = true;
