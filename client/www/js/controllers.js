@@ -10,7 +10,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   $scope.login = LoginRequest.login;
 })
 
-.controller('SignupTransitionCtrl', function($scope, $state, $stateParams,localStorageService) {
+.controller('SignupTransitionCtrl', function($scope, $state, $stateParams,checkAuthentication, localStorageService) {
 
     var token = localStorageService.get('token');
 
