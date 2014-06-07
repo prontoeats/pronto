@@ -3,7 +3,7 @@
   Each tab's child <ion-nav-view> directive will have its own 
   navigation history that also transitions its views in and out.
 -->
-<ion-nav-bar class="bar-stable nav-title-slide-ios7">
+<ion-nav-bar class="bar-assertive nav-title-slide-ios7">
   <ion-nav-back-button class="button-icon icon ion-chevron-left">
     Back
   </ion-nav-back-button>
@@ -12,25 +12,24 @@
 <ion-tabs class="tabs-icon-top">
 
 
-  <!-- Pets Tab -->
-  <ion-tab title="New" icon="icon ion-ios7-plus icon-custom" href="#/rest/requests">
+<!-- New Tab -->
+  <ion-tab title="New" icon="icon ion-ios7-download icon-custom" href="#/rest/requests">
     <ion-nav-view name="rest-requests"></ion-nav-view>
   </ion-tab>
 
 
-  <!-- Adopt Tab -->
-  <ion-tab title="Existing" icon="icon ion-ios7-help icon-custom" href="#/rest/existingOffers">
+<!-- Sent Tab -->
+  <ion-tab title="Sent" icon="icon ion-ios7-upload icon-custom" href="#/rest/existingOffers">
     <ion-nav-view name="rest-existingOffers"></ion-nav-view>
   </ion-tab>
 
-
-  <!-- About Tab -->
+<!-- Accepted -->
   <ion-tab title="Accepted" icon="ion-ios7-checkmark icon-custom" href="#/rest/acceptedOffers">
     <ion-nav-view name="rest-acceptedOffers"></ion-nav-view>
   </ion-tab>
 
-    <!-- About Tab -->
-  <ion-tab title="Settings" icon="icon ion-ios7-gear icon-custom" href="#/rest/settings">
+<!-- Logout -->
+  <ion-tab title="Logout" icon="icon ion-log-out icon-custom" href="#/rest/settings">
     <ion-nav-view name="rest-settings"></ion-nav-view>
   </ion-tab>
 
