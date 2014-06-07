@@ -3307,7 +3307,12 @@ a.subdued {
   z-index: 2;
   display: block;
   margin: -1px;
-  padding: 15px;
+/*  padding: 15px;
+*/  
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-width: 1px;
   border-style: solid;
   font-size: 16px; }
