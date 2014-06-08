@@ -5,6 +5,9 @@
   src: url('../Font/Quicksand-Regular.otf'); 
 } 
 
+.padding{
+  padding-top: 25 px;
+}
 .map {
   width: 500px;
   height: 400px;
@@ -142,6 +145,7 @@
   font-weight: bold;
 }
 
+
 .rest-reviews {
   padding-left: 10px;
 }
@@ -166,8 +170,25 @@
   color: #CC2311;
 }
 
+.offers-style {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 0px;
+  padding-left: 0px;
+  background-color: #EBEBEB;
+}
+.offers-divider {
+  background-color: white;
+  font-size: 14px;
+  min-height: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+
+}
 .center{
-  padding: 5px;
+/*  padding-top: 4px;
+*/  padding-bottom: 7px;
   border: none;
   text-align: center;
 }
