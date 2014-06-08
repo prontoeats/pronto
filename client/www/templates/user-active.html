@@ -33,7 +33,7 @@
       </div>
       <div class = 'rest-address'>{{offer.address}} ({{offer.distance | number:2}} mi away)</div>
       <div class="rest-expire">Expire<span am-time-ago="offer.expirationDateTime"></span></div>
-      <div class = 'rest-offer'>Offer: {{offer.replies}}</div>
+      <div class = 'rest-offer'><i class="icon ion-pricetag"></i> Offer: {{offer.replies}}</div>
     </div>
     <div class="item tabs tabs-secondary tabs-icon-left">
       <a class="tab-item" ng-click="accept(offer.businessId)">
@@ -59,7 +59,7 @@
         <span class="rest-reviews">{{offer.yelpReviews}} Reviews</span>
       </div>
       <div class = 'rest-address'>{{offer.address}} ({{offer.distance | number:2}} mi away)</div>
-      <div class = 'rest-offer'>Offer: {{offer.replies}}</div>
+      <div class = 'rest-offer'><i class="icon ion-pricetag"></i> Offer: {{offer.replies}}</div>
     </div>
     <div class="item tabs tabs-secondary tabs-icon-left" ng-show="{{offer.yelpReviews}} > 0">
       <a class="tab-item" ng-click="go(offer.yelpUrl)">
