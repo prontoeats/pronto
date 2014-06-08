@@ -1,5 +1,5 @@
 <ion-view title="Offers">
-  <ion-content class="has-header has-padding">
+  <ion-content class="has-header has-padding offers-style">
     <ion-list>
         <div class="center" ng-hide = "hideRequest || defaultHide">
           <div class = 'request-summary-title'>Request Summary</div>
@@ -14,7 +14,7 @@
           <div class>Please Submit A Request</div>
         </div>
     </ion-list>
-  <div class="item item-divider rest-name" ng-hide = 'defaultHide'>
+  <div class="item item-divider offers-divider" ng-hide = 'defaultHide'>
     {{ filterOn === 'Offered' && 'New Offers' || 'Accepted Offer'}}
   </div>
   <ion-refresher
@@ -63,7 +63,7 @@
     </div>
     <div class="item tabs tabs-secondary tabs-icon-left" ng-show="{{offer.yelpReviews}} > 0">
       <a class="tab-item" ng-click="go(offer.yelpUrl)">
-        <i class="icon ion-social-hackernews-outline"></i>
+        <img class="yelp-icon" src="img/yelp-icon.png">
         Yelp
       </a>
     </div>
