@@ -2999,7 +2999,8 @@ a.subdued {
   overflow: hidden;
   max-width: 150px;
   height: 100%;
-  color: inherit;
+  /*color: inherit;*/
+  color: #CC2311;
   text-align: center;
   text-decoration: none;
   text-overflow: ellipsis;
@@ -3306,7 +3307,12 @@ a.subdued {
   z-index: 2;
   display: block;
   margin: -1px;
-  padding: 15px;
+/*  padding: 15px;
+*/  
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-width: 1px;
   border-style: solid;
   font-size: 16px; }
@@ -3439,7 +3445,10 @@ a.item {
 .item-complex .item-content, .item-radio .item-content {
   position: relative;
   z-index: 2;
-  padding: 15px 45px 15px 15px;
+/*  padding: 15px 45px 15px 15px;
+*/
+  padding-top: 5px;
+  padding-bottom: 5px;
   border: none;
   background-color: white; }
 

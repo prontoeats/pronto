@@ -8,7 +8,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'angularMoment'])
 
-.run(function($ionicPlatform, $state, checkAuthentication, localStorageService, PushNotification) {
+.run(function($ionicPlatform, $state) {
 
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -16,48 +16,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
-    
-    if(window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
-    var token = localStorageService.get('token');
 
-    console.log('after token get :',token);
-    if(!token) {
-      console.log('got into if loop - no token exists');
-      $state.go('login.user');
-    }else{
-      console.log('got into else loop - token exists');
-
-      if (localStorageService.get('user') === 'true'){
-        console.log('got into else loop - user is true');
-
-        checkAuthentication.check('user')
-        .success(function(data, status){
-          console.log('got into user else loop - in success callback');
-
-          $state.go('user.new');
-        })
-        .error(function(data, status){
-          console.log('got into user else loop - in fail callback');
-
-          $state.go('login.user');
-        })
-      }else{
-
-        console.log('got into rest else loop')
-        checkAuthentication.check('restaurant')
-        .success(function(data, status){
-          console.log('got into restaurant else loop - in success callback');
-          $state.go('rest.requests');
-        })
-        .error(function(data, status){
-          console.log('got into restaurant else loop - fail success callback');
-          $state.go('login.restaurant');
-        })
-      }
-    }
   });
 })
 
@@ -103,21 +62,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
 
-    .state('login.transition', {
-      url: '/transition',
-      views: {
-        'login-transition': {
-          templateUrl: 'templates/login-transition.html',
-          controller: 'LoginTransitionCtrl'
-        }
-      }
-    })
-
 // ------------Signup States-----------------
     .state('signup', {
       url: '/signup',
       abstract: true,
       templateUrl: 'templates/signup.html',
+    })
+
+    .state('signup.transition', {
+      url: '/transition',
+      views: {
+        'signup-transition': {
+          templateUrl: 'templates/signup-transition.html',
+          controller: 'SignupTransitionCtrl'
+        }
+      }
     })
 
     .state('signup.signup', {
@@ -224,16 +183,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     })
 
-    .state('rest.acceptedOffer-detail', {
-      url: '/acceptedOffer/:acceptedOfferId',
-      views: {
-        'rest-acceptedOffers': {
-          templateUrl: 'templates/rest-acceptedOffer-detail.html',
-          controller: 'AcceptedOfferDetailCtrl'
-        }
-      }
-    })
-
     .state('rest.settings', {
       url: '/settings',
       views: {
@@ -245,7 +194,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login/transition');
+  $urlRouterProvider.otherwise('/signup/transition');
 
 });
 

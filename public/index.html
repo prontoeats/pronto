@@ -13,7 +13,7 @@
     <!-- Custom styles for this template -->
     <link href="assets/css/main.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/icomoon.css">
-    <link href="assets/css/animate-custom.css" rel="stylesheet">
+    <!-- <link href="assets/css/animate-custom.css" rel="stylesheet"> -->
 
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
@@ -23,11 +23,35 @@
     <script type="text/javascript" src="assets/js/modernizr.custom.js"></script>
     <script>
       $(function () {
+
+        function preloadImages(array) {
+          if (!preloadImages.list) {
+              preloadImages.list = [];
+          }
+          for (var i = 0; i < array.length; i++) {
+              var img = new Image();
+              img.src = array[i];
+              preloadImages.list.push(img);
+          }
+        }
+
+        var imageURLs = [
+          'assets/img/user-login.png',
+          'assets/img/request-new.png',
+          'assets/img/request-summary.png',
+          'assets/img/request-accepted.png',
+          'assets/img/yelp-detail.png'
+        ];
+
+        preloadImages(imageURLs);
+
         $('#iphone').iPhoneSlideshow({
           screens : [
-            'assets/img/login.png',
-            'assets/img/new_request.png',
-            'assets/img/offers.png'
+            'assets/img/user-login.png',
+            'assets/img/request-new.png',
+            'assets/img/request-summary.png',
+            'assets/img/request-accepted.png',
+            'assets/img/yelp-detail.png'
           ]
         });
       });

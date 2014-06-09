@@ -10,7 +10,44 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   $scope.login = LoginRequest.login;
 })
 
-.controller('LoginTransitionCtrl', function($scope) {
+.controller('SignupTransitionCtrl', function($scope, $state, $stateParams,checkAuthentication, localStorageService) {
+
+    var token = localStorageService.get('token');
+
+    console.log('after token get :',token);
+    if(!token) {
+      console.log('got into if loop - no token exists');
+      $state.transitionTo('login.user');
+    }else{
+      console.log('got into else loop - token exists');
+
+      if (localStorageService.get('user') === 'true'){
+        console.log('got into else loop - user is true');
+
+        checkAuthentication.check('user')
+        .success(function(data, status){
+          console.log('got into user else loop - in success callback');
+
+          $state.go('user.new');
+        })
+        .error(function(data, status){
+          console.log('got into user else loop - in fail callback');
+
+          $state.go('login.user');
+        })
+      }else{
+        console.log('got into rest else loop')
+        checkAuthentication.check('restaurant')
+        .success(function(data, status){
+          console.log('got into restaurant else loop - in success callback');
+          $state.go('rest.requests');
+        })
+        .error(function(data, status){
+          console.log('got into restaurant else loop - fail success callback');
+          $state.go('login.restaurant');
+        })
+      }
+    }
 })
 
 //---------------Signup Controllers---------------
@@ -139,9 +176,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $interval, CalculateStars, UserActiveRequest) {
   console.log('active state');
   $scope.hideRequest = false;
+  $scope.defaultHide = true;
   $scope.updateData = function () {
     UserActiveRequest.all()
       .success(function(data, status){
+        $scope.defaultHide = false;
         console.log('got active requests back', data);
         if (data === ''){
           $scope.hideRequest = true;
