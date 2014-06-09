@@ -1,8 +1,21 @@
 /* Empty. Add your own CSS if you like */
 
+@font-face { 
+  font-family: Quicksand; 
+  src: url('../Font/Quicksand-Regular.otf'); 
+} 
+
+.padding{
+  padding-top: 25 px;
+}
 .map {
   width: 500px;
   height: 400px;
+}
+
+.sent-offer{
+  padding-left:30px;
+  font-size: 12px;
 }
 
 .login {
@@ -13,6 +26,63 @@
   color: #FF0000;
   background-color: #EBEBEB;
 }
+.swipe {
+  font-size: 10;
+  margin-top: auto;
+  margin-bottom: auto;
+  text-align: right;
+  color: #EBEBEB;
+}
+
+.headers {
+  height: 10px;
+/*  padding-top: 0;
+  margin-bottom: 5px;
+  vertical-align: middle;*/
+  margin-top: auto;
+  margin-bottom: auto;
+  min-height: 10px;
+  background-color: #f5f5f5;
+  color: #222;
+  padding: 0px;
+  font-size: 10;
+  line-height: 5px;
+  /*font-weight: bold; }*/
+}
+
+.headers div{
+  text-align: center;
+  font-size: 14px;
+  color: red;
+}
+
+.row-cust {
+  /*height: 10px;*/
+  padding: 0px;
+  line-height: 0px;
+  width: 320px;
+  font-size: 30px;
+}
+.request-time {
+  font-size: 16px;
+  text-align: center;
+  display: inline-block;
+  font-family: Arial;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+
+.col-45 {
+  -webkit-box-flex: 0;
+  -webkit-flex: 0 0 45%;
+  -moz-box-flex: 0;
+  -moz-flex: 0 0 45%;
+  -ms-flex: 0 0 45%;
+  flex: 0 0 45%;
+  max-width: 45%; 
+}
+
 
 .login-page {
   background-color: #EBEBEB;
@@ -75,6 +145,7 @@
   font-weight: bold;
 }
 
+
 .rest-reviews {
   padding-left: 10px;
 }
@@ -96,11 +167,28 @@
 }
 
 .icon-custom{
-  color : #ef4e3a;
+  color: #CC2311;
 }
 
+.offers-style {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 0px;
+  padding-left: 0px;
+  background-color: #EBEBEB;
+}
+.offers-divider {
+  background-color: white;
+  font-size: 14px;
+  min-height: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+
+}
 .center{
-  padding: 5px;
+/*  padding-top: 4px;
+*/  padding-bottom: 7px;
   border: none;
   text-align: center;
 }
