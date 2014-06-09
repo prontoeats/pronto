@@ -204,7 +204,7 @@
             preloadScreens(opts.screens);
             setupBackground($this);
             setupScreenImage($this);
-            setupGlossImage($this);
+            // setupGlossImage($this);
             showNextSlide($this);
         })},
 
@@ -268,23 +268,23 @@
     ////////////////////////////////////////////////////////////
     $.fn[PLUGIN_NAME].defaults = {
         // URL to the iPhone image to use to show the screens in.
-        iphoneImage : "assets/img/blackiPhone.png",
+        iphoneImage : "assets/img/transparent-iphone-cropped.png",
 
         // URL to the iPhone Gloss image used to overlay the glossy glare
         // look on top of the screen area.
         glossImage : "assets/img/gloss.png",
 
         // Dimensions of the chosen iphoneImage.
-        iphoneWidth  : 484,
-        iphoneHeight : 506,
+        iphoneWidth  : 345,
+        iphoneHeight : 570,
 
         // Relative position of the screen area in the iphoneImage.
-        screenLeft : 147,
-        screenTop  : 106,
+        screenLeft : 40,
+        screenTop  : 90,
 
         // Dimensions of the screen area in the iphoneImaage.
-        screenWidth  : 257,
-        screenHeight : 385,
+        screenWidth  : 270,
+        screenHeight : 480,
 
         // Time interval between screen transitions (in milliseconds).
         interval : 4000,
