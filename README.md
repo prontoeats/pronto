@@ -10,6 +10,7 @@ Mobile app connecting consumers with restaurants in real time.
 
 ### Consumer Workflow
 
+<img src="http://prontoeats.azurewebsites.net/assets/img/user-login.png" width="135px" height="240px" />
 ![User Login](http://prontoeats.azurewebsites.net/assets/img/user-login.png)
 ![New Request](http://prontoeats.azurewebsites.net/assets/img/request-new.png)
 ![Request Summary](http://prontoeats.azurewebsites.net/assets/img/request-summary.png)
