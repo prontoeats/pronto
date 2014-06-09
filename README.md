@@ -10,18 +10,17 @@ Mobile app connecting consumers with restaurants in real time.
 
 ### Consumer Workflow
 
-![User Login](http://prontoeats.azurewebsites.net/assets/img/login.png)
-![New Request](http://prontoeats.azurewebsites.net/assets/img/request-new.png)
-![Request Summary](http://prontoeats.azurewebsites.net/assets/img/request-summary.png)
-![Accepted Request](http://prontoeats.azurewebsites.net/assets/img/request-accepted.png)
-![Yelp Detail](http://prontoeats.azurewebsites.net/assets/img/yelp-detail.png)
+<img src="http://prontoeats.azurewebsites.net/assets/img/user-login.png" width="135px" height="240px" />&nbsp;&nbsp;
+<img src="http://prontoeats.azurewebsites.net/assets/img/request-new.png" width="135px" height="240px" />&nbsp;&nbsp;
+<img src="http://prontoeats.azurewebsites.net/assets/img/request-summary.png" width="135px" height="240px" />&nbsp;&nbsp;
+<img src="http://prontoeats.azurewebsites.net/assets/img/request-accepted.png" width="135px" height="240px" />
 
 ### Restaurant Workflow
 
-![Restaurant Login](http://prontoeats.azurewebsites.net/assets/img/login.png)
-![See Requests](http://prontoeats.azurewebsites.net/assets/img/offer-incoming.png)
-![Respond to Request](http://prontoeats.azurewebsites.net/assets/img/offer-response.png)
-![Offer Accepted](http://prontoeats.azurewebsites.net/assets/img/offer-accepted.png)
+<img src="http://prontoeats.azurewebsites.net/assets/img/user-login.png" width="135px" height="240px" />&nbsp;&nbsp;
+<img src="http://prontoeats.azurewebsites.net/assets/img/offer-incoming.png" width="135px" height="240px" />&nbsp;&nbsp;
+<img src="http://prontoeats.azurewebsites.net/assets/img/offer-response.png" width="135px" height="240px" />&nbsp;&nbsp;
+<img src="http://prontoeats.azurewebsites.net/assets/img/offer-accepted.png" width="135px" height="240px" />
 
 ## Technology Stack
 
