@@ -71,9 +71,18 @@ angular.module('starter.services', ['LocalStorageModule'])
   window.prontoApp = {};
 
   window.prontoApp.onNotificationAPN = function(e) {
-    var state = JSON.stringify($state);
-    console.log('state variable', state);
 
+    // var state = JSON.stringify(e.payload.state);
+    // $window.alert('state variable', e.payload.state);
+    // console.log('state', e.payload.state);
+
+    // $state.transitionTo(e.payload.state, $stateParams, {
+    //   reload: true,
+    //   inherit: false,
+    //   notify: true
+    // });
+
+    
     if (e.badge){
       pushNotification.setApplicationIconBadgeNumber(badgeSuccessHandler, e.badge);
     }
@@ -168,6 +177,12 @@ angular.module('starter.services', ['LocalStorageModule'])
         })
       }
     }else if(e.event === "message"){
+      // $state.transitionTo(e.payload.state, $stateParams, {
+      //   reload: true,
+      //   inherit: false,
+      //   notify: true
+      // });
+
       if (e.foreground){
         console.log('inline notification');
       } else { // otherwise we were launched because the user touched a notification in the notification tray.
