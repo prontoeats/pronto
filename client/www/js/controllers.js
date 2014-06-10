@@ -87,7 +87,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 .controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService, ServerUrls, PushNotification) {
   //requestObj will be sent to server after hitting submit
 
-  //PushNotification.onDeviceReady('user');
+  PushNotification.onDeviceReady('user');
 
   $scope.tabA = 1;
   $scope.tabB = 1;
