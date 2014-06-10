@@ -1,11 +1,4 @@
 
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'angularMoment'])
 
 .run(function($ionicPlatform, $state) {
@@ -20,6 +13,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 })
 
+//Constants to be used for Google OAuth Authentication
 .constant('Google', {
   authorize: 'https://accounts.google.com/o/oauth2/auth',
   client_id: '375716811110-4g5qmacale5q8lcg1skemks7rou13dqa.apps.googleusercontent.com',
@@ -29,10 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
+  //Configuring the State Provider
   $stateProvider
 
 // ------------Login States-----------------
@@ -112,16 +103,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         'user-active': {
           templateUrl: 'templates/user-active.html',
           controller: 'ActiveCtrl'
-        }
-      }
-    })
-
-    .state('user.history', {
-      url: '/history',
-      views: {
-        'user-history': {
-          templateUrl: 'templates/user-history.html',
-          controller: 'HistoryCtrl'
         }
       }
     })
