@@ -1,4 +1,3 @@
-
 var url = require('url');
 var qs = require('querystring');
 var Business = require('../db/business.js').Business;
@@ -10,12 +9,8 @@ var misc = require('./miscHelpers.js');
 var push = require('./pushHelpers.js');
 var blue = require('bluebird');
 
-try {
+if (process.env.NODE_ENV.toLowerCase() !== 'production') {
   var config = require('../config.js');
-}
-catch (e) {
-  console.log('did not load config file');
-  console.log(e);
 }
 
 var yelp = require("yelp").createClient({
@@ -85,8 +80,6 @@ exports.signup = function (req, res) {
     businessInfo.email = data.emails[0]['value'];
     businessInfo.firstName = data.name.givenName;
     businessInfo.lastName = data.name.familyName;
-    console.log(businessInfo);
-    console.log(businessInfo.address +', '+businessInfo.zipCode);
 
     var searchObj = {
       term: businessInfo.businessName,
@@ -95,15 +88,12 @@ exports.signup = function (req, res) {
     };
     // What if can't find restauarnt in yelp???
     yelp.search(searchObj, function(error, data) {
-      console.log('return data', data);
       if (error){
-        console.log('yelp search errer');
         businessInfo.yelpId = 'No_yelp';
       } else{
         businessInfo.yelpId = data.businesses[0].id;
         new Business(businessInfo).save(function (err, data) {
           if (err) {
-            console.log('problem saving new business');
             res.send(400);
             throw err;
           }
@@ -156,7 +146,6 @@ exports.acceptRequests = function(req,res){
 
   Business.promFindOne({_id: businessId})
   .then(function(data){
-    console.log(data);
     if(data.yelpId === 'No_yelp'){
       return new blue (function(resolve, reject){
         resolve();
@@ -165,8 +154,7 @@ exports.acceptRequests = function(req,res){
       return new blue (function(resolve, reject){
         yelp.business(data.yelpId, function(error, data){
           if (error){
-            console.log('Yelp ID cannot be found on yelp');
-            resolve()
+            resolve();
 
           }else{
             resolve(data);
@@ -178,11 +166,9 @@ exports.acceptRequests = function(req,res){
   .then(function(queryData) {
 
     if (queryData){
-      console.log('business return data:', queryData)
       yelpData.stars = queryData.rating;
       yelpData.review = queryData.review_count;
       yelpData.url = queryData.mobile_url;
-      console.log('yelp data:', yelpData);
     }
 
     return UserRequest.promFindOneAndUpdate(
@@ -200,11 +186,6 @@ exports.acceptRequests = function(req,res){
     )
   })
   .then(function(data){
-    console.log('push promise');
-
-    console.log('data in accept requests: ', data.pushNotification);
-    console.log('type: ', typeof data.pushNotification);
-
 
     if (data.pushNotification.apn.length){
       push.sendApnMessage(
@@ -224,7 +205,6 @@ exports.acceptRequests = function(req,res){
     res.send(201);
   })
   .then(function () {
-    console.log('set Time out');
     // if offer is still outstanding (status: offered) after ten minutes
     // convert status to "expired"
     setTimeout(function () {
@@ -248,7 +228,6 @@ var filterRequests = function (req, res, filter) {
 
   var queryString = qs.parse(url.parse(req.url).query);
   var oid = mongoose.Types.ObjectId(queryString.businessId);
-  console.log('ObjectId(businessId):', oid);
 
   return UserRequest.promFind({
     requestStatus: {$nin: ['Expired', 'Canceled']},

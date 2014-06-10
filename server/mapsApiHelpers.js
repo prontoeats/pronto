@@ -2,12 +2,8 @@ var request = require('request');
 var misc = require('./miscHelpers.js');
 var request = require('request');
 var blue = require('bluebird');
-try {
+if (process.env.NODE_ENV.toLowerCase() !== 'production') {
   var config = require('../config.js');
-}
-catch (e) {
-  console.log('did not load config file');
-  console.log(e);
 }
 
 exports.parseAddress = function(obj){
