@@ -46,7 +46,6 @@ exports.login = function(req, res){
       })
       .save(function (err, data) {
         if (err) {
-          console.log(err);
           exports.sendAuthFail(res);
         }
         res.send(201, {accessToken: data.accessToken, userId: data._id});
@@ -155,7 +154,6 @@ exports.request = function(req, res) {
   .catch(function(err){
     var error = 'Error with user request submission: '+err;
     res.send(400, error);
-    console.log(error);
   })
 
 

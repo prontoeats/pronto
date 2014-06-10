@@ -1,4 +1,3 @@
-
 var blue = require('bluebird');
 var mongoose = require('mongoose');
 var request = require('request');
@@ -10,7 +9,6 @@ exports.parseNearbyData = function (array) {
   var apn = [];
   var gcm = [];
   var bus;
-  // var phoneNums = [];
 
   for (var i = 0; i < array.length; i++) {
     bus = {};
@@ -27,13 +25,11 @@ exports.parseNearbyData = function (array) {
     bus.yelpId = array[i].yelpId;
 
     bus.pushNotification = array[i].pushNotification;
-    // console.log('push notifications', bus.pushNotification);
 
     if (bus.pushNotification.apn.length){
       apn = apn.concat(bus.pushNotification.apn);
     }
 
-    // console.log('pushnotification gcm: ', bus.pushNotification.gcm);
     if (bus.pushNotification.gcm.length){
       gcm = gcm.concat(bus.pushNotification.gcm);
     }
@@ -75,7 +71,6 @@ exports.formatDate = function (date) {
 };
 
 exports.sendRequestInfoParser = function (array) {
-  // TODO: investigate!!!
   array = array || [];
   var resultsArray = [];
   var obj;
@@ -95,7 +90,6 @@ exports.sendRequestInfoParser = function (array) {
 };
 
 exports.parseBusinessesData = function (parsed) {
-  // TODO: investigate!!!
   parsed = parsed || [];
   var results = [];
   var business;
@@ -119,7 +113,6 @@ exports.parseBusinessesData = function (parsed) {
 };
 
 exports.acceptOfferProcessing = function(parsed, restaurant){
-
   for (var i = 0; i < parsed.length; i++) {
     if (parsed[i].businessName === restaurant){
       return parsed[i].phoneNumber;
@@ -131,10 +124,8 @@ exports.parseBusinessOpenRequests = function(array, businessId, status){
 
   var results = [];
   var obj;
-
   var request;
   var business;
-
 
   for (var i=0; i<array.length; i++){
     request = array[i];

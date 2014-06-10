@@ -1,11 +1,7 @@
 var gcm = require('node-gcm');
 var apn = require('apn');
-try {
+if (process.env.NODE_ENV.toLowerCase() !== 'production') {
   var config = require('../config.js');
-}
-catch (e) {
-  console.log('did not load config file');
-  console.log(e);
 }
 
 exports.sendApnMessage = function(array, body, payload){
@@ -16,7 +12,6 @@ exports.sendApnMessage = function(array, body, payload){
   };
 
   var options = {
-      // TODO: update gateway to Apple's Production Servers for production
       gateway: 'gateway.sandbox.push.apple.com',
       errorCallback: callback,
       cert: './server/ProntoPush.pem',
