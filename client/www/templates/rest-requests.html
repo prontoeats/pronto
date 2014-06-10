@@ -1,15 +1,13 @@
 <ion-view title="New Requests">
   <ion-content class="has-header">
-<!--     <h1>Dashtest</h1> -->
+
     <ion-refresher
       pulling-text="Pull to refresh..."
       on-refresh="updateData()"
       refreshing-text="Refreshing!"
       refreshing-icon="ion-loading-c">
     </ion-refresher>
-<!--     <div class="item item-divider instruct">
-      &larr; &larr; Swipe left to accept or decline &larr; &larr;
-    </div> -->
+
     <div class="item item-divider">
       <div class="row headers">
         <div class="col col-45">Arrival Time</div>
@@ -19,29 +17,23 @@
     </div>
     <ion-list can-swipe  = 'true'>
       <ion-item ng-repeat="request in requests | orderBy:'updatedAt'" type="item-text-wrap">
-      <div class="row row-cust">
-        <div class="col col-45 request-time">
-          <i class="icon ion-ios7-clock-outline"></i> {{request.targetDateTime | date:'shortTime'}}
+        <div class="row row-cust">
+          <div class="col col-45 request-time">
+            <i class="icon ion-ios7-clock-outline"></i> {{request.targetDateTime | date:'shortTime'}}
+          </div>
+          <div class="col col-45 request-time">
+            <i class="icon ion-person-stalker"></i> {{request.groupSize}} 
+          </div>
+          <div class="col col-10 swipe">
+            <i class="icon ion-ios7-arrow-left"></i>
+          </div>
+          <ion-option-button class="button-stable" ng-click="delete($index)">
+            Decline
+          </ion-option-button>
+          <ion-option-button class="button-assertive" ng-click="go(request)">
+            Offer
+          </ion-option-button>
         </div>
-        <div class="col col-45 request-time">
-          <i class="icon ion-person-stalker"></i> {{request.groupSize}} 
-        </div>
-        <div class="col col-10 swipe">
-          <i class="icon ion-ios7-arrow-left"></i>
-        </div>
-      <ion-option-button class="button-stable" ng-click="delete($index)">
-        Decline
-      </ion-option-button>
-      <ion-option-button class="button-assertive" ng-click="go(request)">
-        Offer
-      </ion-option-button>
-
-
-        <!-- <span>ID: {{request.requestId}}</span> -->
-        
-
-
-      </div>
       </ion-item>
     </ion-list>
   </ion-content>

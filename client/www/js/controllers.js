@@ -11,39 +11,31 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 .controller('SignupTransitionCtrl', function($scope, $state, $stateParams,checkAuthentication, localStorageService) {
-
+    //check for token in local storage
     var token = localStorageService.get('token');
 
-    console.log('after token get :',token);
     if(!token) {
-      console.log('got into if loop - no token exists');
+      //if token doesn't exist go to login page
       $state.transitionTo('login.user');
     }else{
-      console.log('got into else loop - token exists');
+      //if token exist check to see if it's user or restaurant
 
       if (localStorageService.get('user') === 'true'){
-        console.log('got into else loop - user is true');
-
+        // sync with the server on user token
         checkAuthentication.check('user')
         .success(function(data, status){
-          console.log('got into user else loop - in success callback');
-
           $state.go('user.new');
         })
         .error(function(data, status){
-          console.log('got into user else loop - in fail callback');
-
           $state.go('login.user');
         })
       }else{
-        console.log('got into rest else loop')
+        // sync with the server on restaurant token
         checkAuthentication.check('restaurant')
         .success(function(data, status){
-          console.log('got into restaurant else loop - in success callback');
           $state.go('rest.requests');
         })
         .error(function(data, status){
-          console.log('got into restaurant else loop - fail success callback');
           $state.go('login.restaurant');
         })
       }
@@ -52,6 +44,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 //---------------Signup Controllers---------------
 .controller('SignupCtrl', function($scope, localStorageService, $state, $http, ServerUrls) {
+  //identify input for signup
   $scope.restInfo = {};
   $scope.restInfo.businessName;
   $scope.restInfo.address;
@@ -60,21 +53,19 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   $scope.restInfo.zipCode;
   $scope.restInfo.phoneNumber;
   $scope.restInfo.accessToken = localStorageService.get('token');
-  // $scope.restInfo.id = localStorageService.get('restaurantId');
 
   $scope.submit = function(){
-    console.log($scope.restInfo);
+    //submit post to server to save restaurant info
     $http({
       method: 'POST',
       url: ServerUrls.url+'/signup/business',
       data: $scope.restInfo
     })
     .success(function(data){
+      // save restaurant token and id
       localStorageService.set('token', data.accessToken);
       localStorageService.set('restaurantId', data.businessId);
       localStorageService.set('user', false);
-
-      console.log('success! ', data);
       $state.transitionTo('rest.requests');
     })
     .error(function(data){
@@ -86,13 +77,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 //---------------User Controllers---------------
 .controller('NewCtrl', function($q, $scope, $state, $location, GetLocation, $http, localStorageService, ServerUrls, PushNotification) {
   //requestObj will be sent to server after hitting submit
+  // initialize user push notification
+  PushNotification.onDeviceReady('user');
 
-  //PushNotification.onDeviceReady('user');
-
+  //intialize value for radius tab and min tab
   $scope.tabA = 1;
   $scope.tabB = 1;
 
-
+  //initialize value for requests
   $scope.requestObj = {};
   $scope.requestObj.radius = 0.5;
   $scope.requestObj.mins = 15;
@@ -107,13 +99,11 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   //set the distance on the request object when a distance button is clicked
   $scope.setDistance = function(distance){
     $scope.requestObj.radius = distance;
-    console.log('Distance: ', $scope.requestObj.radius);
   };
 
   //set the minutes on the request object when a distance button is clicked
   $scope.setMins = function(mins){
     $scope.requestObj.mins = mins;
-    console.log('Distance: ', $scope.requestObj.mins);
   };
 
   //Configure the location data
@@ -123,9 +113,8 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       $scope.model.inputLocation = 'current location'
     }
 
+    // set defer as a promise
     var deferred = $q.defer();
-    console.log('input: ',$scope.model.inputLocation);
-    console.log('location: ',$scope.requestObj.location);
 
     //if the location field remains as 'current location', get long/lat coordinates
     if ($scope.model.inputLocation.toLowerCase() === 'current location'){
@@ -147,23 +136,20 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
   //send the request
   $scope.sendRequest = function(){
-
+    // send the user request to the server
     if ($scope.requestObj.groupSize === undefined){
       $scope.requestObj.groupSize = 1;
     }
-    console.log('Group Size ', $scope.requestObj.groupSize);
-
+    // set user location base on GPS or user input location
     $scope.setLocation()
     .then(function(){
-      console.log('Request Object ',$scope.requestObj);
-
+      //send post request for server to post user request
       $http({
         method: 'POST',
         url: ServerUrls.url+'/request',
         data: $scope.requestObj
       })
       .success(function(data){
-        console.log('success! ', data);
         $state.go('user.active');
       })
       .error(function(data){
@@ -174,20 +160,22 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 })
 
 .controller('ActiveCtrl', function($scope, $rootScope, $state, $stateParams, $timeout, $interval, CalculateStars, UserActiveRequest) {
-  console.log('active state');
+  // initialize state toggle keys
   $scope.hideRequest = false;
   $scope.defaultHide = true;
   $scope.updateData = function () {
+    // send server request to update all active offers from restaurant
     UserActiveRequest.all()
       .success(function(data, status){
+        //if offers are avaliable set toggle keys
         $scope.defaultHide = false;
-        console.log('got active requests back', data);
         if (data === ''){
           $scope.hideRequest = true;
         }
         $scope.response = data;
         $scope.offers = data.results;
 
+        //set angular filter on offers
         if($scope.response.requestStatus === 'Accepted'){
           $scope.filterOn = 'Accepted';
         } else {
@@ -205,22 +193,23 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   };
 
   $scope.reject = function(businessId){
+    // send request to server to rejeect restaurant offer
     UserActiveRequest.reject($scope.response.requestId, businessId)
     .then(function () {
-      console.log('rejected request');
+      // reload current state
       $state.transitionTo($state.current, $stateParams, {
         reload: true,
         inherit: false,
         notify: true
       });
     });
-    console.log('got to scopeReject', $scope.response.requestId, businessId);
   };
 
   $scope.accept = function(businessId){
+    // send request to server to accept restaurant offer
     UserActiveRequest.accept($scope.response.requestId, businessId)
     .then(function () {
-      console.log('accepted request');
+      // reload current state
       $state.transitionTo($state.current, $stateParams, {
         reload: true,
         inherit: false,
@@ -228,34 +217,33 @@ angular.module('starter.controllers', ['LocalStorageModule'])
       });
 
     });
-    console.log('got to scopeaccept ', $scope.response.requestId, businessId);
   };
 
+  // set yelp stars
   $scope.calculateStars = CalculateStars.calculateStars;
 
   $scope.go = function(url){
+    // got to yelp mobile page
     if (url !== undefined){
       loginWindow = window.open(url, '_blank', 'location=yes,toolbar=yes');
     }
   };
 
+  // run updateData
   $scope.updateData();
-  // stopUpdate = $interval(updateData, 1000 * 3);
-
-  // $rootScope.$on('$stateChangeStart', function() {
-  //   $interval.cancel(stopUpdate);
-  // });
 
   $scope.isExpired = function (expirationTime) {
+    // check to see if the offer is expired
     var expireTimeUnix = Date.parse(expirationTime)/1000;
     var currentTimeUnix = $scope.currentTime.unix();
     return expireTimeUnix < currentTimeUnix;
   }
 
+  // reference to set timeout to cancel later
   var refreshPromise;
 
   var refreshTime = function () {
-    console.log('inside refreshTime');
+    // refresh current time scope
     $scope.currentTime = moment();
     $scope.isExpired();
     refreshPromise = $timeout(refreshTime, 1000);
@@ -263,17 +251,15 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   refreshTime();
 
   $rootScope.$on('$stateChangeStart', function() {
+    //cancel refreshTime
     $timeout.cancel(refreshPromise);
   });
 
 })
 
 .controller('SettingsCtrl', function($scope, $state, localStorageService) {
-  // $scope.test = function(){
-  //   var ref = window.open('http://www.yelp.com/biz/kusina-ni-tess-san-francisco', '_blank');
-  // }
   $scope.logout = function(){
-    //localStorageService.clearAll()
+    // remove all data from local storage
     localStorageService.remove('token');
     localStorageService.remove('userId');
     localStorageService.remove('user');
@@ -281,23 +267,16 @@ angular.module('starter.controllers', ['LocalStorageModule'])
   }
 })
 
-
-.controller('HistoryCtrl', function($scope, $ionicLoading) {
-})
-
-
 //---------Restaurant Controllers
 
 .controller('RequestsCtrl', function($scope, $rootScope, $interval, Requests, PushNotification) {
-
+  //set pushnotification for business
   PushNotification.onDeviceReady('business');
 
-
   $scope.updateData = function () {
-    console.log('calling update data');
+    // send request to server for all Requests from user
     Requests.all()
       .success(function(data, status){
-        console.log('Got requests from server: ', data);
         $scope.requests = data;
         $rootScope.requests = data;
       })
@@ -310,27 +289,26 @@ angular.module('starter.controllers', ['LocalStorageModule'])
      });
   };
 
+  // initiate updateData
   $scope.updateData();
 
+  // go to request detail page
   $scope.go = Requests.go;
 
   $scope.delete = function(index){
+    //remove rejected request
     var request = $scope.requests.splice(index, 1);
     console.log(request);
     Requests.decline(request[0]);
   };
-
-  // stopUpdate = $interval(updateData, 1000 * 3);
-
-  // $rootScope.$on('$stateChangeStart', function() {
-  //   $interval.cancel(stopUpdate);
-  // });
 })
 
 .controller('RequestDetailCtrl', function($scope, $stateParams, $location, Requests) {
+  // find request id
   $scope.request = Requests.get($scope.requests, $stateParams.requestId);
+
   $scope.accept = function(offer){
-    console.log($scope.request, offer);
+    //accept offer
     Requests.accept($scope.request.requestId, offer)
     .success(function(data,status){
       $location.path('/rest/requests')
@@ -340,11 +318,10 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('ExistingOffersCtrl', function($scope, $rootScope, $interval, ExistingOffers) {
   $scope.updateData = function () {
+    // send request to server to all existing offers
     ExistingOffers.all()
     .success(function(data,status){
-      console.log('got existing offer back');
       $scope.existingOffers = data;
-      console.log ('existing offer: ', data);
     })
     .error(function(data, status){
       console.log('existing offer error');
@@ -355,24 +332,14 @@ angular.module('starter.controllers', ['LocalStorageModule'])
     });
   };
   $scope.updateData();
-  // stopUpdate = $interval(updateData, 1000 * 3);
-
-  // $rootScope.$on('$stateChangeStart', function() {
-  //   $interval.cancel(stopUpdate);
-  // });
 })
-
-// .controller('ExistingOfferDetailCtrl', function($scope, $stateParams, ExistingOffers) {
-//   $scope.existingOffer = ExistingOffers.get($stateParams.existingOfferId);
-// })
 
 .controller('AcceptedOffersCtrl', function($scope, $rootScope, $interval, AcceptedOffers) {
   $scope.updateData = function () {
+    // send request to server to get all accepted offers
     AcceptedOffers.all()
     .success(function(data,status){
-      console.log('got accepted offer back');
       $scope.acceptedOffers = data;
-      console.log ('accepted offer: ', data);
     })
     .error(function(data, status){
       console.log('existing offer error');
@@ -388,7 +355,7 @@ angular.module('starter.controllers', ['LocalStorageModule'])
 
 .controller('RestSettingsCtrl', function($scope, $state, localStorageService) {
   $scope.logout = function(){
-    //localStorageService.clearAll();
+    //log out remove all data in local storage
     localStorageService.remove('token');
     localStorageService.remove('restaurantId');
     localStorageService.remove('user');

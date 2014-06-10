@@ -17,26 +17,19 @@
     </div>
     
     <ion-list>
-<!--       <ion-item ng-repeat="existingOffer in existingOffers" type="item-text-wrap" href="#/rest/existingOffer/{{existingOffer.id}}"> -->
       <ion-item ng-repeat="existingOffer in existingOffers | orderBy:'updatedAt'" type="item-text-wrap">
-<!--       <div class='col'>
-        <div>Party of {{existingOffer.groupSize}} at {{existingOffer.targetDateTime | date:'shortTime'}}</div>
-        <div>Offer: {{existingOffer.results[0].replies}}</div>
-      </div> -->
-
-
-      <div class="row row-cust">
-        <div class="col col-45 request-time">
-          <i class="icon ion-ios7-clock-outline"></i> {{existingOffer.targetDateTime | date:'shortTime'}}
+        <div class="row row-cust">
+          <div class="col col-45 request-time">
+            <i class="icon ion-ios7-clock-outline"></i> {{existingOffer.targetDateTime | date:'shortTime'}}
+          </div>
+          <div class="col col-45 request-time">
+            <i class="icon ion-person-stalker"></i> {{existingOffer.groupSize}} 
+          </div>
+          <div class="col col-10 swipe">
+          </div>
+          <!-- <div>test</div> -->
         </div>
-        <div class="col col-45 request-time">
-          <i class="icon ion-person-stalker"></i> {{existingOffer.groupSize}} 
-        </div>
-        <div class="col col-10 swipe">
-        </div>
-        <!-- <div>test</div> -->
-      </div>
-      <span class='sent-offer'> <i class="icon ion-pricetag"></i> Offer Sent: {{existingOffer.results[0].replies}}</span>
+        <span class='sent-offer'> <i class="icon ion-pricetag"></i> Offer Sent: {{existingOffer.results[0].replies}}</span>
       </ion-item>
     </ion-list>
   </ion-content>
