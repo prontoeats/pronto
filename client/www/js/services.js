@@ -1,42 +1,45 @@
 angular.module('starter.services', ['LocalStorageModule'])
 
+//Configures the url that http requests should be sent to 
 .factory('ServerUrls', function(){
   return {
+    //Dev urls
     // url: 'http://10.8.32.232:3000'
     // url: 'http://localhost:3000'
-    // url: 'http://10.8.28.241:3000'
+
+    //Production urls
     url: 'http://prontoeats.azurewebsites.net'
   };
 })
 
+
+//Configures Push Notification Service
 .factory('PushNotification', function($state, $http, ServerUrls, localStorageService, $window){
+
+  //Variable to store push notification object from Cordova PushPlugin
   var pushNotification;
 
+  //Callback function for when the device is ready. Used to setup push notification callbacks and registering 
+  //for push notifications
   var onDeviceReady = function(type){
-    console.log('device ready, even received');
-
     pushNotification = window.plugins.pushNotification;
 
-    console.log('registering device type: ' + device.platform);
-
+    //variable to store callback function that will be called after iOS device registers for push notifications through APN
     var tokenHandler;
-    // var successHandler;
 
+    //check user type and configure appropriate callbacks
+    //standard user type
     if(type === 'user'){
       tokenHandler = userTokenHandler;
       window.prontoApp.onNotificationGCM = window.prontoApp.userOnNotificationGCM
-      console.log('got to user handler in services', typeof tokenHandler);
+
+    //otherwise business user type
     } else {
       tokenHandler = businessTokenHandler;
       window.prontoApp.onNotificationGCM = window.prontoApp.businessOnNotificationGCM
     }
 
-    console.log('types --------');
-    console.log('successHandler', typeof successHandler);
-    console.log('errorHandler', typeof errorHandler);
-    console.log('window push', typeof window.prontoApp.onNotificationGCM);
-
-
+    //check the device platform and register devices
     try{
       if (device.platform === 'android'
         || device.platform === 'Android'
@@ -44,6 +47,8 @@ angular.module('starter.services', ['LocalStorageModule'])
         pushNotification.register(
           successHandler,
           errorHandler,
+          //senderId is the google app id
+          //ecb is the callback function when the device receives a GCM push notification
           { senderID:"763850460204",
             ecb: "window.prontoApp.onNotificationGCM"
           }
@@ -53,6 +58,7 @@ angular.module('starter.services', ['LocalStorageModule'])
         pushNotification.register(
           tokenHandler,
           errorHandler,
+          //ecb is the callback function when the device receives an APN push notifications
           { badge: 'true',
             sound: 'true',
             alert: 'true',
@@ -63,44 +69,28 @@ angular.module('starter.services', ['LocalStorageModule'])
     } catch (err){
       console.log('errer registering with the device');
     }
-      // pushNotification.unregister(function(e){console.log('unregistered', e)},
-      // function(e){
-      // console.log('issue unregistering',e)});
   };
+
+  //creating a global object to store the push notification callbacks
+  //push notification callbacks need to be in the global scope in order to be called
 
   window.prontoApp = {};
 
-  window.prontoApp.onNotificationAPN = function(e) {
-
-    // var state = JSON.stringify(e.payload.state);
-    // $window.alert('state variable', e.payload.state);
-    // console.log('state', e.payload.state);
-
-    // $state.transitionTo(e.payload.state, $stateParams, {
-    //   reload: true,
-    //   inherit: false,
-    //   notify: true
-    // });
-
-    
+  //Function that will be called when push notification is received from APN
+  window.prontoApp.onNotificationAPN = function(e) {    
     if (e.badge){
       pushNotification.setApplicationIconBadgeNumber(badgeSuccessHandler, e.badge);
     }
   }
 
+  //Function that will be called when a user push notification is received from GCM
   window.prontoApp.userOnNotificationGCM  = function(e) {
-    console.log('Event from android: ', e.event);
 
+    //If the GCM even is of type registered send the GCM reg Id to the server for storage
     if (e.event === "registered"){
       if (e.regid.length > 0 ){
-        console.log('android register id: ', e.regid);
-
         var accessToken = localStorageService.get('token');
         var userId = localStorageService.get('userId')
-
-        console.log('access token: ', accessToken);
-        console.log('userId: ', userId);
-
         var httpObj = {
           method: 'POST',
           url: ServerUrls.url+'/token',
@@ -114,13 +104,14 @@ angular.module('starter.services', ['LocalStorageModule'])
 
         $http(httpObj)
         .success(function(data){
-          console.log('Token Send Successful ',data);
+          console.log('RegId Send Successful ',data);
         })
         .fail(function(err){
-          console.log('Token Send Failed ', err);
+          console.log('RegId Send Failed ', err);
         })
-
       }
+
+    //If the GCM event is of message type, log the message
     }else if(e.event === "message"){
       if (e.foreground){
         console.log('inline notification');
@@ -137,6 +128,7 @@ angular.module('starter.services', ['LocalStorageModule'])
       console.log('MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
       //amazon-fireos only
       console.log('MESSAGE -> TIMESTAMP: ' + e.payload.timeStamp);
+
     } else if( e.event === 'error'){
       console.log('ERROR -> MSG:' + e.msg);
     } else {
@@ -144,19 +136,14 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
   }
 
+  //Function that will be called when a restaurant push notification is received
   window.prontoApp.businessOnNotificationGCM  = function(e) {
-    console.log('Event from android: ', e.event);
 
+    //If the GCM even is of type registered send the GCM reg Id to the server for storage
     if (e.event === "registered"){
       if (e.regid.length > 0 ){
-        console.log('android register id: ', e.regid);
-
         var accessToken = localStorageService.get('token');
         var businessId = localStorageService.get('restaurantId');
-
-        console.log('access token: ', accessToken);
-        console.log('businessId: ', businessId);
-
         var httpObj = {
           method: 'POST',
           url: ServerUrls.url+'/business/token',
@@ -176,13 +163,9 @@ angular.module('starter.services', ['LocalStorageModule'])
           console.log('RegId Send Failed ', err);
         })
       }
-    }else if(e.event === "message"){
-      // $state.transitionTo(e.payload.state, $stateParams, {
-      //   reload: true,
-      //   inherit: false,
-      //   notify: true
-      // });
 
+    //If the GCM event is of message type, log the message
+    }else if(e.event === "message"){
       if (e.foreground){
         console.log('inline notification');
       } else { // otherwise we were launched because the user touched a notification in the notification tray.
@@ -192,7 +175,6 @@ angular.module('starter.services', ['LocalStorageModule'])
           console.log('-BACKGROUND NOTIFICATION-');
         }
       }
-
       console.log('MESSAGE -> MSG: ' + e.payload.message);
       //android only
       console.log('MESSAGE -> MSGCNT: ' + e.payload.msgcnt);
@@ -205,15 +187,10 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
   }
 
-
+  //Function that will be called when a user receives the token back from APN
   var userTokenHandler = function(result){
-    console.log('token: ', result);
-
     var accessToken = localStorageService.get('token');
     var userId = localStorageService.get('userId');
-
-    console.log('access token: ', accessToken);
-    console.log('userId: ', userId);
 
     var httpObj = {
       method: 'POST',
@@ -236,14 +213,10 @@ angular.module('starter.services', ['LocalStorageModule'])
 
   }
 
+  //Function that will be called when a restaurant receives the token back from APN
   var businessTokenHandler = function(result){
-    console.log('token: ', result);
-
     var accessToken = localStorageService.get('token');
     var businessId = localStorageService.get('restaurantId');
-
-    console.log('access token: ', accessToken);
-    console.log('businessId: ', businessId);
 
     var httpObj = {
       method: 'POST',
@@ -266,30 +239,38 @@ angular.module('starter.services', ['LocalStorageModule'])
 
   }
 
+  //Callback functions for a successful registration of GCM
   var successHandler = function (result){
     console.log('success:', result);
   }
 
+  //Callback functions for an unsuccessful registration of GCM
   var errorHandler = function(result){
     console.log('error:', result);
   }
 
+  //return an object with push notification functions defined above
   return {
     onDeviceReady: onDeviceReady
   };
 })
 
+//Factory that creates a service that will confirm with the server that the local credentials are valid
 .factory('checkAuthentication', function($http, localStorageService, ServerUrls){
   var check = function(type){
     var path = '';
     var data = {};
+
+    //configure the target route and data object for the http request depending on the user type
+    //if standard user type
     if (type === 'user'){
       path = '/validate';
       data = {
         accessToken: localStorageService.get('token'),
         userId: localStorageService.get('userId')
       };
-    } else{
+    //if business user type
+    } else {
       path = '/business/validate';
       data = {
         accessToken: localStorageService.get('token'),
@@ -297,27 +278,38 @@ angular.module('starter.services', ['LocalStorageModule'])
       };
     }
 
+    //execute the http request and return promise
     return $http({
         method: 'POST',
         url: ServerUrls.url + path,
         data: data
       });
   }
+
+  //return an object with the function defined above.
   return{
     check:check
   }
 })
 
+//Creates a service to manage the OAuth authentication process with Google
 .factory('LoginRequest', function($http, $state, $stateParams, $window, Google, localStorageService, ServerUrls, $ionicLoading) {
-  // Might use a resource here that returns a JSON array
+
+  //Configure URL to be used for http request to Google
   var url = Google.authorize+'?client_id='+ Google.client_id + '&response_type=code' +
     '&redirect_uri='+Google.redirect_uri +'&scope=' + Google.scope;
 
+  //variable to store the inapp browser windows that will be opened
   var loginWindow;
 
+  //Google OAuth function
   var login = function (type) {
-    var errorState = '';
-    var postUrl = '';
+
+    //Initializing variables
+    var errorState;
+    var postUrl;
+
+    //configure variables based on type
     if (type === 'user'){
       errorState = 'login.user';
       postUrl = ServerUrls.url+'/login/user';
@@ -326,12 +318,18 @@ angular.module('starter.services', ['LocalStorageModule'])
       postUrl = ServerUrls.url+'/login/business';
     }
 
+    //open an inapp browser login window with the google OAuth url
     loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no');
+
+    //add an event listener to catch the redirect uri after google authentication
     loginWindow.addEventListener('loadstart', function(e) {
       var url = e.url;
+
+      //parse the code or error in the redirect uri
       var code = /\?code=(.+)$/.exec(url);
       var error = /\?error=(.+)$/.exec(url);
 
+      //if there was an error, close window and transition to error state
       if (error){
         loginWindow.close();
         $state.transitionTo(errorState, $stateParams, {
@@ -341,7 +339,9 @@ angular.module('starter.services', ['LocalStorageModule'])
         });
       }
 
+      //if there was a valid code back by google
       if (code) {
+        //show the loading page
         $ionicLoading.show({
           content: 'Loading',
           animation: 'fade-in',
@@ -350,26 +350,41 @@ angular.module('starter.services', ['LocalStorageModule'])
           showDelay: 0
         });
 
+        //close the inapp browser window
         loginWindow.close();
+
+        //send the google authentication code to the server to exchange for a token
         $http ({
           method: 'POST',
           url: postUrl,
           data: {
             code: code[1]
           }
+        //if successful , store the token, userId, and user type into local storage
         }).success(function(data, status){
+          //if the user is a standard user
           if (type === 'user'){
             localStorageService.set('token', data.accessToken);
             localStorageService.set('userId', data.userId);
             localStorageService.set('user', true);
+
+            //hide loading page and transition to user.new state
             $ionicLoading.hide();
             $state.transitionTo('user.new');
+
+          //user is a restaurant user
           } else {
+            //store token into local storage
             localStorageService.set('token', data.accessToken);
 
+            //if the business does not currently exist in the server, route user to the signup page so the
+            //restaurant can fill in more information about the restaurant
             if (data.signup){
               $ionicLoading.hide();
               $state.transitionTo('signup.signup');
+
+            //otherwse, the business does exist, store the restaurantId and user type in local storage 
+            //and transition to the rest.requests state
             }else{
               localStorageService.set('restaurantId', data.businessId);
               localStorageService.set('user', false);
@@ -377,6 +392,9 @@ angular.module('starter.services', ['LocalStorageModule'])
               $state.transitionTo('rest.requests');
             }
           }
+
+        //if there was an error swapping the code for a token, close the inapp browser window and 
+        //transition to the error state
         }).error(function(data, status){
           loginWindow.close();
           $ionicLoading.hide();
@@ -390,14 +408,20 @@ angular.module('starter.services', ['LocalStorageModule'])
     });
   };
 
+  //return an object with the function defined above
   return {
     login: login
   };
 })
 
 
+//Returns a service to be used by the user.active controller
 .factory('UserActiveRequest', function($http, localStorageService,ServerUrls){
+   
+   //function to get the latest request by the user from the server
    var all = function(){
+
+    //gathering the information from local storage and encoding it in the url
      var userId = localStorageService.get('userId');
      var accessToken = localStorageService.get('token');
      var url = ServerUrls.url+'/requests?userId='+userId+'&accessToken='+accessToken;
@@ -407,6 +431,8 @@ angular.module('starter.services', ['LocalStorageModule'])
      });
    };
 
+  //function to be used when a user rejects a restaurant offer.
+  //sends the requestId and businessId to the server for processing 
   var reject = function(requestId, businessId){
     console.log(requestId, businessId);
     return $http({
@@ -421,6 +447,8 @@ angular.module('starter.services', ['LocalStorageModule'])
     })
   };
 
+  //function to be used when a user accepts a restaurant offer.
+  //sends the requestId and businessId to the server for processing 
   var accept = function(requestId, businessId){
     console.log('user accept: ', requestId, businessId);
     return $http({
@@ -435,6 +463,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     })
   };
 
+ //returns an object with all of the functions defined above
  return {
      all:all,
      accept: accept,
@@ -443,62 +472,74 @@ angular.module('starter.services', ['LocalStorageModule'])
 })
 
 
-//Get the longitude and latitude coordinates from device GPS
+//Creates a service to get the longitude and latitude coordinates from device GPS
 .factory('GetLocation', function($q) {
 
   var longLat = function(){
 
-    //create a promise since getting the position is an asynch
+    //create a promise since getting the geolocation function is an asynchronous
     var deferred = $q.defer();
 
     navigator.geolocation.getCurrentPosition(
+      //resolve the promise if the longitude and latitude coordinates were successfully gathered
       function(pos) {
         deferred.resolve([pos.coords.longitude, pos.coords.latitude])
-        }, function(error) {
-          alert('Unable to get location: ' + error.message);
+        }, 
+      //raise an alert if there was an issue
+      function(error) {
+        alert('Unable to get location: ' + error.message);
       }
     );
     //return promise object
     return deferred.promise;
   }
 
-  //return factory object
+  //return object with the functions defined above
   return {
     longLat: longLat
   };
 })
 
+
+//Service to get list of offers that were sent
 .factory('ExistingOffers', function($http, localStorageService,ServerUrls) {
-  // Might use a resource here that returns a JSON array
   var all = function(){
+    //gather the credentials from local storage and encode it into the url
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
     var url = ServerUrls.url+'/business/offered?businessId='+businessId+
       '&accessToken='+accessToken;
 
+    //execute the http request and return a promise
     return $http({
       method:'GET',
       url: url
     });
   }
 
+  //return an object with the function defined above
   return {
     all: all
   };
 })
 
+//Service to get all requests from the server
 .factory('Requests', function($http, localStorageService, $location, ServerUrls) {
   var all = function(){
+
+    //gather the credentials from local storage and encode it into the url
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
     var url = ServerUrls.url+'/business/requests?businessId='+businessId+'&accessToken='+accessToken;
 
+    //execute the http request and return a promise
     return $http({
       method:'GET',
       url: url
     })
   };
 
+  //get the request data to be passed into the next state (request.detail)
   var get = function(requests, requestId) {
     // Simple index lookup
     for(var i =0; i<requests.length; i++){
@@ -508,13 +549,17 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
   }
 
+  //go to the request.detail state
   var go = function(request){
     path = 'rest/request/' + request.requestId;
     $location.path(path);
   };
 
+
+  //function to be used for declining requeusts
   var decline = function(request){
-    console.log(request.requestId);
+
+    //send http request to decline request and return a promise
     return $http({
       method: 'POST',
       url: ServerUrls.url+'/business/requests/decline',
@@ -526,8 +571,10 @@ angular.module('starter.services', ['LocalStorageModule'])
     })
   };
 
+  //function to be used for accepting requeusts
   var accept = function(requestId, offer){
-    console.log(requestId, offer);
+
+    //send http request to decline request and return a promise
     return $http({
       method: 'POST',
       url: ServerUrls.url+'/business/requests/accept',
@@ -540,6 +587,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     })
   };
 
+  //return an object with the function defined above
   return {
     all: all,
     get: get,
@@ -549,25 +597,34 @@ angular.module('starter.services', ['LocalStorageModule'])
   };
 })
 
+
+//service to be used with the rest.existingOffer controller
 .factory('AcceptedOffers', function($http, localStorageService, ServerUrls) {
 
+  //get all requests that the restaurant has sent offers to
   var all = function(){
+
+    //gather the credentials from local storage and encode it into the url
     var businessId = localStorageService.get('restaurantId');
     var accessToken = localStorageService.get('token');
     var url = ServerUrls.url+'/business/accepted?businessId='+businessId+
       '&accessToken='+accessToken;
 
+    //execute the http request and return a promise
     return $http({
       method:'GET',
       url: url
     });
   }
 
+  //return an object with the function defined above
   return {
     all: all
   };
 })
 
+
+//convert the yelp stars numeric data to a string that will be applied as a class for displaying the yelp stars
 .factory('CalculateStars', function() {
 
   var calculateStars = function(value){
@@ -594,6 +651,7 @@ angular.module('starter.services', ['LocalStorageModule'])
     }
   }
 
+  //return an object with the function defined above
   return {
     calculateStars: calculateStars
   };
